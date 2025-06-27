@@ -1,0 +1,160 @@
+li.outerlist {
+  padding-bottom: 40px;
+}
+
+.job_req {
+  background: linear-gradient(230.04deg, #0052cc 2.11%, #0052cc 102.63%);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.create_job h6 {
+  font-family: Poppins;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 100%;
+}
+
+.create_job p {
+  font-family: Poppins;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  margin: 0;
+  color: #c7c7c7;
+}
+.right_list {
+  width: 440px;
+  flex-shrink: 0;
+}
+.right_list {
+  width: 440px;
+  flex-shrink: 0;
+}
+
+.user-block {
+  border: 2px solid #e1e3e640;
+  padding: 0 2rem;
+  border-radius: 14px;
+}
+.user-details h1 {
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 100%;
+  color: #0c0b0b;
+}
+.dashboad-filter {
+  margin-bottom: 12px;
+}
+.dashboad-filter span {
+  color: #b3b3b3;
+}
+.dashboard_card {
+  padding: 1rem;
+  background: #eff6ff;
+  border: 1px solid #e1e3e640;
+  border-radius: 12px;
+}
+
+.dashboad-filter select,
+.dashboad-filter select:focus {
+  border: 1px solid #42424280;
+  border-radius: 35px;
+  height: 32px;
+  min-width: 150px;
+  padding-left: 5px;
+  font-weight: 500;
+  font-size: 14px;
+}
+.sub_heading {
+  font-family: "Poppins";
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 100%;
+}
+ul.job_list li {
+  padding: 0.8rem 1.4rem;
+  background: var(--bs-white);
+  border-radius: 35px;
+}
+
+.location_inner {
+  display: inline-block;
+}
+
+span.type_tag {
+  font-size: 16px;
+  line-height: 100%;
+  text-align: center;
+  color: #4a4a4a;
+  background: #f2f2f2;
+  padding: 10px 13px;
+  border-radius: 35px;
+  font-weight: 600;
+}
+
+.job_head h6 {
+  font-size: 24px;
+  line-height: 100%;
+  font-family: "Poppins";
+  font-weight: 500;
+}
+
+.job_head p {
+  font-size: 14px;
+  color: #b3b3b3;
+}
+.location_inner h6 {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  color: #b3b3b3;
+  padding-bottom: 18px;
+}
+
+.location_inner span {
+  font-size: 14px;
+  line-height: 100%;
+  color: #000000;
+  font-weight: 500;
+}
+
+.job_list h4 {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 100%;
+  color: #b3b3b3;
+}
+
+ul.overview_list {
+  padding: 0;
+}
+
+ul.overview_list li {
+  padding: 10px 12px;
+  background: #fff;
+  border-radius: 13px;
+}
+
+ul.overview_list h6 {
+  font-family: Poppins;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 100%;
+  color: #b3b3b3;
+}
+
+ul.overview_list h5 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 100%;
+  color: #000;
+  margin: 0;
+}
+h2.company_name {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  margin-bottom: 12px;
+}

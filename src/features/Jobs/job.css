@@ -1,0 +1,142 @@
+.no-driver {
+  text-align: center;
+  padding: 1rem;
+}
+
+.no-driver h5 {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  text-align: center;
+  color: #989692;
+  margin-top: 1rem;
+}
+span.fn-tag {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  text-align: center;
+  background: #f2f2f2;
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 35px;
+}
+.small-heading {
+  color: #170f49;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 20px;
+}
+
+.job_status span {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 100%;
+  color: #989692;
+  font-weight: 500;
+}
+
+.job_status h6 {
+  font-family: Bahnschrift;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  color: #170f49;
+}
+.job-list-bullets li {
+  font-weight: 400;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.timeline-count {
+  width: 32px;
+  height: 32px;
+  background: #e0e7ff;
+  color: #4338ca;
+  font-weight: 500;
+  font-family: "Inter";
+}
+.timeline_status span,
+.timeline-title {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  color: #989692;
+}
+.toggle {
+  right: -18px;
+  z-index: 3;
+}
+.toggle svg {
+  cursor: pointer;
+}
+
+.toggle_items {
+  z-index: 3;
+  right: -18px;
+  min-width: 100px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 10%);
+}
+.toggle_items span {
+  font-size: 14px;
+  padding: 10px;
+  padding-bottom: 5px;
+  cursor: pointer;
+}
+.saved_address {
+  background: #0052cc26;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.address_wrapper h3 {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  margin-bottom: 4px;
+}
+
+.address_wrapper p {
+  font-family: "Inter";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  margin: 0;
+}
+.nav-tabs.location_tabs .nav-item {
+  width: 100%;
+  max-width: 49%;
+}
+
+.nav-tabs.location_tabs .nav-link {
+  width: 100%;
+  border: 1px solid #e1e3e6;
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 4px 0px;
+}
+
+.nav-tabs.location_tabs .nav-link.active {
+  background: #0052cc;
+  color: #fff;
+  border-color: #0052cc;
+}
+
+.location_tabs {
+  justify-content: space-between;
+  border: unset;
+}
+.divider_cmn {
+  background: #d9dbe9;
+  width: 70%;
+  height: 1px;
+  margin: 24px auto;
+}
+.vehicle_card {
+  border: 1px solid #e1e3e6;
+  padding: 15px;
+  border-radius: 8px;
+  width: 80%;
+}

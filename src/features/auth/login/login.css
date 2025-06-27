@@ -1,0 +1,169 @@
+.info_wrapper {
+  background: #0052cc;
+}
+.info_wrapper {
+  max-width: 711px;
+  width: 100%;
+  flex-shrink: 0;
+}
+.info_wrapper .bus_image {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.area_info {
+  bottom: -42px;
+  right: 0;
+  padding: 14px 7px;
+  background: rgba(247, 250, 252, 1);
+  border: 1px solid rgba(178, 178, 178, 0.5);
+  border-radius: 10px;
+}
+
+.area_content h6 {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 24px;
+  color: rgba(63, 62, 62, 1);
+}
+
+.carousal_content p {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  color: rgba(113, 128, 150, 1);
+}
+
+.carousal_image {
+  flex: 0 0 213px;
+  width: 213px;
+  padding-top: 4rem;
+}
+
+.carousal_content h4 {
+  font-family: "Public Sans";
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 30.95px;
+  color: var(--primary-color);
+}
+
+.area_information {
+  padding-top: 6rem;
+  text-align: center;
+  max-width: 317px;
+  margin: auto;
+}
+
+.area_information h4 {
+  font-family: "Public Sans";
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 25px;
+}
+
+.area_information p {
+  font-family: "Public Sans";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 23.24px;
+  text-align: center;
+}
+.login_form {
+  text-align: left;
+  max-width: 550px;
+  margin: auto;
+  width: 100%;
+}
+.area_content h5 {
+  font-weight: 700;
+  color: rgba(63, 62, 62, 1);
+}
+.forgetPass {
+  font-weight: 500;
+}
+.login_form h1 {
+  color: var(--heading-color);
+  font-weight: 700;
+  font-size: 33px;
+  line-height: 40px;
+  margin-top: 1.5rem;
+}
+
+span.view_pass {
+  position: absolute;
+  right: 9px;
+  bottom: 6px;
+  border-left: 1px solid #ddd;
+  padding: 6px;
+  padding-left: 13px;
+}
+
+/*  */
+.login_form p {
+  color: rgb(49 39 62 / 40%);
+  font-weight: 400;
+}
+
+.cmn_input input {
+  box-shadow: 0px 2px 0px 0px rgba(231, 235, 238, 0.2) inset;
+  height: 47px;
+  border: 1px solid #d2d4d633;
+  background: #f4f4f5;
+  color: rgb(49 39 62 / 50%);
+}
+
+.cmn_input input:focus,
+.login_form .form-check-input[type="checkbox"]:focus {
+  outline: unset;
+  box-shadow: unset;
+  border: 1px solid var(--primary-color);
+}
+.login_form .form-check-input[type="checkbox"] {
+  color: #fff;
+  width: 20px;
+  height: 20px;
+  background-color: #8c99ac29;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  border-radius: 4px;
+  position: relative;
+  bottom: 2px;
+}
+.login_form .form-check-input[type="checkbox"]:checked {
+  accent-color: #1d4ed8;
+  appearance: auto;
+  border-radius: 0px;
+}
+.absolute_icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translate(0px, -50%);
+}
+.rem_pass label.form-check-label {
+  color: #8c99acb8;
+}
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #f4f4f5 inset;
+  -webkit-text-fill-color: rgb(49 39 62 / 50%);
+  transition: background-color 5000s ease-in-out 0s;
+}
+.title {
+  font-size: 24px;
+  max-width: 487px;
+  font-weight: 700;
+  line-height: 140%;
+}
+.already_logged {
+  font-weight: 600;
+}
+/*  */
+/*  */
+@media (max-width: 1500px) {
+  .login_form {
+    max-width: 390px;
+    width: 100%;
+  }
+}

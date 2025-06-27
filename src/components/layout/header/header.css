@@ -1,0 +1,54 @@
+.headerWrapper {
+  background: rgba(255, 255, 255, 1);
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  padding: 10px 2rem;
+  z-index: 88;
+}
+.user_image,
+.user_image img {
+  flex: 0 0 46px;
+  width: 46px;
+  border-radius: 50%;
+  height: 46px;
+  object-fit: cover;
+}
+
+.header_user {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: end;
+}
+.user_image,
+.user_image img {
+  flex: 0 0 46px;
+  width: 46px;
+  border-radius: 50%;
+  height: 46px;
+  object-fit: cover;
+}
+
+.header_user {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.user_info h5 {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(29, 31, 44, 1);
+}
+
+p.desig {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: rgba(74, 76, 86, 1);
+}

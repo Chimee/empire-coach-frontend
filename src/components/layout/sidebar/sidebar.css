@@ -1,0 +1,118 @@
+.side_bar button.accordion-button.collapsed {
+  border: unset;
+}
+.list-unstyled {
+  padding-top: 3em;
+}
+.sidebar_inner {
+  background: var(--primary-color);
+  border-radius: 24px;
+  height: 100%;
+  position: relative;
+  padding-left: 40px;
+  padding-top: 50px;
+}
+.side_bar li a,
+.side_bar .accordion-button,
+.side_bar li.activeLink .accordion-body a {
+  font-family: "Poppins";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ffffffb2;
+  background-color: transparent;
+  padding: 10px;
+}
+
+.side_bar li.activeLink a,
+.side_bar li.activeLink .accordion-body .active_accordian a {
+  color: var(--bs-white);
+  display: block;
+  font-weight: 600;
+}
+li.outerlist {
+  padding-bottom: 30px;
+}
+
+.side_bar .accordion-button,
+.side_bar .accordion-button:focus {
+  background: transparent;
+  box-shadow: unset;
+  box-shadow: 4px 0px 30px 0px rgba(131, 98, 234, 0.05);
+}
+
+.side_bar {
+  position: fixed;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 24px;
+  padding-right: 0;
+}
+
+.side_bar .activeLink button.accordion-button {
+  background: rgba(255, 240, 234, 1);
+}
+div.side_bar li.outerlist a,
+.side_bar .accordion-button {
+  padding: 12px;
+  padding-left: 0px;
+  padding-right: 0px;
+  display: block;
+}
+.side_bar .accordion-button {
+  display: flex;
+  gap: 0.6rem;
+}
+li.outerlist.activeLink svg path {
+  fill: var(--bs-white);
+  fill-opacity: 1;
+}
+.accordion-body {
+  padding-left: 36px;
+}
+
+.accordion-body ul {
+  border-left: 2px solid rgba(217, 217, 217, 1);
+  padding: 0;
+  margin: 0;
+}
+
+.accordion-body ul.list-unstyled li {
+  padding-left: 10px;
+}
+.accordion-body ul.list-unstyled li a {
+  border-radius: 8px;
+  padding: 10px;
+}
+li.outerlist.activeLink {
+  position: relative;
+}
+
+li.outerlist.activeLink {
+  position: relative;
+}
+
+li.logout {
+  position: absolute;
+  bottom: 40px;
+  width: auto;
+  cursor: pointer;
+}
+li.outerlist.activeLink .accordion-button {
+  color: var(--primary-color);
+}
+li.logout span {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px;
+  color: var(--bs-white);
+  font-family: "Poppins";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18.8px;
+  gap: 10px;
+  border-radius: 8px;
+  padding-left: 0;
+}
