@@ -1,37 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import JobsData from './JobsData';
-const JobTabs = () => {
-    return (
-       <div className='tabs_wrapper position-relative' >
-         <Tabs
-            defaultActiveKey="upcoming"
-            id="justify-tab-example"
-            justify
-           className="jobs_tabs"
-        >
-            <Tab eventKey="upcoming" title="Upcoming">
-                <JobsData />
-            </Tab>
-            <Tab eventKey="pendingApproval" title="Pending Approval">
-                <JobsData />
-            </Tab>
-            <Tab eventKey="poMissing" title="PO Missing">
-                <JobsData />
-            </Tab>
-            <Tab eventKey="inTransit" title="In-transit">
-                <JobsData />
-            </Tab>
-            <Tab eventKey="delivered" title="Delivered">
-                <JobsData />
-            </Tab>
-            <Tab eventKey="cancelled" title="Cancelled">
-                <JobsData />
-            </Tab>
-        </Tabs>
-       </div>
-    )
-}
 
-export default JobTabs
+const JobTabs = () => {
+  const [activeTab, setActiveTab] = useState("activeJobs");
+
+  const handleTabChange = (tabKey) => {
+    setActiveTab(tabKey);
+  };
+
+  // map keys to user-friendly names
+  const tabesName = {
+    activeJobs: "activeJobs",
+    awaitingRescheduled: "awaitingRescheduled",
+    awaitingCancellation: "awaitingCancellation",
+    cancelled: "cancelled"
+  };
+
+  return (
+    <div className="tabs_wrapper position-relative">
+      <Tabs
+        activeKey={activeTab}
+        onSelect={handleTabChange}
+        id="justify-tab-example"
+        justify
+        className="jobs_tabs"
+      >
+        <Tab eventKey="activeJobs" title="Active jobs">
+          <JobsData tabName={tabesName[activeTab]} />
+        </Tab>
+        <Tab eventKey="awaitingRescheduled" title="Awaiting Reschedule Date">
+          <JobsData tabName={tabesName[activeTab]} />
+        </Tab>
+        <Tab eventKey="awaitingCancellation" title="Awaiting Cancellation">
+          <JobsData tabName={tabesName[activeTab]} />
+        </Tab>
+        <Tab eventKey="cancelled" title="Cancelled">
+          <JobsData tabName={tabesName[activeTab]} />
+        </Tab>
+      </Tabs>
+    </div>
+  );
+};
+
+export default JobTabs;

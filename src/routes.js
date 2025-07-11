@@ -39,7 +39,7 @@ export const Routes = {
         path: "/jobs"
     },
     JobDetails: {
-        path: "/jobs/job-details"
+        path: "/jobs/job-details/:id"
     },
     Driver: {
         path: "/drivers"
@@ -49,6 +49,9 @@ export const Routes = {
     },
     DriverDetails: {
         path: "/drivers/driver-details/:id"
+    },
+    CreateJob: {
+        path: "/jobs/create-job"
     },
     Profile: {
         path: "settings/profile"

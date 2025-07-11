@@ -84,7 +84,7 @@ const Datatable = ({
           <tbody>
             {tableData?.data?.length > 0 ? (
               tableData?.data?.map((row, rowIndex) => (
-                <tr key={rowIndex}   onClick={() => onClickRow(row.id)}>
+                <tr key={rowIndex}   onClick={() => onClickRow && onClickRow(row?.id)}>
                   {columns.map((column, colIndex) => {
                     let cellContent;
 

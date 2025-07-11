@@ -7,7 +7,7 @@ import Button from '../../components/shared/buttons/button';
 import { useAddCompanyMutation } from '../../app/companyApi/companyApi';
 import toast from 'react-hot-toast';
 import PhoneInput from 'react-phone-input-2';
-
+import { validateRequiredFields } from '../../helpers/Utils';
 const AddCompany = () => {
   const [companyData, setCompanyData] = useState({
     company_name: "",
@@ -43,39 +43,27 @@ const AddCompany = () => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // Validation
-    if (!company_name.trim()) {
+    const requiredFields = [
+      { value: company_name, label: "Company Name" },
+      { value: address, label: "Billing Address" },
+      { value: contact_person_name, label: "Default POC Name" },
+      { value: contact_person_phone, label: "Default POC Phone" },
+      { value: email, label: "Default E-mail" },
+    ];
+
+    const requiredError = validateRequiredFields(requiredFields);
+    if (requiredError) {
       toast.dismiss();
-      toast.error("Company Name is required.");
+      toast.error(requiredError);
       return;
     }
-    if (!address.trim()) {
-      toast.dismiss();
-      toast.error("Billing Address is required.");
-      return;
-    }
-    if (!contact_person_name.trim()) {
-      toast.dismiss();
-      toast.error("Default POC Name is required.");
-      return;
-    }
-    if (!contact_person_phone.trim()) {
-      toast.dismiss();
-      toast.error("Default POC Phone is required.");
-      return;
-    }
-    if (!email.trim()) {
-      toast.dismiss();
-      toast.error("Default E-mail is required.");
-      return;
-    }
+
     if (!emailRegex.test(email)) {
       toast.dismiss();
       toast.error("Please enter a valid email address.");
       return;
     }
 
-    // Submit
     try {
       await addCompany({ data: companyData }).unwrap();
       setCompanyData({
@@ -130,9 +118,9 @@ const AddCompany = () => {
                 />
               </Col>
               <Col lg={6}>
-               <label className="input-label form-label">Default POC Phone</label>
+                <label className="input-label form-label">Default POC Phone</label>
                 <PhoneInput
-                  country={'us'} // or 'in' for India
+                  country={'us'}
                   value={companyData.contact_person_phone}
                   onChange={(value) =>
                     setCompanyData((prev) => ({
@@ -143,7 +131,6 @@ const AddCompany = () => {
                   inputClass="form-control"
                   containerClass="w-100"
                 />
-                
               </Col>
             </Row>
             <InputWithLabel

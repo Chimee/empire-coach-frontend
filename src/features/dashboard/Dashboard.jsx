@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
 import QuickJobsList from './QuickJobsList'
 import JobsOverview from './JobsOverview'
 import { PlusButtonSvg } from '../../svgFiles/PlusButtonSvg'
 import './dashboard.css'
-import JobRequestModal from '../../components/shared/modalContent/JobRequestModal'
 import DriversList from './DriversList'
+import {useNavigate } from 'react-router'
 const Dashboard = () => {
-const[showJobRequestModal, setShowJobRequestModal] = useState(false)
+  const navigate = useNavigate()
+
   return (
     <>
-    <JobRequestModal show={showJobRequestModal} setShow={setShowJobRequestModal}/>
+  
       <div className='d-flex gap-3 align-items-center'>
         <div className='content_list flex-grow-1'>
           <div className='d-flex justify-content-between align-items-center user-block'>
@@ -26,7 +26,7 @@ const[showJobRequestModal, setShowJobRequestModal] = useState(false)
               <h6 className='text-white'>Job Request</h6>
               <p>Create a job request</p>
             </div>
-            <PlusButtonSvg  onClick={()=>{setShowJobRequestModal(true)}}/>
+            <PlusButtonSvg  onClick={()=>navigate('/jobs/create-job')}/>
           </div>
         </div>
       </div>

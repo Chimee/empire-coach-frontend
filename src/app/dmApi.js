@@ -5,6 +5,6 @@ export const dmApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl:'http://localhost:4000/api/v1',
     }),
-    tagTypes: ["supplier","getAdminListAPI",'getDriverListAPI'],
+    tagTypes: ["supplier","getAdminListAPI",'getDriverListAPI','getDeliveryAddressesAPI'],
     endpoints: () => ({}),
 })

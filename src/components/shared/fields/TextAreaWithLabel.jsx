@@ -15,7 +15,7 @@ const TextAreaWithLabel = ({
 }) => {
   return (
     <Form.Group className={`mb-3 ${className}`}>
-      <Form.Label className="input-label">
+      <Form.Label className="cmn_label  form-label">
         {label} {required && <span className="text-danger">*</span>}
       </Form.Label>
       <Form.Control

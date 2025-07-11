@@ -64,8 +64,9 @@ span.fn-tag {
   color: #989692;
 }
 .toggle {
-  right: -18px;
+  right: 4px;
   z-index: 3;
+  top: 5px;
 }
 .toggle svg {
   cursor: pointer;
@@ -139,4 +140,160 @@ span.fn-tag {
   padding: 15px;
   border-radius: 8px;
   width: 80%;
+}
+/* create job css */
+.step-circle {
+  width: 34px;
+  height: 34px;
+  color: #6f6c90;
+  background: #eff0f6;
+}
+.step-circle.completed,
+.step-circle.active {
+  background-color: #0052cc;
+  color: #fff;
+}
+.step-tracker li {
+  width: 100%;
+  position: relative;
+}
+
+.step-tracker li::before {
+  width: calc(100% - 48px);
+  height: 6px;
+  background: #ddd;
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translate(0%, -50%);
+  border-radius: 35px;
+  left: 40px;
+}
+.step-tracker li:last-child {
+  width: auto;
+}
+li.list-completed::before {
+  background: #0052cc;
+}
+
+.req-job-headers h2 {
+  font-family: Poppins;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 46px;
+  text-align: center;
+  color: #170f49;
+}
+
+.req-job-headers p {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 30px;
+  text-align: center;
+  color: #6f6c90;
+}
+
+.req-job-headers {
+  max-width: 566px;
+  margin: auto;
+  width: 100%;
+}
+h5.step_heading {
+  font-family: "Poppins";
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 35px;
+  color: #170f49;
+  margin-bottom: 15px;
+}
+.rem_pass.job-req-check label.form-check-label {
+  color: #170f49;
+  font-weight: 500;
+  font-size: 16px;
+}
+.job-request-modal {
+  max-width: 774px;
+  width: 100%;
+  margin: auto;
+}
+.step-tracker {
+  margin-bottom: 3em;
+}
+/* job-dropdown css */
+
+.vehicle_dropdown .dropdown-toggle {
+  border: 1px solid #e1e3e6;
+  width: 100%;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #757d8a;
+}
+
+.vehicle_dropdown .dropdown-toggle:focus {
+  box-shadow: unset;
+  border: 1px solid var(--primary-color);
+}
+.vehicle_dropdown .dropdown-toggle:after {
+  display: none;
+}
+.vehicle_dropdown .dropdown-toggle.show svg {
+  transform: rotate(-180deg);
+}
+.vehicle_dropdown .dropdown-menu {
+  width: 100%;
+  border: 1px solid #e1e3e6;
+  padding: 0;
+}
+.vehicle_dropdown .dropdown-menu a {
+  font-size: 13px;
+  color: #757d8a;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.vehicle_dropdown .dropdown-menu a:hover {
+  background: #d9e5f8;
+}
+.vehicle_item {
+  padding: 20px;
+  border: 1px solid #00000026;
+  border-radius: 16px;
+}
+.dropdown-menu li {
+  font-size: 13px;
+  color: #757d8a;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background: #d9e5f8;
+}
+
+.vehicle_item {
+  padding: 20px;
+  border: 1px solid #00000026;
+  border-radius: 16px;
+}
+
+.vehicle_item p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.vehicle_item p span {
+  font-weight: 400;
+}
+.vehicle_item h3 {
+  font-size: 22px;
+}
+input.form-control.pac-target-input {
+  font-size: 14px;
+}
+
+input.form-control.pac-target-input:focus {
+  box-shadow: unset;
+  border: 1px solid #1d4ed8;
 }

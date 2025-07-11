@@ -9,11 +9,13 @@ import { dmApi } from "../../../app/dmApi";
 import { WhiteLogoSvg } from "../../../svgFiles/WhiteLogoSvg";
 import { jwtDecode } from "../../../helpers/AccessControlUtils";
 
-const getToken = localStorage.getItem("authToken")
-const authToken = jwtDecode(getToken)
-const userRole = authToken?.role; 
+
 
 const Sidebar = () => {
+    const getToken = localStorage.getItem("authToken")
+    const authToken = jwtDecode(getToken)
+    const userRole = authToken?.role;
+    console.log(userRole, "userRole--------->");
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();

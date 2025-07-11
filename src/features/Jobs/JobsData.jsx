@@ -1,66 +1,76 @@
 import React from 'react'
 import Datatable from '../../components/shared/datatable/Datatable';
 import { EditTableSvg } from '../../svgFiles/EditTableSvg';
-
-const JobsData = () => {
+import { useGetAllJobsByStatusQuery } from '../../app/customerApi/customerApi';
+import { formatDateToMDY } from '../../helpers/Utils';
+import { getClassByType } from '../../helpers/Utils';
+import { useNavigate } from 'react-router';
+const JobsData = ({tabName}) => {
+    const navigate = useNavigate();
     const [page, setPage] = React.useState(1);
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
-    const dummyData = {
-        data: [
-            {
-                _id: "1",
-                name: "John Doe",
-                phone: "+1 234 567 8901",
-                email: "john.doe@example.com",
-                status: "Active",
-            },
-            {
-                _id: "2",
-                name: "Jane Smith",
-                phone: "+1 987 654 3210",
-                email: "jane.smith@example.com",
-                status: "Inactive",
-            },
-            {
-                _id: "3",
-                name: "Alice Johnson",
-                phone: "+1 456 789 1234",
-                email: "alice.johnson@example.com",
-                status: "Pending",
-            },
-        ],
-        pagination: {
-            totalRecords: 3,
-        },
-    }
+    const { data: jobsList, isLoading, error } = useGetAllJobsByStatusQuery({ tabName: tabName, page: page });
+    console.log(jobsList, "data from jobs api");
+
+
 
     const columns = [
-        { label: "Name", accessor: "name" },
-        { label: "Phone", accessor: "phone" },
-        { label: "E-mail", accessor: "email" },
+   {
+            label: "Job Id",
+            accessor: "id",
+            cell: ({ row }) => (
+                <span
+                  
+                >
+                    {`job-${row?.id}`}
+                </span>
+            ),
+        },
+        { label: "Vehicle", accessor: "vehicle_make" },
+        { label: "Vin Number", accessor: "vin_number" },
+        { label: "Route", accessor: "vin_number" },
+        { label: "Job Link", accessor: "vin_number" },
         {
             label: "Status",
             accessor: "actions",
             cell: ({ row }) => (
                 <span
-                    className="fn-badge"
-                    onClick={() => alert(`Clicked on user: ${row.name}`)}
+                    className={`fn-badge ${getClassByType(row?.request_status)}`}
                 >
-                    Active
+                    {row?.request_status}
                 </span>
             ),
         },
+        {
+            label: "Pickup Date",
+            accessor: "pickupDate",
+            cell: ({ row }) => (
+                <span>
+                  {formatDateToMDY(row?.pickup_date)}
+                </span>
+            ),
+        },
+        {
+            label: "Delivery Date",
+            accessor: "pickupDate",
+            cell: ({ row }) => (
+                <span>
+                    {formatDateToMDY(row?.dropoff_date)}
+                </span>
+            ),
+        },
+        { label: "Driver", accessor: "vin_number" },
         {
             label: "Actions",
             accessor: "actions",
             cell: ({ row }) => (
                 <span
                     className="cursor-pointer text-primary"
-                    onClick={() => alert(`Clicked on user: ${row.name}`)}
+                    onClick={() => navigate(`/jobs/job-details/${row.id}`)}
                 >
-                    <EditTableSvg />
+                   View
                 </span>
             ),
         },
@@ -68,14 +78,14 @@ const JobsData = () => {
     return (
 
         <Datatable
-            tableData={dummyData}
+            tableData={jobsList?.data}
             columns={columns}
             onPageChange={handlePageChange}
             page={page}
             showPegination={true}
             isLoading={false}
             showFilter={true}
-            title="companies"
+            title="Job List"
         />
 
     )

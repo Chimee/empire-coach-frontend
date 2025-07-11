@@ -23,73 +23,18 @@ button.btn-close {
 .modal-dialog {
   max-width: 880px;
 }
-/*  */
-.step-circle {
-  width: 34px;
-  height: 34px;
-  color: #6f6c90;
-  background: #eff0f6;
-}
-.step-circle.completed,
-.step-circle.active {
-  background-color: #0052cc;
-  color: #fff;
-}
-.step-tracker li {
-  width: 100%;
-  position: relative;
+/*  confirmation modal*/
+.confirmationModal .modal-body {
+  padding-top: 0px !important;
 }
 
-.step-tracker li::before {
-  width: calc(100% - 48px);
-  height: 6px;
-  background: #ddd;
-  content: "";
-  position: absolute;
-  top: 50%;
-  transform: translate(0%, -50%);
-  border-radius: 35px;
-  left: 40px;
-}
-.step-tracker li:last-child {
-  width: auto;
-}
-li.list-completed::before {
-  background: #0052cc;
-}
-
-.req-job-headers h2 {
-  font-family: Poppins;
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 46px;
-  text-align: center;
-  color: #170f49;
-}
-
-.req-job-headers p {
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 30px;
-  text-align: center;
-  color: #6f6c90;
-}
-
-.req-job-headers {
-  max-width: 566px;
-  margin: auto;
-  width: 100%;
-}
-h5.step_heading {
-  font-family: "Poppins";
-  font-weight: 600;
-  font-size: 22px;
-  line-height: 35px;
-  color: #170f49;
-  margin-bottom: 15px;
-}
-.rem_pass.job-req-check label.form-check-label {
-  color: #170f49;
+.confirmationModal h1 {
+  font-family: Inter;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 26px;
+  line-height: 32px;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
 }

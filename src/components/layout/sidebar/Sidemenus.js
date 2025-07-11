@@ -4,7 +4,7 @@ export const MenuItems = [
     {
       title: "Dashboard",
       path: "/dashboard",
-      roles: ["admin", "superadmin",],
+      roles: ["admin", "superadmin","customer"],
       icon: <DashboardIcon />,
       subMenu: [],
     },
@@ -26,7 +26,7 @@ export const MenuItems = [
     {
       title: "Jobs",
       path: "/jobs",
-      roles: ["admin", "superadmin",],
+      roles: ["admin", "superadmin",'customer'],
       icon: <JobsSvg />,
       subMenu: [],
     },
@@ -37,13 +37,13 @@ export const MenuItems = [
       icon: <DriverSvg />,
       subMenu: [],
     },
-    // {
-    //   title: "Completed Jobs",
-    //   path: "/completed-jobs",
-    //   roles: ["admin", "user", "manager"],
-    //   icon: <CompletedJobsSvg />,
-    //   subMenu: [],
-    // },
+    {
+      title: "Completed Jobs",
+      path: "/completed-jobs",
+      roles: ["customer"],
+      icon: <CompletedJobsSvg />,
+      subMenu: [],
+    },
    
    
   ];

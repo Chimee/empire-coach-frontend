@@ -1,5 +1,5 @@
 import { toast } from 'react-hot-toast';
-
+import React from 'react';
 export const isNullOrEmpty = (data) => {
     return (
         data === null ||
@@ -147,11 +147,13 @@ export const validatePassword = (password, confirmPassword) => {
 
 export const getClassByType = (type) => {
   const classMap = {
-    pending: 'class-pending',
-    ontheway: 'class-ontheway',
-    started: 'class-started',
-    completed: 'class-completed',
-    rejected: 'class-rejected',
+    submitted: 'class-submitted',
+    cancelled: 'class-cancelled',
+    awaiting_for_cancellation: 'class-awaiting-for-cancellation',
+    approved: 'class-approved',
+    PO_missing: 'class-PO_missing',
+    rescheduled: 'class-rescheduled',
+    delivery_link_sent: 'class-delivery_link_sent',
   };
 
   return classMap[type?.toLowerCase()] || 'default-class';
@@ -232,4 +234,28 @@ export function getLastLoginText(lastLoginDate) {
     month: "short",
     day: "numeric",
   })}`;
+}
+
+export const validateRequiredFields = (fields) => {
+  for (const field of fields) {
+    if (String(field.value ?? "").trim() === "") {
+      return `${field.label} is required.`;
+    }
+  }
+  return null;
+};
+export default function useClickOutside(ref, callback) {
+  React.useEffect(() => {
+    const handleClick = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        callback(event);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, [ref, callback]);
 }

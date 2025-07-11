@@ -20,7 +20,7 @@ const globalSlice = createSlice({
             state.redirectPath = action.payload;
         },
         clearRedirectPath: (state) => {
-            state.redirectPath = "/home";
+            state.redirectPath = "/dashboard";
         },
     },
 });

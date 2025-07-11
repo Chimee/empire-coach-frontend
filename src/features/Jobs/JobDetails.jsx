@@ -6,7 +6,16 @@ import { CarSvg } from '../../svgFiles/CarSvg'
 import './job.css'
 import Button from '../../components/shared/buttons/button'
 import { PendingCarSvg } from '../../svgFiles/PendingCarSvg'
+import { useParams } from 'react-router'
+import { useGetJobDetailsQuery } from '../../app/customerApi/customerApi'
+import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 const JobDetails = () => {
+    const { id } = useParams();
+    console.log(id, "id from params");
+    
+    const { data: jobDetails, isLoading } = useGetJobDetailsQuery({id});
+    console.log(jobDetails,"data-jobDetails");
+    
     const breadcrumbItems = [
         { name: 'Jobs', path: '/jobs' },
         { name: 'Job-441022022' },
@@ -39,7 +48,7 @@ const JobDetails = () => {
                 <h6 className='small-heading'>Driver</h6>
                 <div className='no-driver'>
                     <CarSvg />
-                    <h5>No Driver Assigner yet</h5>
+                    <h5>{(jobDetails?.data?.driverName === "No Driver Assigned Yet" || jobDetails?.data?.driverName === null) ? "No Driver Assigned Yet" : jobDetails?.data?.driverName}</h5>
                 </div>
             </Col>
             <Col lg={12} className='mt-5'>
@@ -52,16 +61,16 @@ const JobDetails = () => {
                                 <h6 className='small-heading'>Vehicle Details</h6>
                                 <ul className='p-0 job-list-bullets'>
                                     <li>2022 Ford Transit</li>
-                                    <li>VIN : 1FTBR3X89MKA12345</li>
-                                    <li>Fuel Type: Diesel</li>
-                                    <li>PO Number: PO-123456</li>
+                                    <li>VIN : {jobDetails?.data?.vin_number}</li>
+                                    <li>Fuel Type: {jobDetails?.data?.fuel_type}</li>
+                                    <li>PO Number:{jobDetails?.data?.po_number}</li>
                                 </ul>
                             </Col>
                             <Col lg={6}>
                                 <h6 className='small-heading'>Service options</h6>
                                 <ul className='p-0 job-list-bullets'>
-                                    <li>Deliver Washed</li>
-                                    <li>Send driver contact info</li>
+                                    {jobDetails?.data?.deliver_washed === true && <li>Deliver Washed</li>}
+                                   {jobDetails?.data?.send_driver_contact_info === true && <li>Send driver contact info</li>}
                                 </ul>
                             </Col>
                         </Row>
@@ -69,21 +78,21 @@ const JobDetails = () => {
                             <Col lg={6}>
                                 <h6 className='small-heading'>Pickup Details</h6>
                                 <ul className='p-0 job-list-bullets'>
-                                    <li>Miami, FL</li>
-                                    <li>04/16/2025, 3:30PM</li>
-                                    <li>Contact : William</li>
-                                    <li>Phone : (123) 456-7890</li>
-                                    <li>Notes : Gate code 1234</li>
+                                    <li> {jobDetails?.data?.pickup_location}</li>
+                                    <li>{formatDateToMDY(jobDetails?.data?.pickup_date)}  {formatTimeTo12Hour(jobDetails?.data?.pickup_time)}</li>
+                                    <li>Contact : {jobDetails?.data?.pickup_POC_name}</li>
+                                    <li>Phone : {jobDetails?.data?.pickup_POC_phone}</li>
+                                    <li>Notes : {jobDetails?.data?.pickup_additional_note}</li>
                                 </ul>
                             </Col>
                             <Col lg={6}>
                                 <h6 className='small-heading'>Drop-off Details</h6>
-                                <ul className='p-0 job-list-bullets'>
-                                    <li>Jacksonville, FL</li>
-                                    <li>04/17/2025, 3:30PM</li>
-                                    <li>Contact : Lisa Adams</li>
-                                    <li>Phone : (123) 456-7890</li>
-                                    <li>Note : Gate code 4321</li>
+                               <ul className='p-0 job-list-bullets'>
+                                    <li> {jobDetails?.data?.dropoff_location}</li>
+                                    <li>{formatDateToMDY(jobDetails?.data?.dropoff_date)}  {formatTimeTo12Hour(jobDetails?.data?.dropoff_time)}</li>
+                                    <li>Contact : {jobDetails?.data?.dropoff_POC_name}</li>
+                                    <li>Phone : {jobDetails?.data?.dropoff_POC_phone}</li>
+                                    <li>Notes : {jobDetails?.data?.dropoff_additional_note}</li>
                                 </ul>
                             </Col>
                         </Row>
