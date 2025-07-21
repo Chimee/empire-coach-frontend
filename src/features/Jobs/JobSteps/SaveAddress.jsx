@@ -1,19 +1,26 @@
 import React, { useState } from "react";
+import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import Button from "../../../components/shared/buttons/button";
 import { Row, Col } from "react-bootstrap";
 import { validateRequiredFields } from "../../../helpers/Utils";
 import toast from "react-hot-toast";
-import Autocomplete from "react-google-autocomplete";
+
+const libraries = ["places"];
 
 const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }) => {
   const prefix = addressType;
   const [resetKey, setResetKey] = useState(0);
+  const [autocompleteRef, setAutocompleteRef] = useState(null);
 
-  const handleAddressSelect = (place) => {
+  const handlePlaceChanged = () => {
+    if (!autocompleteRef) return;
+
+    const place = autocompleteRef.getPlace();
     if (!place?.geometry) {
       toast.error("Could not get location details from Google");
       return;
     }
+
     setFormData((prev) => ({
       ...prev,
       [`${prefix}_location`]: place.formatted_address,
@@ -31,6 +38,7 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
       toast.error(error);
       return;
     }
+
     try {
       await saveDeliveryAddress({
         data: {
@@ -47,26 +55,30 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
         [`${prefix}_latitude`]: "",
         [`${prefix}_longitude`]: "",
       }));
-      setResetKey(prev => prev + 1);  // trigger the reset
+      setResetKey((prev) => prev + 1);
     } catch (err) {
       toast.error(err?.data?.message || `Failed to save ${addressType} address.`);
     }
   };
 
   return (
-    <>
+    <LoadScript
+      googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
+      libraries={libraries}
+    >
       <label className="form-label">Address</label>
       <Autocomplete
-        key={resetKey}   // only changes after you explicitly reset
-        apiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
-        onPlaceSelected={handleAddressSelect}
-        options={{
-          types: ["geocode"],
-          componentRestrictions: { country: "us" },
-        }}
-        className="form-control mb-3"
-        placeholder="Search address"
-      />
+        key={resetKey}
+        onLoad={setAutocompleteRef}
+        onPlaceChanged={handlePlaceChanged}
+      >
+        <input
+          type="text"
+          className="form-control mb-3"
+          placeholder="Search address"
+        />
+      </Autocomplete>
+
       <Row>
         <Col>
           <Button
@@ -77,7 +89,7 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
           />
         </Col>
       </Row>
-    </>
+    </LoadScript>
   );
 };
 
