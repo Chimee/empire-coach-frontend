@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 const TableFilter = ({ title, buttonTitle, onClick, onSearch }) => {
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState(searchText);
+  
   useEffect(() => {
     const handler = setTimeout(() => {
       onSearch?.(debouncedSearch);

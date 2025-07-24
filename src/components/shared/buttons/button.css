@@ -67,3 +67,7 @@
   font-size: 18px;
   line-height: 20px;
 }
+.button:disabled {
+  opacity: 0.1;
+  cursor: not-allowed;
+}

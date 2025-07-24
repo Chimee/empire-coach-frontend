@@ -86,6 +86,22 @@ const customerApi = dmApi.injectEndpoints({
             },
               invalidatesTags: ["getDeliveryAddressesAPI"]
         }),
+         updateDeliveryAddress: build.mutation({
+            query: ({ data }) => ({
+                url: "customer/update-delivery-address",
+                method: "PUT",
+                body: data,
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryErrorAndSuccess(
+                    queryFulfilled,
+                    "Update",
+                    "Delivery Address"
+                );
+            },
+              invalidatesTags: ["getDeliveryAddressesAPI"]
+        }),
         deleteDeliveryAddress: build.mutation({
             query: ({ addressId }) => ({
                 url: `customer/delete-delivery-address?addressId=${addressId}`,
@@ -131,8 +147,40 @@ const customerApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
+            providesTags:['getJobDetailsApi']
         }),
-        
+
+         cancelRescheduleJob: build.mutation({
+            query: ({ jobId ,reason,type}) => ({
+                url: `customer/job-action`,
+                method: "POST",
+                body:{jobId,reason,type},
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryError(queryFulfilled);
+            },
+            invalidatesTags:['getJobDetailsApi']
+        }),
+
+        RescheduleJobDate: build.mutation({
+        query: ({ jobId ,pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation,reason}) => {
+                debugger; 
+                console.log("schedule------",{jobId, reason ,pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation})
+         return {
+         url: `customer/update-job-schedule`,
+         method: "PUT",
+         body: { jobId ,pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation,reason},
+         headers: getAuthorizationHeader(),
+    };
+  },
+  async onQueryStarted(_, { queryFulfilled }) {
+    await handleQueryError(queryFulfilled);
+  },
+  
+  invalidatesTags: ['getJobDetailsApi'],
+}),
+
     })
 })
 export const {
@@ -142,8 +190,11 @@ export const {
     useGetCustomerProfileQuery,
     useCreateJobMutation,
     useSaveDeliveryAddressMutation,
+    useUpdateDeliveryAddressMutation,
     useGetDeliveryAddressesQuery,
     useGetAllJobsByStatusQuery,
     useGetJobDetailsQuery,
-    useDeleteDeliveryAddressMutation
+    useDeleteDeliveryAddressMutation,
+    useCancelRescheduleJobMutation,
+    useRescheduleJobDateMutation,
 } = customerApi;

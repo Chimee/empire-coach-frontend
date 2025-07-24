@@ -11,6 +11,8 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
   const prefix = addressType;
   const [resetKey, setResetKey] = useState(0);
   const [autocompleteRef, setAutocompleteRef] = useState(null);
+ 
+  console.log(formData)
 
   const handlePlaceChanged = () => {
     if (!autocompleteRef) return;
@@ -40,13 +42,17 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
     }
 
     try {
+      const otherPrefix = prefix === "pickup" ? "dropoff" : "pickup";
       await saveDeliveryAddress({
         data: {
-          [`${prefix}_location`]: formData[`${prefix}_location`],
+          address: formData[`${prefix}_location`],
           [`${prefix}_latitude`]: formData[`${prefix}_latitude`],
           [`${prefix}_longitude`]: formData[`${prefix}_longitude`],
           type: addressType,
+           [`${otherPrefix}_latitude`]: formData[`${otherPrefix}_latitude`] || null,
+           [`${otherPrefix}_longitude`]: formData[`${otherPrefix}_longitude`] || null,
         },
+        
       }).unwrap();
       toast.success(`${addressType} address saved successfully`);
       setFormData((prev) => ({

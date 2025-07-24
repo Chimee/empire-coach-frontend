@@ -8,10 +8,16 @@ import { useNavigate } from 'react-router';
 const JobsData = ({tabName}) => {
     const navigate = useNavigate();
     const [page, setPage] = React.useState(1);
+    const[search,setSearch] = React.useState("")
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
-    const { data: jobsList, isLoading, error } = useGetAllJobsByStatusQuery({ tabName: tabName, page: page });
+      
+   
+    const handleSearchJobs = (value)=>{
+     setSearch(value);
+    }
+    const { data: jobsList, isLoading, error } = useGetAllJobsByStatusQuery({ tabName: tabName, page: page ,search:search});
     console.log(jobsList, "data from jobs api");
 
 
@@ -68,7 +74,8 @@ const JobsData = ({tabName}) => {
             cell: ({ row }) => (
                 <span
                     className="cursor-pointer text-primary"
-                    onClick={() => navigate(`/jobs/job-details/${row.id}`)}
+                    onClick={() => navigate(`/jobs/job-details/${row.id}`, {
+                   state: { status: row?.request_status }})}
                 >
                    View
                 </span>
@@ -85,6 +92,7 @@ const JobsData = ({tabName}) => {
             showPegination={true}
             isLoading={false}
             showFilter={true}
+            onFilterSearch ={handleSearchJobs}
             title="Job List"
         />
 

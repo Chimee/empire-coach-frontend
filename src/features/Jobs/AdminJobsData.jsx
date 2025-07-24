@@ -3,17 +3,23 @@
 import React from 'react'
 import Datatable from '../../components/shared/datatable/Datatable';
 import { EditTableSvg } from '../../svgFiles/EditTableSvg';
-import { useGetAllJobsByStatusQuery } from '../../app/customerApi/customerApi';
+import { useGetAllJobsByStatusAdminQuery } from '../../app/adminApi/adminApi';
 import { formatDateToMDY } from '../../helpers/Utils';
 import { getClassByType } from '../../helpers/Utils';
 import { useNavigate } from 'react-router';
 const AdminJobsData = ({tabName}) => {
     const navigate = useNavigate();
     const [page, setPage] = React.useState(1);
+    const[search,setSearch] = React.useState("")
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
-    const { data: jobsList, isLoading, error } = useGetAllJobsByStatusQuery({ tabName: tabName, page: page });
+
+    const handleSearchJobs = (value)=>{
+     setSearch(value);
+    }
+
+    const { data: jobsList, isLoading, error } = useGetAllJobsByStatusAdminQuery({ tabName: tabName, page: page ,search:search});
     console.log(jobsList, "data from jobs api");
 
 
@@ -70,7 +76,9 @@ const AdminJobsData = ({tabName}) => {
             cell: ({ row }) => (
                 <span
                     className="cursor-pointer text-primary"
-                    onClick={() => navigate(`/jobs/job-details/${row.id}`)}
+                   onClick={() => navigate(`/admin-jobs/job-details/${row.id}`, {
+                   state: { status: row?.request_status }
+           })}
                 >
                    View
                 </span>
@@ -87,6 +95,7 @@ const AdminJobsData = ({tabName}) => {
             showPegination={true}
             isLoading={false}
             showFilter={true}
+            onFilterSearch ={handleSearchJobs}
             title="Job List"
         />
 

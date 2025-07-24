@@ -44,13 +44,18 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
   };
 
   const validateStepThree = () => {
+    console.log(formData);
     const fields = [
       { value: formData.pickup_location, label: "Pickup location" },
+      { value: formData.pickup_longitude, label: "Pickup longitude" },
+      { value: formData.pickup_latitude, label: "Pickup latitude" },
       { value: formData.pickup_POC_name, label: "POC Name for Pickup" },
       { value: formData.pickup_POC_phone, label: "POC Phone for Pickup" },
       { value: formData.pickup_additional_note, label: "Pickup Note" },
 
       { value: formData.dropoff_location, label: "Dropoff location" },
+     { value: formData.dropoff_longitude, label: "dropoff longitude" },
+      { value: formData.dropoff_latitude, label: "dropoff latitude" },
       { value: formData.dropoff_POC_name, label: "POC Name for Dropoff" },
       { value: formData.dropoff_POC_phone, label: "POC Phone for Dropoff" },
       { value: formData.dropoff_additional_note, label: "Dropoff Note" },
@@ -65,6 +70,7 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
   };
 
   const handleNextStep = () => {
+    debugger;
     if (validateStepThree()) handleNext();
   };
 
@@ -82,13 +88,28 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
         <Tab eventKey="savedLocation" title="Saved Location">
           <SavedAddress
             addressType={prefix}
-            onSelectAddress={(type, address, businessName) => {
-              setFormData((prev) => ({
-                ...prev,
-                [`${type}_location`]: address,
-                ...(businessName && { [`${type}_business_name`]: businessName }),
-              }));
-            }}
+            onSelectAddress={(
+                          type,
+                         address,
+                       businessName,
+                      latitude,
+                      longitude
+                  ) => {
+             setFormData((prev) => ({
+           ...prev,
+               [`${type}_location`]: address,
+          ...(businessName && { [`${type}_business_name`]: businessName }),
+          ...(type === "pickup"
+           ? {
+            pickup_latitude : latitude,
+            pickup_longitude :longitude 
+            }
+           : {
+          dropoff_latitude : latitude,
+          dropoff_longitude :longitude 
+          }),
+      }));
+      }}
           />
         </Tab>
         <Tab eventKey="newLocation" title="New Location">

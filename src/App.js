@@ -26,6 +26,8 @@ import AddCompany from "./features/company/AddCompany";
 import CompnayDetails from "./features/company/CompnayDetails";
 import AddCustomer from "./features/customer/AddCustomer";
 import Jobs from "./features/Jobs/Jobs";
+import AdminJobs from "./features/Jobs/AdminJobs";
+import AdminJobDetails from "./features/Jobs/AdminJobDetails";
 import JobDetails from "./features/Jobs/JobDetails";
 import Driver from "./features/drivers/Driver";
 import AddDriver from "./features/drivers/addDriver";
@@ -33,6 +35,7 @@ import DriverDetails from "./features/drivers/DriverDetails";
 import CustomerDetails from "./features/customer/CustomerDetails";
 import EditCompany from "./features/company/EditCompnay";
 import CreateJob from "./features/Jobs/CreateJob";
+
 function App() {
     const error = useSelector((state) => state.global.error);
 
@@ -104,6 +107,8 @@ function App() {
                         <Route path={AppRoutes.AddCustomer.path} element={<AddCustomer/>}/>
                         <Route path={AppRoutes.CustomerDetails.path} element={<CustomerDetails/>}/>
                         <Route path={AppRoutes.Jobs.path} element={<Jobs/>}/>
+                        <Route path={AppRoutes.AdminJobs.path} element={<AdminJobs/>}/>
+                        <Route path={AppRoutes.AdminJobsDetails.path} element={<AdminJobDetails/>}/>
                         <Route path={AppRoutes.JobDetails.path} element={<JobDetails/>}/>
                         <Route path={AppRoutes.Driver.path} element={<Driver/>}/>
                         <Route path={AppRoutes.AddDriver.path} element={<AddDriver/>}/>

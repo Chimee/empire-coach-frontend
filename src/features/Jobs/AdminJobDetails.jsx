@@ -1,4 +1,4 @@
-import React ,{useState}from 'react'
+import React from 'react'
 import PageHead from '../../components/shared/pageHead/PageHead'
 import Breadcrumb from '../../components/shared/breadcrumb/Breadcrumb'
 import { Row, Col } from 'react-bootstrap'
@@ -6,69 +6,47 @@ import { CarSvg } from '../../svgFiles/CarSvg'
 import './job.css'
 import Button from '../../components/shared/buttons/button'
 import { PendingCarSvg } from '../../svgFiles/PendingCarSvg'
-import { useParams ,useLocation} from 'react-router'
-import { useGetJobDetailsQuery ,useCancelRescheduleJobMutation,useRescheduleJobDateMutation} from '../../app/customerApi/customerApi'
+import { useParams ,useLocation } from 'react-router'
+import { useGetAdminJobDetailsQuery ,useCancelJobsAdminMutation } from '../../app/adminApi/adminApi'
 import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 import toast from "react-hot-toast";
-import CancelConfirmationModal from '../../components/shared/modalContent/CancelJobModal'
-import ReScheduleDate from '../../components/shared/modalContent/ReschceduleDate'
-import { LuClock } from "react-icons/lu";
-const JobDetails = () => {
+
+
+const AdminJobDetails = () => {
     const { id } = useParams();
-    console.log(id, "id from params");
-     const location = useLocation();
-         const status = location.state?.status;
-    
-    const { data: jobDetails, isLoading } = useGetJobDetailsQuery({id});
-    console.log(jobDetails,"data-jobDetails");
-    const[cancelConfirmation,setCancelConfirmation] = useState(false);
-    const[reScheduleConfirmation,setRescheduleConfirmation] = useState(false);
-    const[cancelrescheduleJobs ,{isLoading :isCancelling}] = useCancelRescheduleJobMutation();
-    const[rescheduleDate ,{isLoading:isRescheduling}] = useRescheduleJobDateMutation();
+        console.log(id)
+      const location = useLocation();
+      const status = location.state?.status;
+     const { data: jobDetails, isLoading } = useGetAdminJobDetailsQuery({id});
+    const [cancelJobAdmin, { isLoading: isCancelling }] = useCancelJobsAdminMutation()
     
     const breadcrumbItems = [
-        { name: 'Jobs', path: '/jobs' },
+        { name: 'Jobs', path: '/admin-jobs' },
         { name: 'Job-441022022' },
     ];
 
-    const handleCancelResConfirm = async({reason,type})=>{
-       
-        try{
-           await cancelrescheduleJobs({ jobId : id, reason, type}).unwrap();
-            toast.success( type == "cancel" ?"Job cancelled successfully" : "job rescheduled successfully");
-            type === "cancel"
-           ? setCancelConfirmation(false)
-           : setRescheduleConfirmation(false);
-        }
-          catch(err){
-          toast.error(err?.data?.message ||type == "cancel" ? "Cancellation failed" : "rescheduled failed");
-           type === "cancel"
-           ? setCancelConfirmation(false)
-            : setRescheduleConfirmation(false);
-           
-        }
-    };
+    const handleCancelApproveJob = async()=>{
+                  try{
+                   const res =  await cancelJobAdmin({ jobId: id }).unwrap();
+                   if(res){
+                        toast.success("cancel succeeded")
+                   }
+                  }
+                  catch(err)
+                   {
+                  toast.error(err?.data?.message || "Cancellation failed")
 
-       const handleRescheduleDate = async(pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation,reason = null)=>{
-        debugger;
-        const jobId = id
-                try{
-                   await rescheduleDate({jobId,pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation,reason})
-                    toast.success("Job reschedule successfully");
-                     setRescheduleConfirmation(false);
-                }
-                catch(err){
-                     toast.error(err?.data?.message || "Reschedule failed");
-                       setRescheduleConfirmation(false);
-                          console.log(err)
-                }
-  };
- 
+                   }
+    };
+    const handleCancelJob= ()=>{
+        
+    }
+
+
     return (
-        <>
         <Row>
             <Col lg={9}>
-                <Row>
+              <Row>
                     <Col lg={12} xl={10}>
                         <div className='d-flex gap-3 justify-content-between align-items-center'>
                             <div className='job_info'>
@@ -79,24 +57,23 @@ const JobDetails = () => {
 
                                 />
                                 <span className='fn-tag mt-4'>{jobDetails?.data?.request_status}</span>
+                               {["awaiting_for_cancellation", "cancelled"].includes(jobDetails?.data?.request_status) && (
+                                  <p className='fn-tag mt-4'>Cancel Reason: {jobDetails?.data?.cancellation_reason}</p>
+                                )}
                             </div>
                             <div className='d-flex gap-2'>
-                               {jobDetails?.data?.request_status === "awaiting_for_cancellation" ? (
-                            <span className="d-flex align-items-center gap-1 text-warning fw-bold align-self-center">
-                            <LuClock className="me-1" /> Awaiting Cancellation
-                       </span>
-                          ) : (
-                            <>
-                           
-                            <Button label={jobDetails?.data?.request_status === "awaiting_reschedule_date" ? "select reschedule date/time" : "reschedule-date"} className={'btn-square rounded'} 
-                            onClick = {()=> setRescheduleConfirmation(true)}/>
-                             <Button
-                            label={'Cancel'}
-                            className={'btn-square cancel rounded'}
-                               onClick={() => setCancelConfirmation(true)}
-                                   />
-                                   </>
-                                    )}
+                                {jobDetails?.data?.request_status === "awaiting_for_cancellation" &&
+                                (
+                                    <>
+                                      <Button label={'Decline'} className={'btn-square cancel rounded'}
+                                      
+                                     onClick ={()=>handleCancelJob()} />
+                                     <Button label={'Approve'} className={'btn-square rounded'}
+                                     onClick ={()=>handleCancelApproveJob()} />
+                                
+                                    </>
+                                )}
+                               
                             </div>
                         </div>
                     </Col>
@@ -104,6 +81,7 @@ const JobDetails = () => {
 
             </Col>
             <Col lg={3}>
+           
                 <h6 className='small-heading'>Driver</h6>
                 <div className='no-driver'>
                     <CarSvg />
@@ -203,27 +181,7 @@ const JobDetails = () => {
                 </Row>
             </Col>
         </Row>
-         <CancelConfirmationModal
-        show={cancelConfirmation}
-        setShow={setCancelConfirmation}
-        handleClose={() => setCancelConfirmation(false)}
-        onConfirm={handleCancelResConfirm}
-        message="you want to cancel this job?"
-        type="cancel"
-      />
-      <ReScheduleDate
-      show ={reScheduleConfirmation}
-      setShow={setRescheduleConfirmation}
-      handleClose ={()=>setRescheduleConfirmation(false)}
-      onConfirm ={handleRescheduleDate}
-      message = ""
-      onFutureConfirm ={handleCancelResConfirm}
-      type = "reschedule"
-      reqstatus = {jobDetails?.data?.request_status}
-      />
-      </>
-        
     )
 }
 
-export default JobDetails
+export default AdminJobDetails

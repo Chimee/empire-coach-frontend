@@ -11,7 +11,8 @@ const InputWithLabel = ({
   disabled = false,
   required = false,
   className = "",
-  readOnly = false, 
+  readOnly = false,
+  ...rest 
 }) => {
   return (
     <Form.Group className={`mb-3 ${className}`}>
@@ -27,7 +28,8 @@ const InputWithLabel = ({
         placeholder={placeholder}
         required={required}
         disabled={disabled}
-        readOnly={readOnly} // ✅ correctly applied
+        readOnly={readOnly} 
+        {...rest}
       />
     </Form.Group>
   );

@@ -33,6 +33,9 @@ strong,
 li {
   font-family: "Inter", sans-serif;
 }
+.pac-container.pac-logo {
+    z-index: 9999999 !important;
+}
 .side_bar {
   width: var(--sidebar-width);
   left: 0;

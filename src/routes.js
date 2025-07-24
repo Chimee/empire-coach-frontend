@@ -38,6 +38,12 @@ export const Routes = {
     Jobs: {
         path: "/jobs"
     },
+    AdminJobs: {
+        path: "/admin-jobs"
+    },
+    AdminJobsDetails: {
+        path: "/admin-jobs/job-details/:id"
+    },
     JobDetails: {
         path: "/jobs/job-details/:id"
     },

@@ -10,6 +10,8 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
     mustDelivery: false,
     both: false,
   });
+  const today = new Date().toISOString().split("T")[0];
+  console.log(today)
 
   // Handle checkbox logic
   const handleCheckboxChange = (e) => {
@@ -49,8 +51,33 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
   // Validation
   const validate = () => {
     const now = new Date();
+    now.setHours(0,0,0,0)
     const pickupDate = formData.pickup_date ? new Date(formData.pickup_date) : null;
-    const dropoffDate = formData.dropoff_date ? new Date(formData.dropoff_date) : null;
+    pickupDate.setHours(0,0,0,0)
+ 
+    console.log(formData.pickup_time);
+     const dropoffDate = formData.dropoff_date ? new Date(formData.dropoff_date) : null;
+     const timeParts = formData.pickup_time.split(':');
+     
+    if(now.getTime() === pickupDate.getTime()){
+     
+        const date = new Date()
+        const currentTimeValue = date.getTime();
+        const twoHoursLater = new Date(currentTimeValue + 2 * 60 * 60 * 1000)
+        const twoHourMilsec = (twoHoursLater.getTime());
+        const pickupDateTime = new Date()
+        pickupDateTime.setHours(parseInt(timeParts[0]))
+        pickupDateTime.setMinutes(parseInt(timeParts[1]));
+        pickupDateTime.setSeconds(0)
+
+        pickupDateTime.setMilliseconds(0);
+       const timeString = twoHoursLater.toTimeString().slice(0, 5);
+      if(pickupDateTime < twoHourMilsec){
+        toast.error(`Pickup time must be at least 2 hours later of currentTime`);
+         return false;
+      }
+     
+    }
 
     if (!formData.pickup_date) {
       toast.dismiss();
@@ -70,30 +97,11 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
       return false;
     }
 
-    // Check pickup time for today
+  
     const pickupDateOnly = new Date(formData.pickup_date);
     pickupDateOnly.setHours(0, 0, 0, 0);
 
-    const nowDateOnly = new Date();
-    nowDateOnly.setHours(0, 0, 0, 0);
 
-    if (pickupDateOnly.getTime() === nowDateOnly.getTime()) {
-      const [pickupHour, pickupMinute] = formData.pickup_time.split(':');
-      const pickupDateTime = new Date(formData.pickup_date);
-      pickupDateTime.setHours(Number(pickupHour), Number(pickupMinute), 0, 0);
-
-      const twoHoursLater = new Date(now.getTime());
-
-      console.log("pickupDateTime:", pickupDateTime);
-      console.log("now (current time):", now.getTime());
-      console.log("twoHoursLater:", twoHoursLater);
-
-      if (pickupDateTime < twoHoursLater) {
-        toast.dismiss();
-        toast.error("Pickup time must be at least two hours from now.");
-        return false;
-      }
-    }
     if (!formData.dropoff_date) {
       toast.dismiss();
       toast.error("Delivery date is required");
@@ -150,6 +158,7 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
           name="pickup_date"
           value={formData?.pickup_date || ""}
           onChange={handleInputChange}
+          min={today}
         />
         <InputWithLabel
           label="Pickup time"
@@ -179,6 +188,7 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
           name="dropoff_date"
           value={formData?.dropoff_date || ""}
           onChange={handleInputChange}
+           min={today}
         />
         <InputWithLabel
           label="Delivery time"

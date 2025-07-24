@@ -297,3 +297,6 @@ input.form-control.pac-target-input:focus {
   box-shadow: unset;
   border: 1px solid #1d4ed8;
 }
+.sm-width.modal .modal-dialog {
+    max-width: 517px;
+}

@@ -59,11 +59,48 @@ const adminApi = dmApi.injectEndpoints({
                 await handleQueryError(queryFulfilled);
             },
         }),
+        getAdminJobDetails: build.query({
+            query: ({ id }) => ({
+                url: `admin/get-job-details?jobId=${id}`,
+                method: "GET",
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                  debugger;
+                await handleQueryError(queryFulfilled);
+            },
+        }),
+          getAllJobsByStatusAdmin: build.query({
+            query: ({ page = 1, limit = 10, search = '', tabName = '' } = {}) => ({
+                url: `admin/get-all-jobs-by-status?page=${page}&limit=${limit}&search=${search}&tabName=${tabName}`,
+                method: "GET",
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryError(queryFulfilled);
+            },
+            providesTags:['getAllJobsByStatusAdminApi']
+        }),
+        CancelJobsAdmin :build.mutation({
+              query: ({ jobId }) => ({
+                url: `admin/approve-job-cancellation`,
+                method: "PUT",
+                body: jobId,
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryError(queryFulfilled);
+            },
+            invalidatesTags :['getAllJobsByStatusAdminApi']
+        })
     })
 })
 export const {
     useAddAdminMutation,
     useUpdateAdminMutation,
     useGetAdminListQuery,
+    useGetAdminJobDetailsQuery,
     useGetAdminDetailQuery,
+    useGetAllJobsByStatusAdminQuery,
+    useCancelJobsAdminMutation
 } = adminApi;

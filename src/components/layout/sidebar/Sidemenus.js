@@ -26,7 +26,14 @@ export const MenuItems = [
     {
       title: "Jobs",
       path: "/jobs",
-      roles: ["admin", "superadmin",'customer'],
+      roles: ['customer'],
+      icon: <JobsSvg />,
+      subMenu: [],
+    },
+    {
+      title: "Jobs",
+      path: "/admin-jobs",
+      roles: ["admin", "superadmin",],
       icon: <JobsSvg />,
       subMenu: [],
     },

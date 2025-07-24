@@ -1,8 +1,8 @@
 .modal-title.h4 {
-  font-family: Public Sans;
-  font-weight: 600;
-  font-size: 18px;
-  color: var(--primary-color);
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 35px;
+    color: #170F49;
 }
 
 button.btn-close {

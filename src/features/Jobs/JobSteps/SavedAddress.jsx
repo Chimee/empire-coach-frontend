@@ -4,18 +4,20 @@ import { AddressLocationSvg } from '../../../svgFiles/AddressLocationSvg'
 import { useGetDeliveryAddressesQuery, useDeleteDeliveryAddressMutation } from '../../../app/customerApi/customerApi'
 import useClickOutside from '../../../helpers/Utils'
 import ConfirmationModal from '../../../components/shared/modalContent/ConfirmationModal'
-const SavedAddress = ({
+import EditAddressModal from '../../../components/shared/modalContent/EditAddressModal'
+  const SavedAddress = ({
     addressType,
     onSelectAddress,
-}) => {
+      }) => {
     const [toggle, setToggle] = useState(null)
     console.log(onSelectAddress, "onSelectAddress");
-
+    const [selectedIndex, setSelectedIndex] = useState(null);
     const toggleRef = useRef()
 
     const { data: savedLocations, isLoading, error } = useGetDeliveryAddressesQuery({ addressType })
     const [deleteDeliveryAddress, { isLoading: isDeleting }] = useDeleteDeliveryAddressMutation()
     const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+    const [editAddressModal , setEditAddressModal] = useState(false)
     const [selectedAddressId, setSelectedAddressId] = useState(null)
 
     useClickOutside(toggleRef, () => setToggle(null))
@@ -23,9 +25,15 @@ const SavedAddress = ({
     const handleToggle = (idx) => {
         setToggle(toggle === idx ? null : idx)
     }
-    const confirmDelete = (addressId) => {
+        const confirmDelete = (addressId) => {
         setSelectedAddressId(addressId)
         setShowConfirmationModal(true)
+    }
+      
+
+    const handleEdit =(addressId) =>{  
+        setSelectedAddressId(addressId)
+        setEditAddressModal(true);
     }
 
     const handleDeleteAddress = async () => {
@@ -36,6 +44,8 @@ const SavedAddress = ({
             alert('Failed to delete address.')
         }
     }
+
+  
 
     if (isLoading) return <div>Loading addresses...</div>
     if (error) return <div>Failed to load addresses.</div>
@@ -48,6 +58,16 @@ const SavedAddress = ({
                 handleClose={() => setShowConfirmationModal(false)}
                 onConfirm={handleDeleteAddress}
                 message="you want to delete this address?" />
+
+                  <EditAddressModal
+                show={editAddressModal}
+                setShow={setEditAddressModal}
+                handleClose={() => setEditAddressModal(false)}
+                addressId={selectedAddressId}
+                message="you want to edit this address?"
+                  type = {addressType} />
+              
+
             {savedLocations?.data?.data?.length > 0 ? (
                 savedLocations.data.data.map((addr, idx) => {
                     const addressId = addr._id || addr.id || idx
@@ -59,7 +79,9 @@ const SavedAddress = ({
                                     <TogglerSvg onClick={() => handleToggle(idx)} />
                                     {toggle === idx && (
                                         <div className="toggle_items position-absolute" ref={toggleRef}>
-                                            <span className='d-block'>Edit</span>
+                                            <span
+                                            onClick ={()=> handleEdit(addressId)}
+                                             className='d-block'>Edit</span>
                                             <span
                                                 onClick={() => confirmDelete(addressId)}
                                                 className='d-block'
@@ -71,13 +93,23 @@ const SavedAddress = ({
                                 </div>
                                 {addr.label && <h3>{addr.label}</h3>}
                                 <p
-                                    className={addressType}
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(e) => {
+                                  className={`${addressType} ${selectedIndex === idx ? 'selected-address' : ''}`}
+                                     style={{
+                                     cursor: "pointer",
+                                    backgroundColor: selectedIndex === idx ? "#e6f0ff" : "transparent",
+                                      borderRadius: selectedIndex === idx ? "8px" : "0",
+                                       padding: selectedIndex === idx ? "8px" : "0",
+                                         transition: "background-color 0.2s ease",
+                                             }}
+                                      onClick={(e) => {
                                         e.stopPropagation();
-                                        const mergedAddress = addr?.address;
-                                        const mergedLabel = addr?.label;
-                                        onSelectAddress(addressType, mergedAddress, mergedLabel);
+                                         const mergedAddress = addr?.address;
+                                         const mergedLabel = addr?.label;
+                                         const latitude = addressType === "pickup" ? addr.pickup_latitude : addr.dropoff_latitude;
+                                         const longitude = addressType === "pickup" ? addr.pickup_longitude : addr.dropoff_longitude;
+                                             setSelectedIndex(idx);
+
+                                        onSelectAddress(addressType, mergedAddress, mergedLabel,latitude,longitude);
                                     }}
                                 >
                                     {addr.address}
