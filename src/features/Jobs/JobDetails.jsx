@@ -53,7 +53,7 @@ const JobDetails = () => {
         debugger;
         const jobId = id
                 try{
-                   await rescheduleDate({jobId,pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation,reason})
+                   await rescheduleDate({jobId,pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation,reason}).unwrap();
                     toast.success("Job reschedule successfully");
                      setRescheduleConfirmation(false);
                 }
@@ -78,17 +78,17 @@ const JobDetails = () => {
                                     description={'Created on Apr 14/2025, 3:30PM'}
 
                                 />
-                                <span className='fn-tag mt-4'>{jobDetails?.data?.request_status}</span>
+                                <span className='fn-tag mt-4'>{jobDetails?.data?.jobData.request_status}</span>
                             </div>
                             <div className='d-flex gap-2'>
-                               {jobDetails?.data?.request_status === "awaiting_for_cancellation" ? (
+                               {jobDetails?.data?.jobData.request_status === "awaiting_for_cancellation" ? (
                             <span className="d-flex align-items-center gap-1 text-warning fw-bold align-self-center">
                             <LuClock className="me-1" /> Awaiting Cancellation
                        </span>
                           ) : (
                             <>
                            
-                            <Button label={jobDetails?.data?.request_status === "awaiting_reschedule_date" ? "select reschedule date/time" : "reschedule-date"} className={'btn-square rounded'} 
+                            <Button label={jobDetails?.data?.jobData.request_status === "awaiting_reschedule_date" ? "select reschedule date/time" : "reschedule-date"} className={'btn-square rounded'} 
                             onClick = {()=> setRescheduleConfirmation(true)}/>
                              <Button
                             label={'Cancel'}
@@ -107,7 +107,7 @@ const JobDetails = () => {
                 <h6 className='small-heading'>Driver</h6>
                 <div className='no-driver'>
                     <CarSvg />
-                    <h5>{(jobDetails?.data?.driverName === "No Driver Assigned Yet" || jobDetails?.data?.driverName === null) ? "No Driver Assigned Yet" : jobDetails?.data?.driverName}</h5>
+                    <h5>{(jobDetails?.data?.jobData.driverName === "No Driver Assigned Yet" || jobDetails?.data?.jobData.driverName === null) ? "No Driver Assigned Yet" : jobDetails?.data?.driverName}</h5>
                 </div>
             </Col>
             <Col lg={12} className='mt-5'>
@@ -120,16 +120,16 @@ const JobDetails = () => {
                                 <h6 className='small-heading'>Vehicle Details</h6>
                                 <ul className='p-0 job-list-bullets'>
                                     <li>2022 Ford Transit</li>
-                                    <li>VIN : {jobDetails?.data?.vin_number}</li>
-                                    <li>Fuel Type: {jobDetails?.data?.fuel_type}</li>
-                                    <li>PO Number:{jobDetails?.data?.po_number}</li>
+                                    <li>VIN : {jobDetails?.data?.jobData.vin_number}</li>
+                                    <li>Fuel Type: {jobDetails?.data?.jobData.fuel_type}</li>
+                                    <li>PO Number:{jobDetails?.data?.jobData.po_number}</li>
                                 </ul>
                             </Col>
                             <Col lg={6}>
                                 <h6 className='small-heading'>Service options</h6>
                                 <ul className='p-0 job-list-bullets'>
-                                    {jobDetails?.data?.deliver_washed === true && <li>Deliver Washed</li>}
-                                   {jobDetails?.data?.send_driver_contact_info === true && <li>Send driver contact info</li>}
+                                    {jobDetails?.data?.jobData.deliver_washed === true && <li>Deliver Washed</li>}
+                                   {jobDetails?.data?.jobData.send_driver_contact_info === true && <li>Send driver contact info</li>}
                                 </ul>
                             </Col>
                         </Row>
@@ -137,21 +137,21 @@ const JobDetails = () => {
                             <Col lg={6}>
                                 <h6 className='small-heading'>Pickup Details</h6>
                                 <ul className='p-0 job-list-bullets'>
-                                    <li> {jobDetails?.data?.pickup_location}</li>
-                                    <li>{formatDateToMDY(jobDetails?.data?.pickup_date)}  {formatTimeTo12Hour(jobDetails?.data?.pickup_time)}</li>
-                                    <li>Contact : {jobDetails?.data?.pickup_POC_name}</li>
-                                    <li>Phone : {jobDetails?.data?.pickup_POC_phone}</li>
-                                    <li>Notes : {jobDetails?.data?.pickup_additional_note}</li>
+                                    <li> {jobDetails?.data?.jobData.pickup_location}</li>
+                                    <li>{formatDateToMDY(jobDetails?.data?.jobData.pickup_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData.pickup_time)}</li>
+                                    <li>Contact : {jobDetails?.data?.jobData.pickup_POC_name}</li>
+                                    <li>Phone : {jobDetails?.data?.jobData.pickup_POC_phone}</li>
+                                    <li>Notes : {jobDetails?.data?.jobData.pickup_additional_note}</li>
                                 </ul>
                             </Col>
                             <Col lg={6}>
                                 <h6 className='small-heading'>Drop-off Details</h6>
                                <ul className='p-0 job-list-bullets'>
-                                    <li> {jobDetails?.data?.dropoff_location}</li>
-                                    <li>{formatDateToMDY(jobDetails?.data?.dropoff_date)}  {formatTimeTo12Hour(jobDetails?.data?.dropoff_time)}</li>
-                                    <li>Contact : {jobDetails?.data?.dropoff_POC_name}</li>
-                                    <li>Phone : {jobDetails?.data?.dropoff_POC_phone}</li>
-                                    <li>Notes : {jobDetails?.data?.dropoff_additional_note}</li>
+                                    <li> {jobDetails?.data?.jobData.dropoff_location}</li>
+                                    <li>{formatDateToMDY(jobDetails?.data?.jobData.dropoff_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData.dropoff_time)}</li>
+                                    <li>Contact : {jobDetails?.data?.jobData.dropoff_POC_name}</li>
+                                    <li>Phone : {jobDetails?.data?.jobData.dropoff_POC_phone}</li>
+                                    <li>Notes : {jobDetails?.data?.jobData.dropoff_additional_note}</li>
                                 </ul>
                             </Col>
                         </Row>
@@ -160,21 +160,16 @@ const JobDetails = () => {
                         </Col>
                     </Col>
                     <Col lg={3}>
-                        <h6 className='small-heading'>Job Status</h6>
-                        <div className='d-flex gap-2 align-items-center mt-3 mb-4'>
-                            <PendingCarSvg />
-                            <div className='job_status'>
-                                <h6 className='mb-1'>Pending</h6>
-                                <span>Last Updated:04/14/2025, 3:30PM</span>
-                            </div>
-                        </div>
+                       
+                        
                         <h6 className='timeline-title'>Timeline</h6>
                         <ul className='p-0 timeline d-flex flex-column gap-3 mt-3'>
                             <li className='d-flex gap-3 align-items-center'>
                                 <span className='d-flex justify-content-center rounded-5 align-items-center shrink-0 timeline-count'>1</span>
                                 <div className='timeline_status'>
-                                    <span className='d-block'>Request Submitted</span>
-                                    <span>04/14/2025, 3:30PM</span>
+                                    <span className='d-block'>{jobDetails?.data.jobLogs[0].request_status}</span>
+
+                                    <span>{jobDetails?.data.jobLogs[0].createdAt}</span>
                                 </div>
                             </li>
                             <li className='d-flex gap-3 align-items-center'>
@@ -219,7 +214,7 @@ const JobDetails = () => {
       message = ""
       onFutureConfirm ={handleCancelResConfirm}
       type = "reschedule"
-      reqstatus = {jobDetails?.data?.request_status}
+      reqstatus = {jobDetails?.data?.jobData.request_status}
       />
       </>
         
