@@ -34,7 +34,7 @@ li {
   font-family: "Inter", sans-serif;
 }
 .pac-container.pac-logo {
-    z-index: 9999999 !important;
+  z-index: 9999999 !important;
 }
 .side_bar {
   width: var(--sidebar-width);
@@ -327,6 +327,45 @@ span.fn-badge {
 span.fn-badge.class-submitted {
   background: #f2f2f2;
   color: #4a4a4a;
+}
+span.fn-badge.class-cancelled {
+  background: #ffe5e5;
+  color: #c62828;
+}
+
+span.fn-badge.class-awaiting-for-cancellation {
+  color: #d97706;
+  background: #fdf6ec;
+}
+
+span.fn-badge.class-approved {
+  color: #b8860b;
+  background: #fff7cc;
+}
+
+span.fn-badge.class-PO-missing {
+  color: #b33682;
+  border: unset;
+}
+
+span.fn-badge.class-rescheduled {
+  background: #fff2e5;
+  color: #ff8c00;
+}
+
+span.fn-badge.class-in-transit {
+  background: #e4fbe1;
+  color: #2e7d32;
+}
+
+span.fn-badge.class-delivered {
+  background: #f3e8ff;
+  color: #6a1b9a;
+}
+
+span.fn-badge.class-awaiting-reschedule-date {
+  background: #e5f0ff;
+  color: #1565c0;
 }
 .fn-search {
   position: relative;

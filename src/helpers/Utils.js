@@ -145,18 +145,54 @@ export const validatePassword = (password, confirmPassword) => {
     return error;
 };
 
-export const getClassByType = (type) => {
-  const classMap = {
-    submitted: 'class-submitted',
-    cancelled: 'class-cancelled',
-    awaiting_for_cancellation: 'class-awaiting-for-cancellation',
-    approved: 'class-approved',
-    PO_missing: 'class-PO_missing',
-    rescheduled: 'class-rescheduled',
-    delivery_link_sent: 'class-delivery_link_sent',
+export const getClassAndTitleByStatus = (status) => {
+  const statusMap = {
+    submitted: {
+      className: 'class-submitted',
+      title: 'Submitted',
+    },
+    cancelled: {
+      className: 'class-cancelled',
+      title: 'Canceled',
+    },
+    awaiting_for_cancellation: {
+      className: 'class-awaiting-for-cancellation',
+      title: 'Awaiting Cancellation',
+    },
+    approved: {
+      className: 'class-approved',
+      title: 'Approved',
+    },
+    PO_missing: {
+      className: 'class-PO-missing',
+      title: 'PO Missing',
+    },
+    rescheduled: {
+      className: 'class-rescheduled',
+      title: 'Reschedule Pending',
+    },
+  
+    in_transit: {
+      className: 'class-in-transit',
+      title: 'In-Transit',
+    },
+    delivered: {
+      className: 'class-delivered',
+      title: 'Delivered',
+    },
+    awaiting_reschedule_date: {
+      className: 'class-awaiting-reschedule-date',
+      title: 'Awaiting Reschedule Date',
+    },
+    
   };
 
-  return classMap[type?.toLowerCase()] || 'default-class';
+  return (
+    statusMap[status?.toLowerCase()] || {
+      className: 'default-class',
+      title: status || 'Unknown',
+    }
+  );
 };
 
 export const formatDateToMDY = (dateString) => {
