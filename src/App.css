@@ -323,6 +323,7 @@ span.fn-badge {
   border-radius: 35px;
   color: #0f766e;
   font-weight: 500;
+  white-space: nowrap;
 }
 span.fn-badge.class-submitted {
   background: #f2f2f2;

@@ -19,18 +19,15 @@ const JobsData = ({tabName}) => {
     const { data: jobsList, isLoading } = useGetAllJobsByStatusQuery({ tabName: tabName, page: page ,search:search});
     console.log(jobsList, "data from jobs api");
 
-<<<<<<< HEAD
     const handleConfirm = async (jobId, poNumber) => {
      try {
-     await addPONumber({ jobId, po_number: poNumber }).unwrap(); 
+    //  await addPONumber({ jobId, po_number: poNumber }).unwrap(); 
     
     } catch (error) {
     
     console.error("PO fill error:", error);
     }
     };
-=======
->>>>>>> 0e441d41579e26e6806d12c02791d19844029e88
 
 
     const columns = [
