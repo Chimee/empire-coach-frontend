@@ -33,7 +33,7 @@ const customerApi = dmApi.injectEndpoints({
                 );
             },
         }),
-  
+
         getCustomerDetail: build.query({
             query: ({ id } = {}) => ({
                 url: `admin/get-customer-details?customerId=${id}`,
@@ -44,7 +44,7 @@ const customerApi = dmApi.injectEndpoints({
                 await handleQueryError(queryFulfilled);
             },
         }),
-         getCustomerProfile: build.query({
+        getCustomerProfile: build.query({
             query: () => ({
                 url: "customer/get-customer-profile-details",
                 method: "GET",
@@ -68,7 +68,7 @@ const customerApi = dmApi.injectEndpoints({
                     "Job"
                 );
             },
-          
+
         }),
         saveDeliveryAddress: build.mutation({
             query: ({ data }) => ({
@@ -84,9 +84,9 @@ const customerApi = dmApi.injectEndpoints({
                     "Delivery Address"
                 );
             },
-              invalidatesTags: ["getDeliveryAddressesAPI"]
+            invalidatesTags: ["getDeliveryAddressesAPI"]
         }),
-         updateDeliveryAddress: build.mutation({
+        updateDeliveryAddress: build.mutation({
             query: ({ data }) => ({
                 url: "customer/update-delivery-address",
                 method: "PUT",
@@ -100,7 +100,7 @@ const customerApi = dmApi.injectEndpoints({
                     "Delivery Address"
                 );
             },
-              invalidatesTags: ["getDeliveryAddressesAPI"]
+            invalidatesTags: ["getDeliveryAddressesAPI"]
         }),
         deleteDeliveryAddress: build.mutation({
             query: ({ addressId }) => ({
@@ -126,7 +126,7 @@ const customerApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
-               providesTags:["getDeliveryAddressesAPI"],
+            providesTags: ["getDeliveryAddressesAPI"],
         }),
         getAllJobsByStatus: build.query({
             query: ({ page = 1, limit = 10, search = '', tabName = '' } = {}) => ({
@@ -137,6 +137,7 @@ const customerApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
+            providesTags: ['getAllJobsByStatusApi']
         }),
         getJobDetails: build.query({
             query: ({ id }) => ({
@@ -147,39 +148,54 @@ const customerApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
-            providesTags:['getJobDetailsApi']
+            providesTags: ['getJobDetailsApi']
         }),
 
-         cancelRescheduleJob: build.mutation({
-            query: ({ jobId ,reason,type}) => ({
+        cancelRescheduleJob: build.mutation({
+            query: ({ jobId, reason, type }) => ({
                 url: `customer/job-action`,
                 method: "POST",
-                body:{jobId,reason,type},
+                body: { jobId, reason, type },
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
-            invalidatesTags:['getJobDetailsApi']
+            invalidatesTags: ['getJobDetailsApi'],
         }),
 
         RescheduleJobDate: build.mutation({
-        query: ({ jobId ,pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation,reason}) => {
-                debugger; 
-                console.log("schedule------",{jobId, reason ,pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation})
-         return {
-         url: `customer/update-job-schedule`,
-         method: "PUT",
-         body: { jobId ,pickup_date,pickup_time,dropoff_date,dropoff_time,time_relaxation,reason},
-         headers: getAuthorizationHeader(),
-    };
-  },
-  async onQueryStarted(_, { queryFulfilled }) {
-    await handleQueryError(queryFulfilled);
-  },
-  
-  invalidatesTags: ['getJobDetailsApi'],
-}),
+            query: ({ jobId, pickup_date, pickup_time, dropoff_date, dropoff_time, time_relaxation, reason }) => {
+                return {
+                    url: `customer/update-job-schedule`,
+                    method: "PUT",
+                    body: { jobId, pickup_date, pickup_time, dropoff_date, dropoff_time, time_relaxation, reason },
+                    headers: getAuthorizationHeader(),
+                };
+            },
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryError(queryFulfilled);
+            },
+
+            invalidatesTags: ['getJobDetailsApi'],
+        }),
+
+
+        FillingPoNumber: build.mutation({
+            query: ({ jobId, po_number }) => {
+                debugger;
+                return {
+                    url: `customer/fill-po-number`,
+                    method: "PUT",
+                    body: { jobId, po_number },
+                    headers: getAuthorizationHeader(),
+                };
+            },
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryError(queryFulfilled);
+            },
+            invalidatesTags: ['getAllJobsByStatusApi'],
+        }),
 
     })
 })
@@ -197,4 +213,5 @@ export const {
     useDeleteDeliveryAddressMutation,
     useCancelRescheduleJobMutation,
     useRescheduleJobDateMutation,
+    useFillingPoNumberMutation
 } = customerApi;
