@@ -65,37 +65,46 @@ console.log(data,"--->");
   };
 
   const handleSubmit = async () => {
-    const { name, email, phone, note } = userData;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const { name, email, phone, note } = userData;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!name.trim()) return toast.error('User name is required.');
-    if (!email.trim()) return toast.error('Email is required.');
-    if (!emailRegex.test(email)) return toast.error('Invalid email format.');
-    if (!phone.trim()) return toast.error('Phone number is required.');
+  if (!name.trim()) return toast.error('User name is required.');
+  if (!email.trim()) return toast.error('Email is required.');
+  if (!emailRegex.test(email)) return toast.error('Invalid email format.');
+  if (!phone.trim()) return toast.error('Phone number is required.');
 
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('phone', phone);
-    formData.append('note', note);
-    if (profileImage) formData.append('profile_picture', profileImage);
-    if (isEditMode) formData.append('driverId', driverId);
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('email', email);
+  formData.append('phone', phone);
+  formData.append('note', note);
 
-    try {
-      if (isEditMode) {
-        await updateDriver(formData).unwrap();
-        navigate('/drivers');
-      } else {
-        await addDriver(formData).unwrap();
-        setUserData({ name: '', email: '', phone: '', note: '' });
-        setProfileImage(null);
-        setImagePreview(null);
-         navigate('/drivers');
-      }
-    } catch (err) {
-      toast.error(err?.data?.message || 'Operation failed.');
+  if (profileImage) {
+    formData.append('profile_picture', profileImage);
+  } else if (!isEditMode) {
+    formData.append(
+      'profile_picture',
+      'https://windingroad.com/wp-content/uploads/autos_db/thumbnails/DJ1.jpg'
+    );
+  }
+
+  if (isEditMode) formData.append('driverId', driverId);
+
+  try {
+    if (isEditMode) {
+      await updateDriver(formData).unwrap();
+      navigate('/drivers');
+    } else {
+      await addDriver(formData).unwrap();
+      setUserData({ name: '', email: '', phone: '', note: '' });
+      setProfileImage(null);
+      setImagePreview(null);
+      navigate('/drivers');
     }
-  };
+  } catch (err) {
+    toast.error(err?.data?.message || 'Operation failed.');
+  }
+};
 
   const breadcrumbItems = [
     { name: 'Drivers', path: '/drivers' },
@@ -115,7 +124,7 @@ console.log(data,"--->");
             <div className='addProfile d-flex justify-content-center align-items-center mb-3'>
               <input accept='image/*' type='file' onChange={handleFileChange} />
               {imagePreview ? (
-                <Image src={imagePreview} alt='driver_image' width={100} height={100} />
+                <Image src={imagePreview} alt={imagePreview} width={100} height={100} />
               ) : (
                 <CameraSvg />
               )}
