@@ -1,9 +1,8 @@
 import React from 'react'
 import Datatable from '../../components/shared/datatable/Datatable';
-import { EditTableSvg } from '../../svgFiles/EditTableSvg';
 import { useGetAllJobsByStatusQuery } from '../../app/customerApi/customerApi';
 import { formatDateToMDY } from '../../helpers/Utils';
-import { getClassByType } from '../../helpers/Utils';
+import { getClassAndTitleByStatus } from '../../helpers/Utils';
 import { useNavigate } from 'react-router';
 const JobsData = ({tabName}) => {
     const navigate = useNavigate();
@@ -17,7 +16,7 @@ const JobsData = ({tabName}) => {
     const handleSearchJobs = (value)=>{
      setSearch(value);
     }
-    const { data: jobsList, isLoading, error } = useGetAllJobsByStatusQuery({ tabName: tabName, page: page ,search:search});
+    const { data: jobsList, isLoading } = useGetAllJobsByStatusQuery({ tabName: tabName, page: page ,search:search});
     console.log(jobsList, "data from jobs api");
 
 
@@ -38,17 +37,19 @@ const JobsData = ({tabName}) => {
         { label: "Vin Number", accessor: "vin_number" },
         { label: "Route", accessor: "vin_number" },
         { label: "Job Link", accessor: "vin_number" },
-        {
-            label: "Status",
-            accessor: "actions",
-            cell: ({ row }) => (
-                <span
-                    className={`fn-badge ${getClassByType(row?.request_status)}`}
-                >
-                    {row?.request_status}
-                </span>
-            ),
-        },
+       {
+                  label: "Status",
+                  accessor: "actions",
+                  cell: ({ row }) => {
+                      const { className, title } = getClassAndTitleByStatus(row?.request_status);
+      
+                      return (
+                          <span className={`fn-badge ${className}`}>
+                              {title}
+                          </span>
+                      );
+                  },
+              },
         {
             label: "Pickup Date",
             accessor: "pickupDate",
@@ -90,7 +91,7 @@ const JobsData = ({tabName}) => {
             onPageChange={handlePageChange}
             page={page}
             showPegination={true}
-            isLoading={false}
+            isLoading={isLoading}
             showFilter={true}
             onFilterSearch ={handleSearchJobs}
             title="Job List"

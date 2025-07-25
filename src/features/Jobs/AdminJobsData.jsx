@@ -5,32 +5,32 @@ import Datatable from '../../components/shared/datatable/Datatable';
 import { EditTableSvg } from '../../svgFiles/EditTableSvg';
 import { useGetAllJobsByStatusAdminQuery } from '../../app/adminApi/adminApi';
 import { formatDateToMDY } from '../../helpers/Utils';
-import { getClassByType } from '../../helpers/Utils';
+import { getClassAndTitleByStatus } from '../../helpers/Utils';
 import { useNavigate } from 'react-router';
-const AdminJobsData = ({tabName}) => {
+const AdminJobsData = ({ tabName }) => {
     const navigate = useNavigate();
     const [page, setPage] = React.useState(1);
-    const[search,setSearch] = React.useState("")
+    const [search, setSearch] = React.useState("")
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
 
-    const handleSearchJobs = (value)=>{
-     setSearch(value);
+    const handleSearchJobs = (value) => {
+        setSearch(value);
     }
 
-    const { data: jobsList, isLoading, error } = useGetAllJobsByStatusAdminQuery({ tabName: tabName, page: page ,search:search});
+    const { data: jobsList, isLoading, error } = useGetAllJobsByStatusAdminQuery({ tabName: tabName, page: page, search: search });
     console.log(jobsList, "data from jobs api");
 
 
 
     const columns = [
-   {
+        {
             label: "Job Id",
             accessor: "id",
             cell: ({ row }) => (
                 <span
-                  
+
                 >
                     {`job-${row?.id}`}
                 </span>
@@ -43,20 +43,22 @@ const AdminJobsData = ({tabName}) => {
         {
             label: "Status",
             accessor: "actions",
-            cell: ({ row }) => (
-                <span
-                    className={`fn-badge ${getClassByType(row?.request_status)}`}
-                >
-                    {row?.request_status}
-                </span>
-            ),
+            cell: ({ row }) => {
+                const { className, title } = getClassAndTitleByStatus(row?.request_status);
+
+                return (
+                    <span className={`fn-badge ${className}`}>
+                        {title}
+                    </span>
+                );
+            },
         },
         {
             label: "Pickup Date",
             accessor: "pickupDate",
             cell: ({ row }) => (
                 <span>
-                  {formatDateToMDY(row?.pickup_date)}
+                    {formatDateToMDY(row?.pickup_date)}
                 </span>
             ),
         },
@@ -76,11 +78,11 @@ const AdminJobsData = ({tabName}) => {
             cell: ({ row }) => (
                 <span
                     className="cursor-pointer text-primary"
-                   onClick={() => navigate(`/admin-jobs/job-details/${row.id}`, {
-                   state: { status: row?.request_status }
-           })}
+                    onClick={() => navigate(`/admin-jobs/job-details/${row.id}`, {
+                        state: { status: row?.request_status }
+                    })}
                 >
-                   View
+                    View
                 </span>
             ),
         },
@@ -95,7 +97,7 @@ const AdminJobsData = ({tabName}) => {
             showPegination={true}
             isLoading={false}
             showFilter={true}
-            onFilterSearch ={handleSearchJobs}
+            onFilterSearch={handleSearchJobs}
             title="Job List"
         />
 
