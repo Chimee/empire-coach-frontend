@@ -1,45 +1,76 @@
 import React, { useState } from 'react';
 import CommonModal from '../modalLayout/CommonModal';
 import Button from '../buttons/button';
+import { useCancelJobsByAdminMutation } from '../../../app/adminApi/adminApi';
+import toast from "react-hot-toast";
 
 const CancelConfirmationModal = ({
   show,
   setShow,
-  handleClose,
-  onConfirm,
-  message = "you want to cancel this job? This action cannot be undone.",
+  Jobid,
+  user,
   type
 }) => {
   const [reason, setReason] = useState('');
+  const [cancelJobByAdmin, { isLoading }] = useCancelJobsByAdminMutation();
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!reason.trim()) return alert("Please enter a reason for cancellation");
-    onConfirm({reason,type});
-    setReason('');
+
+    if (user === "admin") {
+      try {
+        const data = await cancelJobByAdmin({ Jobid, reason }).unwrap();
+        toast.success(data?.message || "Cancellation Successfully");
+        setReason("");
+        setShow(false);
+      } catch (err) {
+        toast.error(err?.data?.message || "Cancellation failed");
+      }
+    }
   };
 
   const onClose = () => {
     setReason('');
-    handleClose();
+    setShow(false);
   };
 
   return (
-    <CommonModal show={show} setShow={setShow} handleClose={onClose} className="confirmationModal sm-width" title={'Cancel Job'} >
-  
-      <p className="text-secondary">{`Are you sure ${message}`}</p>
+    <CommonModal show={show} setShow={setShow} handleClose={onClose} className="confirmationModal sm-width" title={'Cancel Job'}>
+      <p className="text-secondary">
+        Are you sure you want to cancel this job? This action cannot be undone.
+      </p>
 
       <label className="fw-semibold mt-3">Reason for Cancellation</label>
       <textarea
         className="form-control mt-1 mb-3"
         rows="4"
-        placeholder="Please provide a reason for Cancellation"
+        placeholder="Please provide a reason for cancellation"
         value={reason}
         onChange={(e) => setReason(e.target.value)}
       />
 
       <div className="d-flex justify-content-end gap-2 mt-3">
-        <Button label="Cancel" className="bordered rounded " onClick={onClose} />
-        <Button label="Confirm" className="rounded " onClick={handleConfirm} />
+        <Button
+          label="Cancel"
+          className="bordered rounded"
+          onClick={onClose}
+          disabled={isLoading}
+        />
+        <Button
+          className="rounded d-flex align-items-center gap-2"
+          onClick={handleConfirm}
+          disabled={isLoading}
+          label={
+            isLoading ? (
+              <>
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Cancelling...
+              </>
+            ) : (
+              "Confirm"
+            )
+          }
+        />
       </div>
     </CommonModal>
   );

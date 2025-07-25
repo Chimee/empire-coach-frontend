@@ -42,9 +42,6 @@ const AdminJobTabs = () => {
         <Tab eventKey="pendingApproval" title="pending Approval">
           <AdminJobsData tabName={tabesName[activeTab]} />
         </Tab>
-         <Tab eventKey="poMissing" title="po Missing">
-          <AdminJobsData tabName={tabesName[activeTab]} />
-        </Tab>
          <Tab eventKey="changeRequestPending" title="change Request Pending">
           <AdminJobsData tabName={tabesName[activeTab]} />
         </Tab>

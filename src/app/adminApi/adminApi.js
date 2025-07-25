@@ -69,6 +69,7 @@ const adminApi = dmApi.injectEndpoints({
                   debugger;
                 await handleQueryError(queryFulfilled);
             },
+              providesTags:['getAdminJobDetailsApi']
         }),
           getAllJobsByStatusAdmin: build.query({
             query: ({ page = 1, limit = 10, search = '', tabName = '' } = {}) => ({
@@ -91,8 +92,34 @@ const adminApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
-            invalidatesTags :['getAllJobsByStatusAdminApi']
-        })
+            invalidatesTags :['getAdminJobDetailsApi','getAllJobsByStatusAdminApi']
+        }),
+        
+         CancelJobsByAdmin :build.mutation({
+              query: ({ Jobid ,reason }) => ({
+                url: `admin/job-cancellation`,
+                method: "PUT",
+                body: {Jobid ,reason},
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryError(queryFulfilled);
+            },
+            invalidatesTags :['getAdminJobDetailsApi','getAllJobsByStatusAdminApi']
+        }),
+
+         ApproveJobsByAdmin :build.mutation({
+              query: ({ jobId}) => ({
+                url: `admin/job-approve`,
+                method: "PUT",
+                body: { jobId },
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryError(queryFulfilled);
+            },
+            invalidatesTags :['getAdminJobDetailsApi','getAllJobsByStatusAdminApi']
+        }),
     })
 })
 export const {
@@ -102,5 +129,7 @@ export const {
     useGetAdminJobDetailsQuery,
     useGetAdminDetailQuery,
     useGetAllJobsByStatusAdminQuery,
-    useCancelJobsAdminMutation
+    useCancelJobsAdminMutation,
+    useCancelJobsByAdminMutation,
+    useApproveJobsByAdminMutation,
 } = adminApi;

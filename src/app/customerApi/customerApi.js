@@ -140,11 +140,13 @@ const customerApi = dmApi.injectEndpoints({
             providesTags: ['getAllJobsByStatusApi']
         }),
         getJobDetails: build.query({
-            query: ({ id }) => ({
+            query: ({ id }) => {
+                debugger
+                return{
                 url: `customer/get-job-details?jobId=${id}`,
                 method: "GET",
-                headers: getAuthorizationHeader(),
-            }),
+                headers: getAuthorizationHeader(),}
+            },
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },

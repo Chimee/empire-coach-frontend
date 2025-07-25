@@ -5,6 +5,7 @@ import { Row, Col } from 'react-bootstrap'
 import { CarSvg } from '../../svgFiles/CarSvg'
 import './job.css'
 import Button from '../../components/shared/buttons/button'
+
 import { PendingCarSvg } from '../../svgFiles/PendingCarSvg'
 import { useParams ,useLocation} from 'react-router'
 import { useGetJobDetailsQuery ,useCancelRescheduleJobMutation,useRescheduleJobDateMutation} from '../../app/customerApi/customerApi'
@@ -20,7 +21,6 @@ const JobDetails = () => {
          const status = location.state?.status;
     
     const { data: jobDetails, isLoading } = useGetJobDetailsQuery({id});
-    console.log(jobDetails,"data-jobDetails");
     const[cancelConfirmation,setCancelConfirmation] = useState(false);
     const[reScheduleConfirmation,setRescheduleConfirmation] = useState(false);
     const[cancelrescheduleJobs ,{isLoading :isCancelling}] = useCancelRescheduleJobMutation();
@@ -28,6 +28,7 @@ const JobDetails = () => {
     
     const breadcrumbItems = [
         { name: 'Jobs', path: '/jobs' },
+
         { name: 'Job-441022022' },
     ];
 
@@ -44,8 +45,7 @@ const JobDetails = () => {
           toast.error(err?.data?.message ||type == "cancel" ? "Cancellation failed" : "rescheduled failed");
            type === "cancel"
            ? setCancelConfirmation(false)
-            : setRescheduleConfirmation(false);
-           
+            : setRescheduleConfirmation(false);        
         }
     };
 
@@ -78,26 +78,61 @@ const JobDetails = () => {
                                     description={'Created on Apr 14/2025, 3:30PM'}
 
                                 />
-                                <span className='fn-tag mt-4'>{jobDetails?.data?.jobData.request_status}</span>
+                             {jobDetails?.data?.jobData?.request_status && (
+                     <span className='fn-tag mt-4'>{jobDetails.data.jobData.request_status}</span>
+                          )}
                             </div>
-                            <div className='d-flex gap-2'>
-                               {jobDetails?.data?.jobData.request_status === "awaiting_for_cancellation" ? (
-                            <span className="d-flex align-items-center gap-1 text-warning fw-bold align-self-center">
-                            <LuClock className="me-1" /> Awaiting Cancellation
-                       </span>
-                          ) : (
-                            <>
-                           
-                            <Button label={jobDetails?.data?.jobData.request_status === "awaiting_reschedule_date" ? "select reschedule date/time" : "reschedule-date"} className={'btn-square rounded'} 
-                            onClick = {()=> setRescheduleConfirmation(true)}/>
-                             <Button
-                            label={'Cancel'}
-                            className={'btn-square cancel rounded'}
-                               onClick={() => setCancelConfirmation(true)}
-                                   />
-                                   </>
-                                    )}
-                            </div>
+                           <div className='d-flex gap-2'>
+       {jobDetails?.data?.jobData?.request_status === 'awaiting_for_cancellation' ? (
+       <span className="d-flex align-items-center gap-1 text-warning fw-bold align-self-center">
+       <LuClock className="me-1" /> Awaiting Cancellation
+     </span>
+     ) : jobDetails?.data?.jobData?.request_status == 'submitted' ? (
+      <>
+      <Button
+        label={"Cancel"}
+        type = 'button'
+          className={'btn-square rounded'}
+        onClick={() => setCancelConfirmation(true)}
+       />
+       </>
+      ) : jobDetails?.data?.jobData?.request_status == 'approved' ? (
+    <>
+      <Button
+        label="Cancel"
+          className={'btn-square rounded'}
+        onClick={() => setCancelConfirmation(true)}
+      />
+    </>
+  ) : jobDetails?.data?.jobData?.request_status == 'awaiting_reschedule_date' ? (
+    <>
+      <Button
+        label="Select Reschedule Date/Time"
+         className={'btn-square rounded'}
+        onClick={() => setRescheduleConfirmation(true)}
+      />
+      <Button
+        label="Cancel"
+        className={'btn-square rounded'}
+        onClick={() => setCancelConfirmation(true)}
+      />
+    </>)
+    : jobDetails?.data?.jobData?.request_status == 'rescheduled' ? (
+    <>
+      <Button
+        label="Reschedule job"
+         className={'btn-square rounded'}
+        onClick={() => setRescheduleConfirmation(true)}
+      />
+      <Button
+        label="Cancel"
+        className={'btn-square rounded'}
+        onClick={() => setCancelConfirmation(true)}
+      />
+    </>
+  ) : null}
+</div>
+
                         </div>
                     </Col>
                 </Row>
@@ -167,9 +202,9 @@ const JobDetails = () => {
                             <li className='d-flex gap-3 align-items-center'>
                                 <span className='d-flex justify-content-center rounded-5 align-items-center shrink-0 timeline-count'>1</span>
                                 <div className='timeline_status'>
-                                    <span className='d-block'>{jobDetails?.data.jobLogs[0].request_status}</span>
+                                    <span className='d-block'>{jobDetails?.data?.jobLogs[0]?.request_status}</span>
 
-                                    <span>{jobDetails?.data.jobLogs[0].createdAt}</span>
+                                    <span>{jobDetails?.data?.jobLogs[0]?.createdAt}</span>
                                 </div>
                             </li>
                             <li className='d-flex gap-3 align-items-center'>

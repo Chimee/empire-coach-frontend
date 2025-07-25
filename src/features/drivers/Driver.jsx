@@ -26,7 +26,7 @@ const Driver = () => {
             cell: ({ row }) => (
                 <span
                     className="fn-badge"
-                    onClick={() => alert(`Clicked on user: ${row.name}`)}
+                    
                 >
                     Active
                 </span>

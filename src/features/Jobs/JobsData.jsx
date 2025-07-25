@@ -26,15 +26,14 @@ const JobsData = ({ tabName }) => {
     console.log(jobsList, "data from jobs api");
 
     const handleConfirm = async (jobId, poNumber) => {
-        debugger;
-  try {
-    await addPONumber({ jobId, po_number: poNumber }).unwrap(); 
+     try {
+     await addPONumber({ jobId, po_number: poNumber }).unwrap(); 
     
-  } catch (error) {
+    } catch (error) {
     
     console.error("PO fill error:", error);
-  }
-};
+    }
+    };
 
   debugger;
     const columns = [
