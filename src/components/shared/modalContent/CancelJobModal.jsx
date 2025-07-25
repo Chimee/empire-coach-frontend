@@ -2,29 +2,46 @@ import React, { useState } from 'react';
 import CommonModal from '../modalLayout/CommonModal';
 import Button from '../buttons/button';
 import { useCancelJobsByAdminMutation } from '../../../app/adminApi/adminApi';
+import { useCancelRescheduleJobMutation } from '../../../app/customerApi/customerApi';
 import toast from "react-hot-toast";
 
 const CancelConfirmationModal = ({
   show,
   setShow,
-  Jobid,
+  jobId,
   user,
   type
 }) => {
   const [reason, setReason] = useState('');
   const [cancelJobByAdmin, { isLoading }] = useCancelJobsByAdminMutation();
+   const [cancelrescheduleJobs, { isLoading: isCancelling }] = useCancelRescheduleJobMutation();
+     const isSubmitting = isLoading || isCancelling;
 
   const handleConfirm = async () => {
     if (!reason.trim()) return alert("Please enter a reason for cancellation");
 
     if (user === "admin") {
       try {
-        const data = await cancelJobByAdmin({ Jobid, reason }).unwrap();
+        const data = await cancelJobByAdmin({ jobId, reason }).unwrap();
         toast.success(data?.message || "Cancellation Successfully");
         setReason("");
         setShow(false);
       } catch (err) {
         toast.error(err?.data?.message || "Cancellation failed");
+      }
+    }
+    else{
+      if(type === "cancel"){
+         try {
+          debugger;
+            const data = await cancelrescheduleJobs({ jobId, reason, type }).unwrap();
+            toast.success(data.message || "Job cancelled successfully");
+           setReason("");
+           setShow(false);         
+        }
+        catch (err) {
+            toast.error(err?.data?.message || "cancellation failed");
+        }
       }
     }
   };
@@ -56,15 +73,15 @@ const CancelConfirmationModal = ({
           onClick={onClose}
           disabled={isLoading}
         />
-        <Button
+         <Button
           className="rounded d-flex align-items-center gap-2"
           onClick={handleConfirm}
-          disabled={isLoading}
+          disabled={isSubmitting}
           label={
-            isLoading ? (
+            isSubmitting ? (
               <>
                 <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                Cancelling...
+                {type === "reschedule" ? "Rescheduling..." : "Cancelling..."}
               </>
             ) : (
               "Confirm"

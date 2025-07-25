@@ -96,10 +96,10 @@ const adminApi = dmApi.injectEndpoints({
         }),
         
          CancelJobsByAdmin :build.mutation({
-              query: ({ Jobid ,reason }) => ({
+              query: ({ jobId ,reason }) => ({
                 url: `admin/job-cancellation`,
                 method: "PUT",
-                body: {Jobid ,reason},
+                body: {jobId ,reason},
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {

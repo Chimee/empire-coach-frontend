@@ -248,7 +248,7 @@ const AdminJobDetails = () => {
          <CancelConfirmationModal
         show={cancelConfirmationPopup}
         setShow={setCancelConfirmation}
-        Jobid = {id}
+        jobId = {id}
         user = "admin"
         type = ""
       /> 
@@ -256,7 +256,7 @@ const AdminJobDetails = () => {
       <AssignDriverModal
        show={assignDriverPopup}
         setShow={setAssignDriverPopup}
-        Jobid = {id}/>
+        jobId = {id}/>
       </>
     )
 }

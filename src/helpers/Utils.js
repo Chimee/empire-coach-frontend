@@ -169,7 +169,7 @@ export const getClassAndTitleByStatus = (status) => {
     },
     rescheduled: {
       className: 'class-rescheduled',
-      title: 'Reschedule Pending',
+      title: 'Rescheduled',
     },
   
     in_transit: {
