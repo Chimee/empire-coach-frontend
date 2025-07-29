@@ -111,7 +111,7 @@ const JobDetails = () => {
                             </div>
                         </Col>
                     </Row>
-
+ 
                 </Col>
                 <Col lg={3}>
                     <h6 className='small-heading'>Driver</h6>

@@ -77,7 +77,7 @@ const AdminJobDetails = () => {
                                     <Button disabled={isCancelling} label={isCancelling ? 'Approving' : "Approve"} className={'btn-square rounded'}
                                         onClick={() => handleCancelApproveJob()} />
 
-                                </>
+                                </> 
                             ) : jobDetails?.data?.jobData?.request_status === 'submitted' ? (
                                 <>
                                     <Button
