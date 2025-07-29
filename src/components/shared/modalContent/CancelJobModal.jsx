@@ -22,8 +22,7 @@ const CancelConfirmationModal = ({
 
     if (user === "admin") {
       try {
-        const data = await cancelJobByAdmin({ jobId, reason }).unwrap();
-        toast.success(data?.message || "Cancellation Successfully");
+         await cancelJobByAdmin({ jobId, reason }).unwrap();
         setReason("");
         setShow(false);
       } catch (err) {

@@ -298,11 +298,13 @@ input.form-control.pac-target-input:focus {
   border: 1px solid #1d4ed8;
 }
 .sm-width.modal .modal-dialog {
-    max-width: 517px;
+  max-width: 517px;
 }
-span.adress-data
- {
-    min-width: 260px;
-    width: 217px;
-    display: inline-block;
+span.adress-data {
+  min-width: 260px;
+  width: 217px;
+  display: inline-block;
+}
+.cmn_btn.btn-cancel {
+  background: #b91c1c;
 }

@@ -10,14 +10,16 @@ import { useGetJobDetailsQuery } from '../../app/customerApi/customerApi'
 import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 import CancelConfirmationModal from '../../components/shared/modalContent/CancelJobModal'
 import ReScheduleDate from '../../components/shared/modalContent/ReschceduleDate'
+import { getClassAndTitleByStatus } from '../../helpers/Utils'
 import { LuClock } from "react-icons/lu";
 const JobDetails = () => {
     const { id } = useParams();
-    console.log(id, "id from params");
-    const location = useLocation();
-    const status = location.state?.status;
-
+    
+    
     const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id });
+    console.log(jobDetails,"jobDetails");
+    const statusMeta = getClassAndTitleByStatus(jobDetails?.data?.jobData?.request_status);
+    
     const [cancelConfirmation, setCancelConfirmation] = useState(false);
     const [reScheduleConfirmation, setRescheduleConfirmation] = useState(false);
 
@@ -42,7 +44,7 @@ const JobDetails = () => {
 
                                     />
                                     {jobDetails?.data?.jobData?.request_status && (
-                                        <span className='fn-tag mt-4'>{jobDetails.data.jobData.request_status}</span>
+                                        <span className={`${statusMeta.className} fn-badge mt-4 text-capitalize`}>{jobDetails.data.jobData.request_status}</span>
                                     )}
                                 </div>
                                 <div className='d-flex gap-2'>
@@ -50,24 +52,34 @@ const JobDetails = () => {
                                         <span className="d-flex align-items-center gap-1 text-warning fw-bold align-self-center">
                                             <LuClock className="me-1" /> Awaiting Cancellation
                                         </span>
-                                    ) : jobDetails?.data?.jobData?.request_status == 'submitted' ? (
+                                    ) : jobDetails?.data?.jobData?.request_status === 'submitted' ? (
                                         <>
+                                         <Button
+                                                    label="Reschedule job"
+                                                    className={'btn-square rounded'}
+                                                    onClick={() => setRescheduleConfirmation(true)}
+                                                />
                                             <Button
                                                 label={"Cancel"}
                                                 type='button'
-                                                className={'btn-square rounded'}
+                                                className={'btn-square rounded btn-cancel'}
                                                 onClick={() => setCancelConfirmation(true)}
                                             />
                                         </>
-                                    ) : jobDetails?.data?.jobData?.request_status == 'approved' ? (
+                                    ) : jobDetails?.data?.jobData?.request_status === 'approved' ? (
                                         <>
+                                        <Button
+                                                    label="Reschedule job"
+                                                    className={'btn-square rounded'}
+                                                    onClick={() => setRescheduleConfirmation(true)}
+                                                />
                                             <Button
                                                 label="Cancel"
                                                 className={'btn-square rounded'}
                                                 onClick={() => setCancelConfirmation(true)}
                                             />
                                         </>
-                                    ) : jobDetails?.data?.jobData?.request_status == 'awaiting_reschedule_date' ? (
+                                    ) : jobDetails?.data?.jobData?.request_status === 'awaiting_reschedule_date' ? (
                                         <>
                                             <Button
                                                 label="Select Reschedule Date/Time"
@@ -80,7 +92,7 @@ const JobDetails = () => {
                                                 onClick={() => setCancelConfirmation(true)}
                                             />
                                         </>)
-                                        : jobDetails?.data?.jobData?.request_status == 'rescheduled' ? (
+                                        : jobDetails?.data?.jobData?.request_status === 'rescheduled' ? (
                                             <>
                                                 <Button
                                                     label="Reschedule job"
@@ -105,7 +117,7 @@ const JobDetails = () => {
                     <h6 className='small-heading'>Driver</h6>
                     <div className='no-driver'>
                         <CarSvg />
-                        <h5>{(jobDetails?.data?.jobData.driverName === "No Driver Assigned Yet" || jobDetails?.data?.jobData.driverName === null) ? "No Driver Assigned Yet" : jobDetails?.data?.driverName}</h5>
+                        <h5 className='mb-4'>{(jobDetails?.data?.jobData?.driverName === "Driver not assigned" || jobDetails?.data?.jobData?.driverName === null) ? "Driver not assigned" : jobDetails?.data?.driverName}</h5>
                     </div>
                 </Col>
                 <Col lg={12} className='mt-5'>
@@ -169,8 +181,8 @@ const JobDetails = () => {
                                                 {index + 1}
                                             </span>
                                             <div className='timeline_status'>
-                                                <span className='d-block'>{logs?.request_status}</span>
-                                                <span>{logs?.createdAt}</span>
+                                                <span className='d-block text-capitalize'>{logs?.request_status}</span>
+                                                <span>{formatDateToMDY(logs?.createdAt)}</span>
                                             </div>
                                         </li>
                                     ))

@@ -10,7 +10,7 @@ const adminApi = dmApi.injectEndpoints({
                 body: data,
                 headers: getAuthorizationHeader()
             }),
-            invalidatesTags:["getAdminListAPI"],
+            invalidatesTags: ["getAdminListAPI"],
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryErrorAndSuccess(
                     queryFulfilled,
@@ -26,7 +26,7 @@ const adminApi = dmApi.injectEndpoints({
                 body: data,
                 headers: getAuthorizationHeader()
             }),
-            invalidatesTags:["getAdminListAPI"],
+            invalidatesTags: ["getAdminListAPI"],
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryErrorAndSuccess(
                     queryFulfilled,
@@ -43,7 +43,7 @@ const adminApi = dmApi.injectEndpoints({
                 method: "GET",
                 headers: getAuthorizationHeader(),
             }),
-             providesTags:["getAdminListAPI"],
+            providesTags: ["getAdminListAPI"],
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
@@ -66,12 +66,12 @@ const adminApi = dmApi.injectEndpoints({
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
-                  debugger;
+                debugger;
                 await handleQueryError(queryFulfilled);
             },
-              providesTags:['getAdminJobDetailsApi']
+            providesTags: ['getAdminJobDetailsApi']
         }),
-          getAllJobsByStatusAdmin: build.query({
+        getAllJobsByStatusAdmin: build.query({
             query: ({ page = 1, limit = 10, search = '', tabName = '' } = {}) => ({
                 url: `admin/get-all-jobs-by-status?page=${page}&limit=${limit}&search=${search}&tabName=${tabName}`,
                 method: "GET",
@@ -80,45 +80,45 @@ const adminApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
-            providesTags:['getAllJobsByStatusAdminApi']
+            providesTags: ['getAllJobsByStatusAdminApi']
         }),
-        CancelJobsAdmin :build.mutation({
-              query: ({ jobId }) => ({
+        CancelJobsAdmin: build.mutation({
+            query: ({ jobId }) => ({
                 url: `admin/approve-job-cancellation`,
                 method: "PUT",
                 body: jobId,
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
-                await handleQueryError(queryFulfilled);
+                await handleQueryErrorAndSuccess(queryFulfilled, "Approved", "Cancelled job");
             },
-            invalidatesTags :['getAdminJobDetailsApi','getAllJobsByStatusAdminApi']
+            invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
-        
-         CancelJobsByAdmin :build.mutation({
-              query: ({ jobId ,reason }) => ({
+
+        CancelJobsByAdmin: build.mutation({
+            query: ({ jobId, reason }) => ({
                 url: `admin/job-cancellation`,
                 method: "PUT",
-                body: {jobId ,reason},
+                body: { jobId, reason },
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
-                await handleQueryError(queryFulfilled);
+                await handleQueryErrorAndSuccess(queryFulfilled, "Cancelled", "Job");
             },
-            invalidatesTags :['getAdminJobDetailsApi','getAllJobsByStatusAdminApi']
+            invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
 
-         ApproveJobsByAdmin :build.mutation({
-              query: ({ jobId}) => ({
+        ApproveJobsByAdmin: build.mutation({
+            query: ({ jobId }) => ({
                 url: `admin/job-approve`,
                 method: "PUT",
                 body: { jobId },
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
-                await handleQueryError(queryFulfilled);
+                await handleQueryErrorAndSuccess(queryFulfilled, "Approved", "Job");
             },
-            invalidatesTags :['getAdminJobDetailsApi','getAllJobsByStatusAdminApi']
+            invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
     })
 })
