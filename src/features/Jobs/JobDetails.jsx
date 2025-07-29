@@ -183,6 +183,7 @@ const JobDetails = () => {
                     </Row>
                 </Col>
             </Row>
+            { cancelConfirmation && (
             <CancelConfirmationModal
                 show={cancelConfirmation}
                 setShow={setCancelConfirmation}
@@ -190,6 +191,8 @@ const JobDetails = () => {
                 user = "customer"
                 type="cancel"
             />
+            )}
+            {reScheduleConfirmation && (
             <ReScheduleDate
                 show={reScheduleConfirmation}
                 setShow={setRescheduleConfirmation}
@@ -197,6 +200,7 @@ const JobDetails = () => {
                 reqstatus={jobDetails?.data?.jobData.request_status}
                 jobId = {id}
             />
+            )}
         </>
 
     )
