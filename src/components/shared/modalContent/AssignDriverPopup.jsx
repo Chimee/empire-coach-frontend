@@ -2,21 +2,37 @@ import React, { useState } from 'react';
 import CommonModal from '../modalLayout/CommonModal';
 import Button from '../buttons/button';
 import { Form } from 'react-bootstrap';
-
-const AssignDriverModal = ({ show, setShow, onAssign, drivers = [] }) => {
+import { useGetDriversListQuery ,useAssignDriverMutation } from '../../../app/driverApi/driverApi';
+const AssignDriverModal = ({ show, setShow, jobId }) => {
   const [selectedDriver, setSelectedDriver] = useState('');
-
-  const handleAssign = () => {
+  const{data:drivers ,isLoading} = useGetDriversListQuery();
+  const[assignDriver ,{isLoading:isAssigning}] = useAssignDriverMutation();
+  debugger;
+  console.log(drivers)
+  const handleAssign = async() => {
     if (!selectedDriver) return alert('Please select a driver.');
-    onAssign(selectedDriver);
-    setShow(false);
+    debugger;
+    try{
+      const res = await assignDriver({jobId,driverId:selectedDriver});
+      if(res){
+        alert("driver assign")
+      }
+      setShow(false);
     setSelectedDriver('');
+    }
+    catch(error){
+
+    }
+   
   };
 
   const handleClose = () => {
     setSelectedDriver('');
     setShow(false);
   };
+
+  
+  
 
   return (
     <CommonModal
@@ -34,7 +50,7 @@ const AssignDriverModal = ({ show, setShow, onAssign, drivers = [] }) => {
         onChange={(e) => setSelectedDriver(e.target.value)}
       >
         <option value="">Choose from list</option>
-        {drivers.map((driver) => (
+        {drivers?.data?.data?.map((driver) => (
           <option key={driver.id} value={driver.id}>
             {driver.name}
           </option>
