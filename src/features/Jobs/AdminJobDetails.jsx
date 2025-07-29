@@ -249,4 +249,4 @@ const AdminJobDetails = () => {
     )
 }
 
-export default AdminJobDetails
+export default AdminJobDetails 

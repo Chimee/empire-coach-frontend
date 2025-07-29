@@ -52,10 +52,7 @@ const driverApi = dmApi.injectEndpoints({
             
         }),
         getDriversList: build.query({
-
             query: ({ page = 1, limit = 10, search = "" } = {}) => ({
-
-
                 url: `admin/get-all-drivers?page=${page}&limit=${limit}&search=${encodeURIComponent(
                     search
                 )}`,
@@ -67,7 +64,25 @@ const driverApi = dmApi.injectEndpoints({
                 await handleQueryError(queryFulfilled);
             },
         }),
+        assignDriver: build.mutation({
+            query: ({jobId ,driverId}) => ({
+                url: "admin/assign-driver",
+                method: "POST",
+                body: {jobId ,driverId},
+                headers: getAuthorizationHeader(), 
+            }),
+            invalidatesTags: ["getDriverListAPI"], 
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryErrorAndSuccess(
+                    queryFulfilled,
+                    "Added",
+                    "Driver"
+                );
+            },
+        }),
     }),
+
+    
 });
 
 export const {
@@ -75,4 +90,5 @@ export const {
     useUpdateDriverMutation,
     useGetDriverDetailQuery,
     useGetDriversListQuery,
+    useAssignDriverMutation
 } = driverApi;
