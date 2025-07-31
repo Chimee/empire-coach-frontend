@@ -1,15 +1,50 @@
 
 
-import React from 'react'
+import React, { useEffect, useCallback, useState, useRef, use } from 'react'
 import { ClockSvg } from '../../svgFiles/ClockSvg'
 import { LocationSvg } from '../../svgFiles/LocationSvg'
+import { useGetDriversListQuery } from '../../app/driverApi/driverApi'
 
 const DriversList = () => {
+    const [page, setPage] = useState(1);
+    const { data, isFetching, isLoading } = useGetDriversListQuery({ page, limit: 10, search: "" },  { keepPreviousData: true });
+    const [driverList, setDriverList] = useState([]);
+    const scrollRef = useRef(null);
+
+    useEffect(() => {
+        if (data?.data?.data?.length) {
+            setDriverList(prev =>
+                page === 1 ? data.data.data : [...prev, ...data.data.data]
+            );
+        }
+    }, [data]);
+
+    const handleScroll = useCallback(() => {
+        const scrollcontaner = scrollRef.current
+        if (!scrollcontaner) return;
+        const { scrollTop, scrollHeight, clientHeight } = scrollcontaner;
+
+        if (scrollTop + clientHeight >= scrollHeight - 50) {
+            setPage(prev => prev + 1);
+        }
+    }, [isFetching]);
+
+    useEffect(() => {
+        const scrollcontaner = scrollRef.current
+        if (!scrollcontaner) return;
+        scrollcontaner.addEventListener("scroll", handleScroll);
+        return () => scrollcontaner.removeEventListener("scroll", handleScroll);
+    }, [handleScroll]);
+
+
+
+
+
     return (
-        <div className='dashboard_card '>
+        <div className='dashboard_card' ref={scrollRef}>
             <div className='d-flex gap-10px align-items-center justify-content-between dashboad-filter'>
                 <h6 className='sub_heading mb-0'>Drivers</h6>
-                <div className='d-flex gap-3 align-items-center '>
+                <div className='d-flex gap-3 align-items-center'>
                     <span>Status :</span>
                     <select name="" id="">
                         <option value="">Submitted</option>
@@ -17,15 +52,15 @@ const DriversList = () => {
                 </div>
             </div>
             <ul className='job_list d-flex flex-column gap-3 p-0'>
-                {[...Array(4)].map((_, i) => (
+                {data.data.data.map((driver, i) => (
                     <li key={i}><div className='d-flex justify-content-between align-items-center mb-3'>
                         <div className='job_head'>
                             <p className='mb-2'>Job #44102</p>
-                            <h6 className='mb-0'>Craig Ekstrom Bothman</h6>
+                            <h6 className='mb-0'>driver.name</h6>
                         </div>
                     </div>
-                    <h2 className='company_name'>2022 Blue Bird All American</h2>
-                    <h2 className='company_name'>Progress </h2>
+                        <h2 className='company_name'>2022 Blue Bird All American</h2>
+                        <h2 className='company_name'>Progress </h2>
                         <div className='d-flex justify-content-between align-items-center'>
                             <div className='locations w-100  pr-3'>
                                 <div className='location_inner'>

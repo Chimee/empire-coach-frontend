@@ -16,6 +16,7 @@ const JobTabs = () => {
     activeJobs: "activeJobs",
     awaiting_reschedule_date: "awaiting_reschedule_date",
     awaitingCancellation: "awaiting_for_cancellation",
+    poMissing: "PO_missing",
     cancelled: "cancelled",   
   };
 
@@ -35,6 +36,9 @@ const JobTabs = () => {
           <JobsData tabName={tabesName[activeTab]} />
         </Tab>
         <Tab eventKey="awaiting_reschedule_date" title="Awaiting Rescheduled Date">
+          <JobsData tabName={tabesName[activeTab]} />
+        </Tab>
+        <Tab eventKey="poMissing" title="Po Missing">
           <JobsData tabName={tabesName[activeTab]} />
         </Tab>
         <Tab eventKey="awaitingCancellation" title="Awaiting Cancellation">

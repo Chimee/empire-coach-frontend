@@ -18,7 +18,7 @@ const AdminJobsData = ({ tabName }) => {
     const handleSearchJobs = (value) => {
         setSearch(value);
     }
-
+     debugger;
     const { data: jobsList, isLoading, error } = useGetAllJobsByStatusAdminQuery({ tabName: tabName, page: page, search: search });
     console.log(jobsList, "data from jobs api");
 
@@ -40,6 +40,17 @@ const AdminJobsData = ({ tabName }) => {
         { label: "Vin Number", accessor: "vin_number" },
         { label: "Route", accessor: "vin_number" },
         { label: "Job Link", accessor: "vin_number" },
+        {
+      label: "PO Number",
+      accessor: "po-number",
+      cell: ({ row }) => (
+        row.po_number ? (
+          <span>{row.po_number}</span>
+        ) : (
+            <span className=""> - </span>                                
+        )
+      )
+    },
         {
             label: "Status",
             accessor: "actions",

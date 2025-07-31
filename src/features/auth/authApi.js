@@ -22,7 +22,7 @@ const authApi = dmApi.injectEndpoints({
         forgotPassword: build.mutation({
             query: (request) => {
                 return {
-                    url: `/forgot-password`,
+                    url: `/forget-password`,
                     method: 'POST',
                     body: request,
                 };
