@@ -11,7 +11,7 @@ const Dashboard = () => {
   const token = localStorage.getItem('authToken')
   const tokenDecode = jwtDecode(token);
   const role = tokenDecode?.role
-   console.log(tokenDecode,"tokenDecode");
+  console.log(tokenDecode, "tokenDecode");
   return (
     <>
 
@@ -29,17 +29,18 @@ const Dashboard = () => {
           <div className='d-flex job_req justify-content-between align-items-center'>
             <div className='create_job'>
               <h6 className='text-white'>{role === "customer" ? ' Job Request' : "Company Request"}</h6>
-              <p>Create a {role === "customer" ?" job request" : "Company"}</p>
+              <p>Create a {role === "customer" ? " job request" : "Company"}</p>
             </div>
-            {role === "customer" ?<PlusButtonSvg onClick={() => navigate('/jobs/create-job')} /> :  <PlusButtonSvg onClick={() => navigate('/company/add-company')} /> }
-            
+            {role === "customer" ? <PlusButtonSvg onClick={() => navigate('/jobs/create-job')} /> : <PlusButtonSvg onClick={() => navigate('/company/add-company')} />}
+
           </div>
         </div>
       </div>
       <div className='d-flex gap-3 mt-3'>
         <div className='content_list flex-grow-1'>
-          <QuickJobsList />
-          <DriversList />
+          <div className='scrollable-section'>
+            <QuickJobsList />
+          </div>
         </div>
         <div className='right_list'>
           <JobsOverview />

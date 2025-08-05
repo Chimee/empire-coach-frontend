@@ -158,3 +158,8 @@ h2.company_name {
   line-height: 100%;
   margin-bottom: 12px;
 }
+.scrollable-section {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
