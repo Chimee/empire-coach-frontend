@@ -22,7 +22,6 @@ const QuickJobsList = () => {
     { tabName, page, search: '' },
     { keepPreviousData: true }
   );
-  debugger;
 
   useEffect(() => {
     setPage(1);
@@ -79,7 +78,6 @@ const QuickJobsList = () => {
           </select>
         </div>
       </div>
-
       <ul className="job_list d-flex flex-column gap-3 p-0">
         {jobList.length > 0 ? (
           jobList.map((job, i) => (

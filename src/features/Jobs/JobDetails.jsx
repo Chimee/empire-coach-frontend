@@ -18,6 +18,7 @@ const JobDetails = () => {
     
     const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id });
     console.log(jobDetails,"jobDetails");
+    const {state} = useLocation();
     const statusMeta = getClassAndTitleByStatus(jobDetails?.data?.jobData?.request_status);
     
     const [cancelConfirmation, setCancelConfirmation] = useState(false);
@@ -114,11 +115,14 @@ const JobDetails = () => {
  
                 </Col>
                 <Col lg={3}>
+                {state.status !== "cancelled"  && (
+                    <>
                     <h6 className='small-heading'>Driver</h6>
                     <div className='no-driver'>
                         <CarSvg />
                         <h5 className='mb-4'>{(jobDetails?.data?.jobData?.driverName === "Driver not assigned" || jobDetails?.data?.jobData?.driverName === null) ? "Driver not assigned" : jobDetails?.data?.driverName}</h5>
                     </div>
+                    </>)}
                 </Col>
                 <Col lg={12} className='mt-5'>
                     <h6 className='small-heading'>Job Details</h6>

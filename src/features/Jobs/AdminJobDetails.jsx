@@ -7,7 +7,7 @@ import './job.css'
 import Button from '../../components/shared/buttons/button'
 import { PendingCarSvg } from '../../svgFiles/PendingCarSvg'
 import { useParams, useLocation } from 'react-router'
-import { useGetAdminJobDetailsQuery, useCancelJobsAdminMutation, useApproveJobsByAdminMutation } from '../../app/adminApi/adminApi'
+import { useGetAdminJobDetailsQuery, useCancelJobsAdminMutation, useApproveJobsByAdminMutation, useDeclineJobCancelReqAdminMutation } from '../../app/adminApi/adminApi'
 import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 import toast from "react-hot-toast";
 import CancelConfirmationModal from '../../components/shared/modalContent/CancelJobModal'
@@ -15,10 +15,14 @@ import AssignDriverModal from '../../components/shared/modalContent/AssignDriver
 import { getClassAndTitleByStatus } from '../../helpers/Utils'
 const AdminJobDetails = () => {
     const { id } = useParams();
-    const { data: jobDetails } = useGetAdminJobDetailsQuery({ id });
+    const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, {skip: !id});
+    debugger;
+    const {state} = useLocation();
+    console.log(state)
     console.log(jobDetails, "jobDetails");
 
     const [cancelJobAdmin, { isLoading: isCancelling }] = useCancelJobsAdminMutation();
+    const [declineCanceljobReq, { isLoading: isDeclining }] = useDeclineJobCancelReqAdminMutation();
     const [cancelConfirmationPopup, setCancelConfirmation] = useState(false);
     const [assignDriverPopup, setAssignDriverPopup] = useState(false)
     const [approveJob, { isLoading: isApproving }] = useApproveJobsByAdminMutation();
@@ -39,11 +43,24 @@ const AdminJobDetails = () => {
 
         }
     };
+
+    const handleCancelJob = async () => {
+        try {
+            debugger;
+            await declineCanceljobReq({ jobId: id }).unwrap();
+        }
+        catch (err) {
+            toast.error(err?.data?.message || "Decline Cancellation request failed")
+        }
+    }
+
     //approve job by admin
     const handleApproveJob = async () => {
         try {
             await approveJob({ jobId: id }).unwrap();
-            setAssignDriverPopup(true);
+            if (jobDetails?.data?.jobData?.request_status === 'submitted') {
+                setAssignDriverPopup(true);
+            }
         } catch (err) {
             toast.error(err?.data?.message || "Job approval failed");
         }
@@ -61,7 +78,6 @@ const AdminJobDetails = () => {
                             <PageHead
                                 title={'Jobs'}
                                 description={'Created on Apr 14/2025, 3:30PM'}
-
                             />
                             <span className={`${statusMeta?.className} fn-badge mt-4 text-capitalize`}>{jobDetails?.data?.jobData?.request_status}</span>
                             {["awaiting_for_cancellation", "cancelled"].includes(jobDetails?.data?.jobData?.request_status) && (
@@ -72,12 +88,12 @@ const AdminJobDetails = () => {
                             {jobDetails?.data?.jobData?.request_status === 'awaiting_for_cancellation' ? (
                                 <>
                                     <Button label={'Decline'} className={'btn-square cancel rounded'}
-                                    //onClick ={()=>handleCancelJob()} 
+                                        onClick={() => handleCancelJob()}
                                     />
                                     <Button disabled={isCancelling} label={isCancelling ? 'Approving' : "Approve"} className={'btn-square rounded'}
                                         onClick={() => handleCancelApproveJob()} />
 
-                                </> 
+                                </>
                             ) : jobDetails?.data?.jobData?.request_status === 'submitted' ? (
                                 <>
                                     <Button
@@ -99,11 +115,7 @@ const AdminJobDetails = () => {
                                         className={'btn-square rounded bordered '}
                                         onClick={() => setCancelConfirmation(true)}
                                     />
-                                    <Button
-                                        label={"Select Reschedule Date/Time"}
-                                        className={'btn-square rounded'}
 
-                                    />
                                 </>)
                                 : jobDetails?.data?.jobData?.request_status === 'rescheduled' ? (
                                     <>
@@ -113,8 +125,10 @@ const AdminJobDetails = () => {
                                             onClick={() => setCancelConfirmation(true)}
                                         />
                                         <Button
-                                            label="Reschedule job"
+                                            label={isApproving ? "Approving" : "Approve"}
+                                            disabled={isApproving}
                                             className={'btn-square rounded'}
+                                            onClick={() => handleApproveJob()}
                                         />
                                     </>
                                 ) : jobDetails?.data?.jobData?.request_status === 'approved' ? (
@@ -123,10 +137,6 @@ const AdminJobDetails = () => {
                                             label="Cancel"
                                             className={'btn-square rounded bordered '}
                                             onClick={() => setCancelConfirmation(true)}
-                                        />
-                                        <Button
-                                            label="Reschedule job"
-                                            className={'btn-square rounded'}
                                         />
                                     </>
                                 ) :
@@ -217,18 +227,21 @@ const AdminJobDetails = () => {
                     </Row>
                 </Col>
                 <Col lg={3}>
-
+                 {(state.status !== "cancelled" && state.status !== "awaiting_reschedule_date") && (
+                    <>
                     <h6 className='small-heading'>Driver</h6>
                     <div className='no-driver'>
                         <CarSvg />
                         <h5 className='mb-4'>{(jobDetails?.data?.jobData?.driver_name === "Driver not assigned" || jobDetails?.data?.jobData?.driver_name === null) ? "Driver not assigned" : jobDetails?.data?.driver_name}</h5>
-                        {(jobDetails?.data?.jobData?.driver_name === "Driver not assigned" || jobDetails?.data?.jobData?.driver_name === null)
-                            ? <Button label={'Assign Driver'} className='rounded w-75' onClick={()=>setAssignDriverPopup(true)}/>
-                            : <>
-                                <Button label={'Send Link'} className='rounded'  />
-                            </>
+                        {
+                            (!jobDetails?.data?.jobData?.driver_name || jobDetails?.data?.jobData?.driver_name === "Driver not assigned") ? (
+                                <Button label="Assign Driver" className="rounded w-75" onClick={() => setAssignDriverPopup(true)} />
+                            ) : (
+                                <Button label="Send Link" className="rounded" />
+                            )
                         }
                     </div>
+                    </>)}
                 </Col>
 
             </Row>

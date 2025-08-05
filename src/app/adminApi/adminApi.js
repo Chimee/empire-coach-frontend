@@ -95,6 +95,18 @@ const adminApi = dmApi.injectEndpoints({
             invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
 
+      declineJobCancelReqAdmin: build.mutation({
+            query: ({ jobId }) => ({
+                url: `admin/decline-job-cancellation`,
+                method: "PUT",
+                body: jobId,
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryErrorAndSuccess(queryFulfilled, "Approved", " decline Cancelled job Request");
+            },
+            invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
+        }),
         CancelJobsByAdmin: build.mutation({
             query: ({ jobId, reason }) => ({
                 url: `admin/job-cancellation`,
@@ -132,4 +144,5 @@ export const {
     useCancelJobsAdminMutation,
     useCancelJobsByAdminMutation,
     useApproveJobsByAdminMutation,
+    useDeclineJobCancelReqAdminMutation
 } = adminApi;
