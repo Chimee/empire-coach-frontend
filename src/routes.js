@@ -77,10 +77,28 @@ export const Routes = {
     ForgotPassword: {
         path: "/forgot-password"
     },   
+    RideDeatails: {
+        path: "/ride-details"
+    },   
     CreatePassword: {
         path: "/set-password"
     },
     ResetPassword: {
         path: "/reset-password"
+    },
+    StartPickup: {
+        path: "/start-pickup"
+    },
+    TripStarted: {
+        path: "/trip-starts"
+    },
+    RideStatusScreen: {
+        path: "/ride-detail"
+    },
+    UploadDocument: {
+        path: "/upload-documents"
+    },
+    CompleteDelivery: {
+        path: "/delivery-completed"
     },
 }

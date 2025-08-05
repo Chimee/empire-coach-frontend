@@ -6,7 +6,7 @@ import { LocationSvg } from '../../svgFiles/LocationSvg'
 
 const DriversList = () => {
     return (
-        <div className='dashboard_card '>
+        <div className='dashboard_card mt-3'>
             <div className='d-flex gap-10px align-items-center justify-content-between dashboad-filter'>
                 <h6 className='sub_heading mb-0'>Drivers</h6>
                 <div className='d-flex gap-3 align-items-center '>

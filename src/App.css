@@ -57,7 +57,7 @@ table.table thead tr th {
   height: 85px;
   vertical-align: middle;
   border-bottom: 1px solid #b3b3b3;
-      white-space: nowrap;
+  white-space: nowrap;
 }
 table.table tbody tr td {
   color: #000000;
@@ -163,6 +163,7 @@ label.cmn_label.form-label {
 
 input.cmn_input.form-control:focus,
 select.cmn_select.form-select:focus,
+textarea:focus.form-control,
 textarea.cmn_input.form-control:focus {
   box-shadow: unset;
   border-color: var(--primary-color);

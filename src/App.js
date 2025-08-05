@@ -35,6 +35,12 @@ import DriverDetails from "./features/drivers/DriverDetails";
 import CustomerDetails from "./features/customer/CustomerDetails";
 import EditCompany from "./features/company/EditCompnay";
 import CreateJob from "./features/Jobs/CreateJob";
+import RideDeatails from "./features/driverScreens/rideDeatails";
+import StartPickup from "./features/driverScreens/StartPickup";
+import TripStarted from "./features/driverScreens/TripStarted";
+import RideStatusScreen from "./features/driverScreens/RideStatusScreen";
+import UploadDocument from "./features/driverScreens/UploadDocument";
+import CompleteDelivery from "./features/driverScreens/CompleteDelivery";
 
 function App() {
     const error = useSelector((state) => state.global.error);
@@ -90,6 +96,12 @@ function App() {
                         <Route path={AppRoutes.CreatePassword.path} element={<CreatePassword/>}/>
                         <Route path={AppRoutes.ResetPassword.path} element={<ResetPassword/>}/>
                         <Route path={AppRoutes.ForgotPassword.path} element={<ForgetPassword/>}/>
+                        <Route path={AppRoutes.RideDeatails.path} element={<RideDeatails/>}/>
+                        <Route path={AppRoutes.StartPickup.path} element={<StartPickup/>}/>
+                        <Route path={AppRoutes.TripStarted.path} element={<TripStarted/>}/>
+                        <Route path={AppRoutes.RideStatusScreen.path} element={<RideStatusScreen/>}/>
+                        <Route path={AppRoutes.UploadDocument.path} element={<UploadDocument/>}/>
+                        <Route path={AppRoutes.CompleteDelivery.path} element={<CompleteDelivery/>}/>
                         
                     </Route>
                     {/* Private Routes with Layout */}
