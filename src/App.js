@@ -37,6 +37,7 @@ import EditCompany from "./features/company/EditCompnay";
 import CreateJob from "./features/Jobs/CreateJob";
 import RideDeatails from "./features/driverScreens/rideDeatails";
 import StartPickup from "./features/driverScreens/StartPickup";
+import EndPickup from "./features/driverScreens/endPickup";
 import TripStarted from "./features/driverScreens/TripStarted";
 import RideStatusScreen from "./features/driverScreens/RideStatusScreen";
 import UploadDocument from "./features/driverScreens/UploadDocument";
@@ -98,6 +99,7 @@ function App() {
                         <Route path={AppRoutes.ForgotPassword.path} element={<ForgetPassword/>}/>
                         <Route path={AppRoutes.RideDeatails.path} element={<RideDeatails/>}/>
                         <Route path={AppRoutes.StartPickup.path} element={<StartPickup/>}/>
+                         <Route path={AppRoutes.EndPickup.path} element={<EndPickup/>}/>
                         <Route path={AppRoutes.TripStarted.path} element={<TripStarted/>}/>
                         <Route path={AppRoutes.RideStatusScreen.path} element={<RideStatusScreen/>}/>
                         <Route path={AppRoutes.UploadDocument.path} element={<UploadDocument/>}/>

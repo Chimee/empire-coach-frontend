@@ -132,6 +132,18 @@ const adminApi = dmApi.injectEndpoints({
             },
             invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
+          sendLinkAdmin: build.mutation({
+            query: ({ jobId  , driverId}) => ({
+                url: `admin/send-Link`,
+                method: "POST",
+                body: {jobId,driverId},
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryErrorAndSuccess(queryFulfilled, "Link", "sent");
+            },
+            invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
+        }),
     })
 })
 export const {
@@ -144,5 +156,6 @@ export const {
     useCancelJobsAdminMutation,
     useCancelJobsByAdminMutation,
     useApproveJobsByAdminMutation,
-    useDeclineJobCancelReqAdminMutation
+    useDeclineJobCancelReqAdminMutation,
+    useSendLinkAdminMutation
 } = adminApi;

@@ -13,9 +13,20 @@ export const globalApi = dmApi.injectEndpoints({
                 await handleQueryError(queryFulfilled)
             },
         }),
+         getUpdateLocationLogs: build.query({
+            query: ({id,driverId}) => ({
+                url: `driver/update-location?job_id=${id}&driver_id=${driverId}`,
+                method: "GET",
+                headers: getAuthorizationHeader()
+            }),
+            async onQueryStarted(_, {queryFulfilled,}) {
+                await handleQueryError(queryFulfilled)
+            },
+        }),
     }),
 })
 
 export const {
-    useGetRolesQuery
+    useGetRolesQuery,
+    useGetUpdateLocationLogsQuery
 } = globalApi;

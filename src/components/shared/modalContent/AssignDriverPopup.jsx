@@ -2,28 +2,26 @@ import React, { useState } from 'react';
 import CommonModal from '../modalLayout/CommonModal';
 import Button from '../buttons/button';
 import { Form } from 'react-bootstrap';
-import { useGetDriversListQuery ,useAssignDriverMutation } from '../../../app/driverApi/driverApi';
+import { useGetDriversListQuery, useAssignDriverMutation } from '../../../app/driverApi/driverApi';
+import { showToast } from '../../../helpers/Utils';
 const AssignDriverModal = ({ show, setShow, jobId }) => {
   const [selectedDriver, setSelectedDriver] = useState('');
-  const{data:drivers ,isLoading} = useGetDriversListQuery();
-  const[assignDriver ,{isLoading:isAssigning}] = useAssignDriverMutation();
+  const { data: drivers, isLoading } = useGetDriversListQuery();
+  const [assignDriver, { isLoading: isAssigning }] = useAssignDriverMutation();
   debugger;
   console.log(drivers)
-  const handleAssign = async() => {
+  const handleAssign = async () => {
     if (!selectedDriver) return alert('Please select a driver.');
-    debugger;
-    try{
-      const res = await assignDriver({jobId,driverId:selectedDriver});
-      if(res){
-        alert("driver assign")
-      }
+    try {
+      const res = await assignDriver({ jobId, driverId: selectedDriver });
+     
       setShow(false);
-    setSelectedDriver('');
+      setSelectedDriver('');
     }
-    catch(error){
+    catch (error) {
+      showToast(error?.data?.message || "Assign driver process failed",'error');
+    }
 
-    }
-   
   };
 
   const handleClose = () => {
@@ -31,8 +29,8 @@ const AssignDriverModal = ({ show, setShow, jobId }) => {
     setShow(false);
   };
 
-  
-  
+
+
 
   return (
     <CommonModal
@@ -59,7 +57,7 @@ const AssignDriverModal = ({ show, setShow, jobId }) => {
 
       <div className="d-flex justify-content-end gap-2">
         <Button label="Cancel" className="bordered px-4 py-2" onClick={handleClose} />
-        <Button label="Assign" className="px-4 py-2" onClick={handleAssign} />
+        <Button disabled={isAssigning} loading={isAssigning} label="Assign" className="px-4 py-2" onClick={handleAssign} />
       </div>
     </CommonModal>
   );

@@ -1,7 +1,5 @@
 
 
-
-
 import React from 'react'
 import './style.css'
 import Button from '../../components/shared/buttons/button'

@@ -78,7 +78,7 @@ export const Routes = {
         path: "/forgot-password"
     },   
     RideDeatails: {
-        path: "/ride-details"
+        path: "/ride-details/jobId/:id/driver/:driverId"
     },   
     CreatePassword: {
         path: "/set-password"
@@ -87,18 +87,21 @@ export const Routes = {
         path: "/reset-password"
     },
     StartPickup: {
-        path: "/start-pickup"
+        path: "/start-pickup/jobId/:id/driver/:driverId"
     },
     TripStarted: {
-        path: "/trip-starts"
+        path: "/trip-starts/jobId/:id/driver/:driverId"
     },
     RideStatusScreen: {
-        path: "/ride-detail"
+        path: "/ride-detail/jobId/:id/driver/:driverId"
     },
     UploadDocument: {
-        path: "/upload-documents"
+        path: "/upload-documents/jobId/:id/driver/:driverId"
+    },
+    EndPickup: {
+        path: "/end-pickup/jobId/:id/driver/:driverId"
     },
     CompleteDelivery: {
-        path: "/delivery-completed"
+        path: "/delivery-completed/jobId/:id/driver/:driverId"
     },
 }

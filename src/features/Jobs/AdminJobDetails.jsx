@@ -7,25 +7,27 @@ import './job.css'
 import Button from '../../components/shared/buttons/button'
 import { PendingCarSvg } from '../../svgFiles/PendingCarSvg'
 import { useParams, useLocation } from 'react-router'
-import { useGetAdminJobDetailsQuery, useCancelJobsAdminMutation, useApproveJobsByAdminMutation, useDeclineJobCancelReqAdminMutation } from '../../app/adminApi/adminApi'
+import { useGetAdminJobDetailsQuery, useCancelJobsAdminMutation, useApproveJobsByAdminMutation, useDeclineJobCancelReqAdminMutation, useSendLinkAdminMutation } from '../../app/adminApi/adminApi'
 import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 import toast from "react-hot-toast";
 import CancelConfirmationModal from '../../components/shared/modalContent/CancelJobModal'
 import AssignDriverModal from '../../components/shared/modalContent/AssignDriverPopup'
 import { getClassAndTitleByStatus } from '../../helpers/Utils'
+import { useGetUpdateLocationLogsQuery } from "../../app/globalApi"
 const AdminJobDetails = () => {
     const { id } = useParams();
-    const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, {skip: !id});
-    debugger;
-    const {state} = useLocation();
-    console.log(state)
-    console.log(jobDetails, "jobDetails");
+    const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });
+    const { state } = useLocation();
+    const [sentLink, setSentLink] = useState(false)
 
     const [cancelJobAdmin, { isLoading: isCancelling }] = useCancelJobsAdminMutation();
     const [declineCanceljobReq, { isLoading: isDeclining }] = useDeclineJobCancelReqAdminMutation();
+    const [sendLink, { isLoading: isSending }] = useSendLinkAdminMutation()
     const [cancelConfirmationPopup, setCancelConfirmation] = useState(false);
     const [assignDriverPopup, setAssignDriverPopup] = useState(false)
     const [approveJob, { isLoading: isApproving }] = useApproveJobsByAdminMutation();
+    const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery({ id, driverId: jobDetails?.data?.jobData?.driver_id })
+    console.log(getLocationUpdates, "getLocationUpdates")
 
 
 
@@ -39,20 +41,29 @@ const AdminJobDetails = () => {
             await cancelJobAdmin({ jobId: id }).unwrap();
         }
         catch (err) {
-            toast.error(err?.data?.message || "Cancellation failed")
+            toast.error(err?.data?.message || "Cancellation failed", "err")
 
         }
     };
 
     const handleCancelJob = async () => {
         try {
-            debugger;
             await declineCanceljobReq({ jobId: id }).unwrap();
         }
         catch (err) {
-            toast.error(err?.data?.message || "Decline Cancellation request failed")
+            toast.error(err?.data?.message || "Decline Cancellation request failed", 'err')
         }
     }
+
+    const handleSendLink = async () => {
+        try {
+            const res = await sendLink({ jobId: id, driverId: jobDetails?.data?.jobData?.driver_id });
+            setSentLink(true);
+        }
+        catch (err) {
+            toast.error(err?.data?.message || "send link to driver failed", 'err')
+        }
+    };
 
     //approve job by admin
     const handleApproveJob = async () => {
@@ -62,7 +73,7 @@ const AdminJobDetails = () => {
                 setAssignDriverPopup(true);
             }
         } catch (err) {
-            toast.error(err?.data?.message || "Job approval failed");
+            toast.error(err?.data?.message || "Job approval failed", 'err');
         }
     };
     const statusMeta = getClassAndTitleByStatus(jobDetails?.data?.jobData?.request_status);
@@ -193,17 +204,14 @@ const AdminJobDetails = () => {
                             </Row>
                             <Col lg={12} className='mt-3'>
                                 <h6 className='small-heading'>Location Tracking</h6>
+                                { <ul>
+                                    <li>
+
+                                    </li>
+                                </ul>}
                             </Col>
                         </Col>
                         <Col lg={3}>
-                            <h6 className='small-heading'>Job Status</h6>
-                            <div className='d-flex gap-2 align-items-center mt-3 mb-4'>
-                                <PendingCarSvg />
-                                <div className='job_status'>
-                                    <h6 className='mb-1'>Pending</h6>
-                                    <span>Last Updated:04/14/2025, 3:30PM</span>
-                                </div>
-                            </div>
                             <h6 className='timeline-title'>Timeline</h6>
                             <ul className='p-0 timeline d-flex flex-column gap-3 mt-3'>
                                 {jobDetails?.data?.jobLogs?.length > 0 ? (
@@ -227,21 +235,26 @@ const AdminJobDetails = () => {
                     </Row>
                 </Col>
                 <Col lg={3}>
-                 {(state.status !== "cancelled" && state.status !== "awaiting_reschedule_date") && (
-                    <>
-                    <h6 className='small-heading'>Driver</h6>
-                    <div className='no-driver'>
-                        <CarSvg />
-                        <h5 className='mb-4'>{(jobDetails?.data?.jobData?.driver_name === "Driver not assigned" || jobDetails?.data?.jobData?.driver_name === null) ? "Driver not assigned" : jobDetails?.data?.driver_name}</h5>
-                        {
-                            (!jobDetails?.data?.jobData?.driver_name || jobDetails?.data?.jobData?.driver_name === "Driver not assigned") ? (
-                                <Button label="Assign Driver" className="rounded w-75" onClick={() => setAssignDriverPopup(true)} />
-                            ) : (
-                                <Button label="Send Link" className="rounded" />
-                            )
-                        }
-                    </div>
-                    </>)}
+                    {(jobDetails?.data?.jobData?.request_status === "approved") && (
+                        <>
+                            <h6 className='small-heading'>Driver</h6>
+                            <div className='no-driver'>
+                                <CarSvg />
+                                <h5 className='mb-4'>
+                                    {(!jobDetails?.data?.jobData?.driver_name || jobDetails?.data?.jobData?.driver_name === "Driver not assigned")
+                                        ? "Driver not assigned"
+                                        : jobDetails?.data?.jobData?.driver_name}
+                                </h5>
+                                {
+                                    (!jobDetails?.data?.jobData?.driver_name || jobDetails?.data?.jobData?.driver_name === "Driver not assigned") ? (
+                                        <Button label="Assign Driver" className="rounded w-75" onClick={() => setAssignDriverPopup(true)} />
+                                    ) : (
+                                        <Button disabled={sentLink} loading={isSending} label="Send Link" className="rounded"
+                                            onClick={() => handleSendLink()} />
+                                    )
+                                }
+                            </div>
+                        </>)}
                 </Col>
 
             </Row>
