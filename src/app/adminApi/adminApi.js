@@ -144,6 +144,17 @@ const adminApi = dmApi.injectEndpoints({
             },
             invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
+        getRideDetails: build.query({
+            query: ({id}) => ({
+                url: `admin/fetch-ride-details?jobId=${id}`,
+                method: "GET",
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryErrorAndSuccess(queryFulfilled, "Details", "fetch");
+            },
+            invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
+        }),
     })
 })
 export const {
@@ -157,5 +168,6 @@ export const {
     useCancelJobsByAdminMutation,
     useApproveJobsByAdminMutation,
     useDeclineJobCancelReqAdminMutation,
-    useSendLinkAdminMutation
+    useSendLinkAdminMutation,
+    useGetRideDetailsQuery,
 } = adminApi;

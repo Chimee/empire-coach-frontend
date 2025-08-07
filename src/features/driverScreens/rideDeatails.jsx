@@ -19,7 +19,6 @@ debugger;
    const handleCheckout = async () => {
     try {
         const res = await starRide({ jobId: id, driverId });
-        console.log(res)
         if (res?.data) {
             navigate(`/start-pickup/jobId/${id}/driver/${driverId}`);
         }

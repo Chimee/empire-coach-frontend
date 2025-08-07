@@ -8,8 +8,6 @@ const AssignDriverModal = ({ show, setShow, jobId }) => {
   const [selectedDriver, setSelectedDriver] = useState('');
   const { data: drivers, isLoading } = useGetDriversListQuery();
   const [assignDriver, { isLoading: isAssigning }] = useAssignDriverMutation();
-  debugger;
-  console.log(drivers)
   const handleAssign = async () => {
     if (!selectedDriver) return alert('Please select a driver.');
     try {

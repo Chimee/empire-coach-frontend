@@ -7,7 +7,7 @@ import './job.css'
 import Button from '../../components/shared/buttons/button'
 import { PendingCarSvg } from '../../svgFiles/PendingCarSvg'
 import { useParams, useLocation } from 'react-router'
-import { useGetAdminJobDetailsQuery, useCancelJobsAdminMutation, useApproveJobsByAdminMutation, useDeclineJobCancelReqAdminMutation, useSendLinkAdminMutation } from '../../app/adminApi/adminApi'
+import { useGetAdminJobDetailsQuery, useCancelJobsAdminMutation, useApproveJobsByAdminMutation, useDeclineJobCancelReqAdminMutation, useSendLinkAdminMutation ,useGetRideDetailsQuery } from '../../app/adminApi/adminApi'
 import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 import toast from "react-hot-toast";
 import CancelConfirmationModal from '../../components/shared/modalContent/CancelJobModal'
@@ -26,10 +26,16 @@ const AdminJobDetails = () => {
     const [cancelConfirmationPopup, setCancelConfirmation] = useState(false);
     const [assignDriverPopup, setAssignDriverPopup] = useState(false)
     const [approveJob, { isLoading: isApproving }] = useApproveJobsByAdminMutation();
-    const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery({ id, driverId: jobDetails?.data?.jobData?.driver_id })
-    console.log(getLocationUpdates, "getLocationUpdates")
 
+    const jobData = jobDetails?.data?.jobData;
+    const driverId = jobData?.driver_id;
 
+    const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
+        { id, driverId },
+        { skip: !id || !driverId }
+    );
+    const{data:fetchRideDetails} = useGetRideDetailsQuery({ id }, { skip: !id });
+    console.log(fetchRideDetails);
 
     const breadcrumbItems = [
         { name: 'Jobs', path: '/admin-jobs' },
@@ -204,7 +210,7 @@ const AdminJobDetails = () => {
                             </Row>
                             <Col lg={12} className='mt-3'>
                                 <h6 className='small-heading'>Location Tracking</h6>
-                                { <ul>
+                                {<ul>
                                     <li>
 
                                     </li>
