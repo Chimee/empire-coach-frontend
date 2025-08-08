@@ -99,7 +99,7 @@ function App() {
                         <Route path={AppRoutes.ForgotPassword.path} element={<ForgetPassword/>}/>
                         <Route path={AppRoutes.RideDeatails.path} element={<RideDeatails/>}/>
                         <Route path={AppRoutes.StartPickup.path} element={<StartPickup/>}/>
-                         <Route path={AppRoutes.EndPickup.path} element={<EndPickup/>}/>
+                        <Route path={AppRoutes.EndPickup.path} element={<EndPickup/>}/>
                         <Route path={AppRoutes.TripStarted.path} element={<TripStarted/>}/>
                         <Route path={AppRoutes.RideStatusScreen.path} element={<RideStatusScreen/>}/>
                         <Route path={AppRoutes.UploadDocument.path} element={<UploadDocument/>}/>

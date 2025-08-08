@@ -12,17 +12,24 @@ import CancelConfirmationModal from '../../components/shared/modalContent/Cancel
 import ReScheduleDate from '../../components/shared/modalContent/ReschceduleDate'
 import { getClassAndTitleByStatus } from '../../helpers/Utils'
 import { LuClock } from "react-icons/lu";
+import { useGetUpdateLocationLogsQuery } from "../../app/globalApi"
 const JobDetails = () => {
     const { id } = useParams();
     
     
-    const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id });
-    console.log(jobDetails,"jobDetails");
+    const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id },{ skip: !id });
     const {state} = useLocation();
     const statusMeta = getClassAndTitleByStatus(jobDetails?.data?.jobData?.request_status);
     
     const [cancelConfirmation, setCancelConfirmation] = useState(false);
     const [reScheduleConfirmation, setRescheduleConfirmation] = useState(false);
+      const jobData = jobDetails?.data?.jobData;
+     const driverId = jobData?.driver_id;
+      const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
+            { id, driverId },
+            { skip: !id || !driverId }
+        );
+    
 
     const breadcrumbItems = [
         { name: 'Jobs', path: '/jobs' },

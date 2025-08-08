@@ -265,7 +265,7 @@ const UploadDocument = () => {
                     formData.append("other_receipts", file);
                     hasFile = true;
                 }
-               else if(file){
+               else if(file && files.otherReceipts[0] != null){
                   hasFile = true;
                }
             });
@@ -277,7 +277,7 @@ const UploadDocument = () => {
         const res = await updateTripDocuments(formData);
         if (res.data) {
             toast.success(res.data?.message || "Trip documents have been updated");
-            navigate(`/trip-starts/jobId/${id}/driver/${driverId}`);
+            navigate(`/ride-detail/jobId/${id}/driver/${driverId}`);
         }
     } catch (error) {
         console.error(error?.data?.message, error);
@@ -290,13 +290,13 @@ const UploadDocument = () => {
             <h3 className="mob-heading mt-1 mb-3">Upload Trip Documents</h3>
             <div className="flex-grow-1 picupForm">
                 <Row className="row-gap-2 mb-2">
-                    <Col xs={6} className="pe-0">
+                    <Col xs={6}>
                         {renderTile("Fuel Receipt", files.fuel, (e) => handleFileChange(e, "fuel"), false, null, () => removeFile("fuel"))}
                     </Col>
                     <Col xs={6}>
                         {renderTile("Hotel Receipt", files.hotel, (e) => handleFileChange(e, "hotel"), false, null, () => removeFile("hotel"))}
                     </Col>
-                    <Col xs={6} className="pe-0">
+                    <Col xs={6}>
                         {renderTile("Flight Confirmation", files.flight, (e) => handleFileChange(e, "flight"), false, null, () => removeFile("flight"))}
                     </Col>
                     <Col xs={6}>

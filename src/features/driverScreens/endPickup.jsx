@@ -15,7 +15,6 @@ const EndPickup = () => {
     const [photos, setPhotos] = useState([]);
     const [previewUrls, setPreviewUrls] = useState([]);
     const navigate = useNavigate();
-
     const [updateRideDetails, { isLoading }] = useUpdateRideDetailsMutation();
 
     const handleFileChange = (e) => {
@@ -48,7 +47,6 @@ const EndPickup = () => {
             formData.append("ending_mileage", mileage);
             formData.append("delivery_notes", deliveryNotes);
             formData.append("ride_status", "delivered");
-
             photos.forEach((file) => {
                 formData.append("delivery_photos", file);
             });
@@ -66,7 +64,7 @@ const EndPickup = () => {
 
     return (
         <div className='mobile_wrapper position-relative d-flex flex-column px-3 pt-3'>
-            <BackChevronSvg />
+            <BackChevronSvg  onClick = {()=>navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)}/>
             <h3 className='mob-heading mt-1'>Start Delivery</h3>
 
             <div className='flex-grow-1 picupForm'>

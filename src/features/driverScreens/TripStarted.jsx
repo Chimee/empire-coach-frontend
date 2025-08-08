@@ -14,7 +14,7 @@ const TripStarted = () => {
     return (
         <div className='mobile_wrapper position-relative d-flex flex-column px-3 pt-3 gap-5 justify-content-end tripStarts'>
             
-                <Image src={tripSvgImage} alt={'trip-picture'} />
+                <Image src={tripSvgImage} alt={'trip-picture'} className='trip-picture' />
         
             <div className='picupForm '>
                 <h6 className='d-flex gap-2 align-items-center justify-content-center highlight'><CorrectSvg /> Trip Started</h6>

@@ -14,6 +14,11 @@
   left: 11px;
   top: 10px;
 }
+.trip-picture{
+  max-width: 335px;
+  width: 100%; 
+  margin:0 auto;
+}
 .loaction {
   padding: 0px 15px;
 }
@@ -109,11 +114,7 @@ body,
   flex-direction: column;
 }
 
-.flex-grow-1 {
-  flex-grow: 1;
-  position: relative;
-  overflow: hidden;
-}
+
 
 .full-map {
   width: 100%;

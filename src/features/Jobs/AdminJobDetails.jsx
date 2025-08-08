@@ -7,7 +7,7 @@ import './job.css'
 import Button from '../../components/shared/buttons/button'
 import { PendingCarSvg } from '../../svgFiles/PendingCarSvg'
 import { useParams, useLocation } from 'react-router'
-import { useGetAdminJobDetailsQuery, useCancelJobsAdminMutation, useApproveJobsByAdminMutation, useDeclineJobCancelReqAdminMutation, useSendLinkAdminMutation ,useGetRideDetailsQuery } from '../../app/adminApi/adminApi'
+import { useGetAdminJobDetailsQuery, useCancelJobsAdminMutation, useApproveJobsByAdminMutation, useDeclineJobCancelReqAdminMutation, useSendLinkAdminMutation, useGetRideDetailsQuery } from '../../app/adminApi/adminApi'
 import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 import toast from "react-hot-toast";
 import CancelConfirmationModal from '../../components/shared/modalContent/CancelJobModal'
@@ -26,7 +26,6 @@ const AdminJobDetails = () => {
     const [cancelConfirmationPopup, setCancelConfirmation] = useState(false);
     const [assignDriverPopup, setAssignDriverPopup] = useState(false)
     const [approveJob, { isLoading: isApproving }] = useApproveJobsByAdminMutation();
-
     const jobData = jobDetails?.data?.jobData;
     const driverId = jobData?.driver_id;
 
@@ -34,8 +33,9 @@ const AdminJobDetails = () => {
         { id, driverId },
         { skip: !id || !driverId }
     );
-    const{data:fetchRideDetails} = useGetRideDetailsQuery({ id }, { skip: !id });
-    console.log(fetchRideDetails);
+
+    const { data: fetchRideDetails } = useGetRideDetailsQuery({ id }, { skip: !id });
+   
 
     const breadcrumbItems = [
         { name: 'Jobs', path: '/admin-jobs' },
@@ -48,7 +48,6 @@ const AdminJobDetails = () => {
         }
         catch (err) {
             toast.error(err?.data?.message || "Cancellation failed", "err")
-
         }
     };
 
@@ -241,26 +240,44 @@ const AdminJobDetails = () => {
                     </Row>
                 </Col>
                 <Col lg={3}>
-                    {(jobDetails?.data?.jobData?.request_status === "approved") && (
-                        <>
-                            <h6 className='small-heading'>Driver</h6>
-                            <div className='no-driver'>
-                                <CarSvg />
-                                <h5 className='mb-4'>
-                                    {(!jobDetails?.data?.jobData?.driver_name || jobDetails?.data?.jobData?.driver_name === "Driver not assigned")
-                                        ? "Driver not assigned"
-                                        : jobDetails?.data?.jobData?.driver_name}
-                                </h5>
-                                {
-                                    (!jobDetails?.data?.jobData?.driver_name || jobDetails?.data?.jobData?.driver_name === "Driver not assigned") ? (
-                                        <Button label="Assign Driver" className="rounded w-75" onClick={() => setAssignDriverPopup(true)} />
-                                    ) : (
-                                        <Button disabled={sentLink} loading={isSending} label="Send Link" className="rounded"
-                                            onClick={() => handleSendLink()} />
-                                    )
-                                }
-                            </div>
-                        </>)}
+                    {(jobDetails?.data?.jobData?.request_status === "approved" ||
+                        jobDetails?.data?.jobData?.request_status === "in-transit" ||
+                        jobDetails?.data?.jobData?.request_status === "delivered") && (
+                            <>
+                                <h6 className="small-heading">Driver</h6>
+                                <div className="no-driver">
+                                    <CarSvg />
+                                    <h5 className="mb-4">
+                                        {!jobDetails?.data?.jobData?.driver_name ||
+                                            jobDetails?.data?.jobData?.driver_name === "Driver not assigned"
+                                            ? "Driver not assigned"
+                                            : jobDetails?.data?.jobData?.driver_name}
+                                    </h5>
+
+                                    {(
+                                        jobDetails?.data?.jobData?.request_status === "approved"
+                                    ) && (
+                                            !jobDetails?.data?.jobData?.driver_name ||
+                                                jobDetails?.data?.jobData?.driver_name === "Driver not assigned" ? (
+                                                <Button
+                                                    label="Assign Driver"
+                                                    className="rounded w-75"
+                                                    onClick={() => setAssignDriverPopup(true)}
+                                                />
+                                            ) : (
+                                                <Button
+                                                    disabled={sentLink}
+                                                    loading={isSending}
+                                                    label="Send Link"
+                                                    className="rounded"
+                                                    onClick={() => handleSendLink()}
+                                                />
+                                            )
+                                        )}
+                                </div>
+                            </>
+                        )}
+
                 </Col>
 
             </Row>

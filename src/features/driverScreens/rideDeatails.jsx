@@ -1,4 +1,4 @@
-import React ,{useState}from 'react'
+import React ,{useState,useEffect}from 'react'
 import './style.css'
 import { DriverLocationSvg } from '../../svgFiles/DriverLocationSvg'
 import { DriverDropLocationSvg } from '../../svgFiles/DriverDropLocationSvg'
@@ -7,15 +7,34 @@ import toast from "react-hot-toast";
 import { useGetJobPickupDetailsQuery,useStartRideMutation} from '../../app/driverApi/driverApi'
 
 import Button from '../../components/shared/buttons/button'
+import DriverMapscreen from './DriverMapscreen'
 const RideDeatails = () => {
 const { id, driverId } = useParams();
 const navigate = useNavigate()
-debugger;
+// debugger;
     const { data: jobDetails} = useGetJobPickupDetailsQuery({ id }, {skip: !id});
     const[starRide ,{isLoading}] = useStartRideMutation();
-    console.log(jobDetails);
+    console.log(jobDetails,"jobDetails");
+  const [currentLocation, setCurrentLocation] = useState(null);
 
-
+  const pickup = jobDetails?.data?.jobData;
+  const pickupCoords = pickup ? { lat: pickup.pickup_latitude, lng: pickup.pickup_longitude } : null;
+  const dropoffCoords = pickup ? { lat: pickup.dropoff_latitude, lng: pickup.dropoff_longitude } : null;
+ useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+        }
+      );
+    }
+  }, []);
    const handleCheckout = async () => {
     try {
         const res = await starRide({ jobId: id, driverId });
@@ -28,8 +47,11 @@ debugger;
 };
     return (
         <div className='mobile_wrapper position-relative d-flex flex-column'>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6396957.383016897!2d-99.66486626180465!3d38.47577194024099!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fb9fe5f285e3d%3A0x8b5109a227086f55!2sCalifornia%2C%20USA!5e0!3m2!1sen!2sin!4v1753956070095!5m2!1sen!2sin"
-                width="600" height="170" style={{ border: 0 }} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <DriverMapscreen
+          pickupCoords={pickupCoords}
+          dropoffCoords={dropoffCoords}
+          currentLocation={currentLocation}
+        />
             <div className='loaction flex-grow-1'>
                 <ul className='p-0 pt-3'>
                     <li className='d-flex gap-2 pickupLoc position-relative pb-3'>
@@ -68,6 +90,8 @@ debugger;
                     )}
                 </div>
             </div>
+            {console.log(jobDetails?.data?.jobData.isLinkExpired,"jobDetails?.data?.jobData.isLinkExpired")
+            }
             {!jobDetails?.data?.jobData.isLinkExpired && (
                 <div className='text-center px-3 pb-3'>
                 {jobDetails?.data?.jobData.request_status === "delivered" ? (

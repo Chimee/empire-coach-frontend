@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { ClockSvg } from '../../svgFiles/ClockSvg';
 import { LocationSvg } from '../../svgFiles/LocationSvg';
 import { useGetAllJobsByStatusQuery } from '../../app/customerApi/customerApi';
+import { useGetAllJobsByStatusAdminQuery } from '../../app/adminApi/adminApi';
+import { jwtDecode } from "../../helpers/AccessControlUtils";
 
 const tabesName = {
   All: 'all',
@@ -18,25 +20,33 @@ const QuickJobsList = () => {
   const [jobList, setJobList] = useState([]);
 
   const scrollRef = useRef(null);
-  const { data, isFetching, isLoading } = useGetAllJobsByStatusQuery(
+
+  const token = localStorage.getItem("authToken");
+  const parseToken = token ? jwtDecode(token) : {};
+
+  // Decide which query hook to use based on role
+  const isUser = parseToken?.role === "user";
+  const queryHook = isUser ? useGetAllJobsByStatusQuery : useGetAllJobsByStatusAdminQuery;
+
+  const { data, isFetching, isLoading } = queryHook(
     { tabName, page, search: '' },
     { keepPreviousData: true }
   );
 
+  // Reset on tab change
   useEffect(() => {
     setPage(1);
     setJobList([]);
   }, [tabName]);
 
-
+  // Append or replace job list
   useEffect(() => {
     if (data?.data?.data?.length) {
       setJobList(prev =>
         page === 1 ? data.data.data : [...prev, ...data.data.data]
       );
     }
-  }, [data]);
-
+  }, [data, page]);
 
   const handleScroll = useCallback(() => {
     const container = scrollRef.current;
@@ -69,7 +79,7 @@ const QuickJobsList = () => {
         <h6 className="sub_heading mb-0">Quick Access</h6>
         <div className="d-flex gap-3 align-items-center">
           <span>Status :</span>
-          <select onChange={handleFilter} className="form-select">
+          <select onChange={handleFilter} className="form-select" value={tabName}>
             {Object.keys(tabesName).map(key => (
               <option key={key} value={key}>
                 {key}
@@ -78,6 +88,7 @@ const QuickJobsList = () => {
           </select>
         </div>
       </div>
+
       <ul className="job_list d-flex flex-column gap-3 p-0">
         {jobList.length > 0 ? (
           jobList.map((job, i) => (
@@ -125,6 +136,7 @@ const QuickJobsList = () => {
         ) : !isLoading ? (
           <li className="text-muted">No jobs found.</li>
         ) : null}
+
         {isFetching && <li>Loading more...</li>}
       </ul>
     </div>

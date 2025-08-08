@@ -222,7 +222,10 @@ span.input-group-text {
   grid-template-columns: auto auto auto auto;
   gap: 13px;
 }
-
+button.cmn_btn.disabled {
+    opacity: 0.6;
+    cursor: no-drop;
+}
 li.grid_card {
   display: flex;
   align-items: center;
