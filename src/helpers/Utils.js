@@ -313,3 +313,11 @@ export async function getLocationName(lat, lng) {
     return null;
   }
 }
+
+export const appendFileOrNull = (key, value ,formData) => {
+        if (value instanceof File) {
+            formData.append(key, value);
+        } else if (value === null) {
+            formData.append(key, "null");
+        }
+    };

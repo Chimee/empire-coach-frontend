@@ -11,7 +11,7 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
     both: false,
   });
   const today = new Date().toISOString().split("T")[0];
-  console.log(today)
+
 
   // Handle checkbox logic
   const handleCheckboxChange = (e) => {
@@ -55,7 +55,7 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
     const pickupDate = formData.pickup_date ? new Date(formData.pickup_date) : null;
     pickupDate.setHours(0,0,0,0)
  
-    console.log(formData.pickup_time);
+
      const dropoffDate = formData.dropoff_date ? new Date(formData.dropoff_date) : null;
      const timeParts = formData.pickup_time.split(':');
      

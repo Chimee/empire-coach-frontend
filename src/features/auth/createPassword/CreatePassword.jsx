@@ -20,7 +20,7 @@ const CreatePassword = () => {
 
   const [decodedData, setDecodedData] = useState(null);
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
-  console.log(decodedData, "decodedData")
+
   const [credentials, setCredentials] = useState({
     password: '',
     confirmPassword: '',
@@ -51,7 +51,7 @@ const CreatePassword = () => {
 
     const passwordRegex = /^(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    console.log("api called")
+
 
     if (!credentials.password) {
       toast.dismiss();
@@ -86,7 +86,7 @@ const CreatePassword = () => {
 
     try {
 
-      console.log("api called #2")
+
 
       await resetPassword({
         data: {
@@ -99,7 +99,7 @@ const CreatePassword = () => {
       setPasswordCreated(true);
       navigate("/login");
     } catch (err) {
-      console.error("Reset password error", err);
+
       toast.error(err?.data?.loggedError || err?.data?.message || "Failed to reset password");
     }
   };

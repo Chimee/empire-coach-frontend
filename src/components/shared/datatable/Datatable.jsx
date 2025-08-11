@@ -24,7 +24,7 @@ const Datatable = ({
 }) => {
   const [itemsPerPage] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
-  console.log(tableData, "tableData")
+ 
   useEffect(() => {
     if (tableData && tableData.data && Array.isArray(tableData.data)) {
       setTotalItems(tableData?.total);
@@ -54,7 +54,7 @@ const Datatable = ({
   };
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  console.log(totalPages, "totalPagesww")
+
   return (
     <div
       className={

@@ -20,7 +20,7 @@ import { getLocationName } from '../../helpers/Utils'
 const AdminJobDetails = () => {
     const { id } = useParams();
     const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });
-    console.log(jobDetails)
+
     const { state } = useLocation();
     const [sentLink, setSentLink] = useState(false)
 
@@ -37,27 +37,27 @@ const AdminJobDetails = () => {
         { id, driverId },
         { skip: !id || !driverId }
     );
-    console.log(getLocationUpdates, "getLocationUpdates");
-      const [locationNames, setLocationNames] = useState([]);
 
-  useEffect(() => {
-    async function fetchLocationNames() {
-      if (!getLocationUpdates?.data) return;
+    const [locationNames, setLocationNames] = useState([]);
 
-      const names = await Promise.all(
-        getLocationUpdates.data.map(async (log) => {
-          return await getLocationName(log.latitude, log.longitude);
-        })
-      );
+    useEffect(() => {
+        async function fetchLocationNames() {
+            if (!getLocationUpdates?.data) return;
 
-      setLocationNames(names);
-    }
+            const names = await Promise.all(
+                getLocationUpdates.data.map(async (log) => {
+                    return await getLocationName(log.latitude, log.longitude);
+                })
+            );
 
-    fetchLocationNames();
-  }, [getLocationUpdates]);
+            setLocationNames(names);
+        }
+
+        fetchLocationNames();
+    }, [getLocationUpdates]);
 
     const { data: fetchRideDetails } = useGetRideDetailsQuery({ id }, { skip: !id });
-    console.log(fetchRideDetails);
+
     const vehicle_photo = fetchRideDetails?.data?.delivery_photos
 
     const breadcrumbItems = [
@@ -240,34 +240,23 @@ const AdminJobDetails = () => {
                                 {/* {getLocationName} */}
                                 <h6 className='small-heading'>Location Tracking</h6>
                                 <ul className="p-0 timeline d-flex flex-column gap-3 mt-3 tripProgress">
-      {getLocationUpdates?.data?.map((log, i) => (
-        <li
-          key={i}
-          className="d-flex gap-3 align-items-center position-relative"
-        >
-          <img src={TickSvg} alt="tick" className="position-relative z-3" />
-          <div className="timeline_status">
-            <span className="d-block text-capitalize">
-              {locationNames[i] || "Loading..."}
-            </span>
-            <span>{formatDateToMDY(log?.createdAt)}</span>
-          </div>
-        </li>
-      ))}
-    </ul>
-                                    {/* <li className='d-flex gap-3 align-items-center position-relative'>
-                                        <img src={TickSvg} alt='picture' className='position-relative z-3' />
-                                        <div class="timeline_status" >
-                                            <span class="d-block text-capitalize">
-                                                submitted</span>
-                                            <span>7/28/2025</span>
-                                        </div>
-                                    </li>
-                                </ul>} */}
+                                    {getLocationUpdates?.data?.map((log, i) => (
+                                        <li
+                                            key={i}
+                                            className="d-flex gap-3 align-items-center position-relative"
+                                        >
+                                            <img src={TickSvg} alt="tick" className="position-relative z-3" />
+                                            <div className="timeline_status">
+                                                <span className="d-block text-capitalize">
+                                                    {locationNames[i] || "Loading..."}
+                                                </span>
+                                                <span>{formatDateToMDY(log?.createdAt)}</span>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
                             </Col>
                             <Row>
-                                {console.log(vehicle_photo, "vehicle_photo")
-                                }
                                 {vehicle_photo?.map((curelem, index) => {
                                     return (
 

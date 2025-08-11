@@ -16,7 +16,7 @@ const Admin = () => {
         setSearch(searchText);
     };
     const { data: adminList } = useGetAdminListQuery({ page, limit: 10, search: search });
-    console.log(adminList, "adminList");
+
 
 
 

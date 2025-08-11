@@ -20,7 +20,7 @@ const TableFilter = ({ title, buttonTitle, onClick, onSearch }) => {
         <input onChange={(e) => {
           setSearchText(e.target.value);
           setDebouncedSearch(e.target.value); // update debounce source
-        }} type="search" placeholder="Search by Company name or User name" />
+        }} type="search" placeholder="Search by Job Id, VIN, PO Number Or Customer" />
       </div>
       <h3 className="flex-grow-1 mb-0">{title}</h3>{" "}
     </div>

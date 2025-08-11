@@ -19,7 +19,7 @@ const AddDriver = () => {
   const driverId = state?.driverId;
 
   const { data, isFetching } = useGetDriverDetailQuery({ id: driverId }, { skip: !isEditMode, refetchOnMountOrArgChange: true, });
-console.log(data,"--->");
+
 
   const [userData, setUserData] = useState({
     name: '',

@@ -4,7 +4,6 @@ import InputWithLabel from '../../../components/shared/fields/InputWithLabel';
 import { useGetCustomerProfileQuery } from '../../../app/customerApi/customerApi';
 const JobStepOne = ({ handleNext }) => {
   const { data: customerProfile } = useGetCustomerProfileQuery();
-console.log(customerProfile,"customerProfile");
 
   return (
     <div>

@@ -10,7 +10,7 @@ const JobStepFive = ({ handleNext, handlePrevious, formData, setFormData }) => {
       [name]: checked
     }));
   };
-console.log(formData,"formData");
+
 
   return (
  <div>

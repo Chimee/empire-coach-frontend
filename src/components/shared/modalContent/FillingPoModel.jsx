@@ -27,7 +27,7 @@ const VehicleDetailsModal = ({ show, setShow, vehicleData = {}, job }) => {
       toast.success("PO Number submitted successfully");
       setShow(false);
     } catch (error) {
-      console.error("PO fill error:", error);
+
       toast.error(error?.data?.message || "Failed to submit PO Number");
     }
   };

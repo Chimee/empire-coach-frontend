@@ -44,7 +44,7 @@ import PhoneInput from "react-phone-input-2";
   };
 
   const validateStepThree = () => {
-    console.log(formData);
+
     const fields = [
       { value: formData.pickup_location, label: "Pickup location" },
       { value: formData.pickup_longitude, label: "Pickup longitude" },

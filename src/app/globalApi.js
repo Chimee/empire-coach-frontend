@@ -22,9 +22,7 @@ export const globalApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 try {
                     const res = await queryFulfilled;
-                    console.log("Raw response from backend:", res);
                 } catch (err) {
-                    console.log("Error:", err);
                 }
             }
         }),

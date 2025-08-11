@@ -29,7 +29,7 @@ const ForgetPassword = () => {
             }, 2000);
 
         } catch (error) {
-            console.error("Forgot Password Error:", error);
+
             if (error.status === 400 || error.status === 404) {
                 toast.error(error.data.message || "Invalid Email or User not found.");
             } else if (error.data && error.data.message) {

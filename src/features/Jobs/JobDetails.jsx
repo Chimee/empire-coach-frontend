@@ -22,8 +22,6 @@ const JobDetails = () => {
 
     const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id }, { skip: !id });
     const { state } = useLocation();
-    console.log(state,"state");
-    
     const isCompleted = state?.completed
     const statusMeta = getClassAndTitleByStatus(jobDetails?.data?.jobData?.request_status);
 
@@ -35,7 +33,7 @@ const JobDetails = () => {
         { id, driverId },
         { skip: !id || !driverId }
     );
-    console.log(getLocationUpdates, "getLocationUpdates");
+
     const [locationNames, setLocationNames] = useState([]);
 
     useEffect(() => {

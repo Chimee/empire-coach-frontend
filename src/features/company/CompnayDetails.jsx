@@ -13,7 +13,7 @@ const CompnayDetails = () => {
     const { id } = useParams()
     const { data: companyDetails, isLoading } = useGetCompanyDetailQuery({ id })
     const { data: customerList } = useGetCompanyCustomersListQuery({ id })
-    console.log("customerList", customerList);
+
 
     const navigate = useNavigate()
     const breadcrumbItems = [

@@ -10,7 +10,7 @@ const DriverDetails = () => {
     const {id} = useParams()
     const {data:driverDetails, isLoading} = useGetDriverDetailQuery({id});
     const[updateDriverStatus ,{isLoading:isUpdating}] = useUpdateDriverMutation()
-    console.log(driverDetails,"driverDetails");
+
     const[isActive,setIsActive] = useState(false);
 
     useEffect(() => {
@@ -36,7 +36,7 @@ const DriverDetails = () => {
       await updateDriverStatus(formData).unwrap();
     } catch (err) {
       setIsActive(isActive);
-      console.error(err);
+
     }
   };
 

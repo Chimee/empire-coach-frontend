@@ -15,7 +15,6 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
     fuelType: '',
     PO_number: ''
   });
-  console.log(currentVehicle, "currentVehicle");
 
   const YearOptions = [
     { label: "2024", value: "2024" },

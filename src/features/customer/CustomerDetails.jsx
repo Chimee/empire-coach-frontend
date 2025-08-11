@@ -7,7 +7,7 @@ import { useGetCustomerDetailQuery } from '../../app/customerApi/customerApi';
 const CustomerDetails = () => {
     const { id } = useParams()
     const { data: companyDetails, isLoading } = useGetCustomerDetailQuery({ id })
-    console.log("companyDetails", companyDetails,id);
+   
 
   
     const breadcrumbItems = [

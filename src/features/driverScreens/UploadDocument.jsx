@@ -9,6 +9,7 @@ import {
 } from '../../app/driverApi/driverApi';
 import { useNavigate, useParams, useLocation } from 'react-router';
 import toast from "react-hot-toast";
+import { appendFileOrNull } from '../../helpers/Utils';
 
 const UploadDocument = () => {
     const [files, setFiles] = useState({
@@ -22,7 +23,6 @@ const UploadDocument = () => {
     const location = useLocation();
     const { request_status } = location.state || {};
     const { data: fetchTripDocuments } = useGetAllTripDocumentsQuery({ id, driverId }, { refetchOnMountOrArgChange: true });
-     console.log(fetchTripDocuments);
     const [notes, setNotes] = useState("");
     const navigate = useNavigate();
     const [updateTripDocuments, { isLoading: isUpdating }] = useUpdateTripDocumentsMutation();
@@ -101,9 +101,8 @@ const UploadDocument = () => {
             try {
                 otherReceiptsParsed = JSON.parse(doc.other_receipts || "[]").map(r => r.location);
             } catch (err) {
-                console.error("Error parsing other_receipts", err);
+           
             }
-
             const mappedFiles = {
                 fuel: doc.fuel_receipt || null,
                 hotel: doc.hotel_receipt || null,
@@ -123,14 +122,7 @@ const UploadDocument = () => {
                 type="file"
                 accept="image/*,application/pdf"
                 onChange={onChange}
-                style={{
-                    position: "absolute",
-                    opacity: 0,
-                    width: "100%",
-                    height: "100%",
-                    cursor: "pointer",
-                    zIndex: 1
-                }}
+                className='render-upload-file'
             />
 
             <div style={{ zIndex: 2 }}>
@@ -153,22 +145,10 @@ const UploadDocument = () => {
 
             {file && (
                 <div
-                    className="d-flex align-items-center justify-content-center"
-                    style={{
-                        maxWidth: "90%",
-                        overflow: "hidden",
-                        zIndex: 2,
-                        gap: "4px"
-                    }}
+                    className="d-flex align-items-center justify-content-center upload-file"
                 >
                     <small
-                        style={{
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            cursor: "pointer",
-                            flex: 1
-                        }}
+                        className='upload-file-small'
                         onClick={(e) => {
                             e.stopPropagation();
                             openPreview(file);
@@ -195,25 +175,10 @@ const UploadDocument = () => {
             {removableBlock && (
                 <button
                     type="button"
+                    className="remove-receipt-btn"
                     onClick={(e) => {
                         e.stopPropagation();
                         onRemoveBlock();
-                    }}
-                    style={{
-                        position: "absolute",
-                        top: "-5px",
-                        right: "-5px",
-                        background: "black",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "50%",
-                        width: "20px",
-                        height: "20px",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                        lineHeight: "18px",
-                        padding: 0,
-                        zIndex: 3
                     }}
                 >
                     ×
@@ -228,38 +193,12 @@ const UploadDocument = () => {
             formData.append("job_id", id);
             formData.append("driver_id", driverId);
             formData.append("additional_notes", notes);
+            appendFileOrNull("fuel_receipt", files.fuel, formData);
+            appendFileOrNull("hotel_receipt", files.hotel, formData);
+            appendFileOrNull("flight_confirmation", files.flight, formData);
+            appendFileOrNull("daily_driver_log", files.driverLog, formData);
 
-            console.log(files);
-            debugger;
-
-            if (files.fuel instanceof File) {
-                formData.append("fuel_receipt", files.fuel);
-            } else if (files.fuel === null) {
-                formData.append("fuel_receipt", "null");
-            }
-
-
-            if (files.hotel instanceof File) {
-                formData.append("hotel_receipt", files.hotel);
-            } else if (files.hotel === null) {
-                formData.append("hotel_receipt", "null");
-            }
-
-
-            if (files.flight instanceof File) {
-                formData.append("flight_confirmation", files.flight);
-            } else if (files.flight === null) {
-                formData.append("flight_confirmation", "null");
-            }
-
-
-            if (files.driverLog instanceof File) {
-                formData.append("daily_driver_log", files.driverLog);
-            } else if (files.driverLog === null) {
-                formData.append("daily_driver_log", "null");
-            }
-
-
+            //handle file otherreipts
             if (files.otherReceipts?.length) {
                 let hasFile = false;
                 files.otherReceipts.forEach((file) => {
@@ -271,23 +210,27 @@ const UploadDocument = () => {
                         hasFile = true;
                     }
                 });
+                const existingOtherReceiptsUrls = files.otherReceipts
+                    .filter(f => f && !(f instanceof File))
+                    .map(url => ({ location: url }));
+                formData.append("existing_other_receipts", JSON.stringify(existingOtherReceiptsUrls));
                 if (!hasFile) {
                     formData.append("other_receipts", "null");
                 }
             }
-
+            //update trip document
             const res = await updateTripDocuments(formData);
             if (res.data) {
                 toast.success(res.data?.message || "Trip documents have been updated");
-                if(request_status === "delivered"){
-                     navigate(`/ride-details/jobId/${id}/driver/${driverId}`)
+                if (request_status === "delivered") {
+                    navigate(`/ride-details/jobId/${id}/driver/${driverId}`)
                 }
-                 else{ navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)
-            }
+                else {
+                    navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)
+                }
 
             }
         } catch (error) {
-            console.error(error?.data?.message, error);
             toast.error(error?.data?.message || "Update ride details failed");
         }
     };

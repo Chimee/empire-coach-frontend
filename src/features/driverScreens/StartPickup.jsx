@@ -53,13 +53,13 @@ const StartPickup = () => {
       formData.append("vehicle_photo", file);
     });
      const res = await updateRideDetails(formData);
-      console.log("Ride update response:", res);
+
       if(res.data){
        toast.success(res.data?.message || " ride details have been updated ")
        navigate(`/trip-starts/jobId/${id}/driver/${driverId}`)
       }
     } catch (error) {
-      console.error("Error starting trip", error);
+
         toast.error(error?.data?.message || "update ride details failed")
     }
   };

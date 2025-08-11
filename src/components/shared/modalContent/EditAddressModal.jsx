@@ -59,7 +59,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, message, type
           [`${otherType}_latitude`]: null,
           [`${otherType}_longitude`]: null,
         }
-        console.log(payload)
+   
 
       await updateDeliveryAddress({
         data: {

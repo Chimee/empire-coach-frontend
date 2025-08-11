@@ -12,7 +12,7 @@ const authApi = dmApi.injectEndpoints({
             }),
             async onQueryStarted(_, {queryFulfilled}) {
                 queryFulfilled.then(res => {
-                    console.log(res,"res")
+            
                     localStorage.setItem("authToken", res.data.token)
                 }).catch(error => {
                     toast(error?.error?.data?.message, "error");

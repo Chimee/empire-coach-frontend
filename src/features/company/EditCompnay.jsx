@@ -19,7 +19,7 @@ const EditCompany = () => {
   const companyId = state?.companyId;
 
   const { data, isLoading: isFetching } = useGetCompanyDetailQuery({ id: companyId });
-  console.log(data,"data-->");
+
   
   const [updateCompany, { isLoading }] = useUpdateCompanyMutation();
 

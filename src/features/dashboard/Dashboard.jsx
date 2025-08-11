@@ -11,7 +11,7 @@ const Dashboard = () => {
   const token = localStorage.getItem('authToken')
   const tokenDecode = jwtDecode(token);
   const role = tokenDecode?.role
-  console.log(tokenDecode, "tokenDecode");
+
   return (
     <>
 

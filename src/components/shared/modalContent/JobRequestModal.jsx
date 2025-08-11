@@ -31,7 +31,7 @@ const JobRequestModal = ({ show, handleClose, setShow }) => {
       setFormData({});
       handleClose();
     } catch (error) {
-      console.error(error);
+   
     }
   };
 

@@ -11,7 +11,7 @@ const AdminDetails = () => {
         { name: 'Admin Details' },
     ];
     const { id } = useParams()
-    console.log(id, "id");
+  
     const { data } = useGetAdminDetailQuery({ id })
     return (
         <>

@@ -20,10 +20,6 @@ const AdminJobsData = ({ tabName }) => {
     }
 
     const { data: jobsList, isLoading, error } = useGetAllJobsByStatusAdminQuery({ tabName: tabName, page: page, search: search });
-    console.log(jobsList, "data from jobs api");
-
-
-
     const columns = [
         {
             label: "Job Id",
@@ -55,7 +51,7 @@ const AdminJobsData = ({ tabName }) => {
                 );
             },
         },
-        { label: "Job Link", accessor: "vin_number" },
+        
         {
             label: "PO Number",
             accessor: "po-number",

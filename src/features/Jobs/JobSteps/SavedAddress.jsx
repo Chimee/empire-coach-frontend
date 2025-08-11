@@ -10,7 +10,7 @@ import EditAddressModal from '../../../components/shared/modalContent/EditAddres
     onSelectAddress,
       }) => {
     const [toggle, setToggle] = useState(null)
-    console.log(onSelectAddress, "onSelectAddress");
+
     const [selectedIndex, setSelectedIndex] = useState(null);
     const toggleRef = useRef()
 

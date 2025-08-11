@@ -49,7 +49,6 @@ const JobsData = ({ tabName }) => {
                 );
             },
         },
-    { label: "Job Link", accessor: "vin_number" },
     {
       label: "Status",
       accessor: "status",

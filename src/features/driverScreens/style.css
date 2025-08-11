@@ -6,6 +6,7 @@
   padding-top: 10px;
   padding-top: 0;
 }
+
 .pickupLoc::before {
   position: absolute;
   content: "";
@@ -14,18 +15,22 @@
   left: 11px;
   top: 10px;
 }
-.trip-picture{
+
+.trip-picture {
   max-width: 335px;
-  width: 100%; 
-  margin:0 auto;
+  width: 100%;
+  margin: 0 auto;
 }
+
 .loaction {
   padding: 0px 15px;
 }
+
 .pickupLoc svg {
   z-index: 2222;
   background: #fff;
 }
+
 .loc-details h6,
 .mob-heading {
   font-weight: 500;
@@ -42,9 +47,11 @@
   color: #989692;
   display: inline-block;
 }
+
 .mobile_wrapper {
   min-height: 100vh;
 }
+
 .vehiclePhoto {
   background: #ffffff;
   border: 1.5px dashed #e6e7ee;
@@ -62,9 +69,11 @@
 .vehiclePhoto svg path {
   fill: #9ca3af;
 }
+
 .vehiclePhoto p {
   color: #98a1b3;
 }
+
 .picupForm label.cmn_label.form-label {
   font-size: 12px;
   color: #2a2a2a;
@@ -75,13 +84,16 @@
   border-color: #e6e7ee;
   color: #98a1b3;
 }
+
 .picupForm textarea.form-control {
   font-size: 14px;
   color: #98a1b3;
 }
+
 .picupForm .form-control::placeholder {
   color: #98a1b3;
 }
+
 .job_view {
   padding: 20px;
   background: #fff;
@@ -89,12 +101,14 @@
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
 }
+
 span.arrow_down {
   width: 70px;
   height: 6px;
   background: #9b9b9b;
   border-radius: 35px;
 }
+
 html,
 body,
 #root {
@@ -121,11 +135,13 @@ body,
   height: 100%;
   border: none;
 }
+
 .driverJob {
   box-shadow: 2px 4px 8px 0px #3532d71a;
   border-radius: 10px;
   padding: 1rem;
 }
+
 .vehiclePhoto.uploadDoc {
   border: 1px solid #989692;
   border-radius: 10px;
@@ -133,4 +149,48 @@ body,
 
 .vehiclePhoto.uploadDoc svg path {
   fill: #2563eb;
+}
+
+.remove-receipt-btn {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 18px;
+  padding: 0;
+  z-index: 3;
+}
+
+.remove-receipt-btn:hover {
+  background: red;
+}
+
+.render-upload-file {
+  position: "absolute";
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.upload-file {
+  max-width: 90%;
+  overflow: hidden;
+  z-index: 2;
+  gap: 4px;
+}
+.upload-file-small {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  flex: 1;
 }

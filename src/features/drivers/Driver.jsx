@@ -14,7 +14,7 @@ const Driver = () => {
         setSearch(searchText);
     };
     const { data: driverList } = useGetDriversListQuery({ page, limit: 10, search: search });
-    console.log(driverList, "driverList");
+
     const navigate = useNavigate()
     const columns = [
         { label: "Name", accessor: "name" },

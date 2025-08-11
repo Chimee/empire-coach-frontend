@@ -12,7 +12,6 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
   const [resetKey, setResetKey] = useState(0);
   const [autocompleteRef, setAutocompleteRef] = useState(null);
  
-  console.log(formData)
 
   const handlePlaceChanged = () => {
     if (!autocompleteRef) return;

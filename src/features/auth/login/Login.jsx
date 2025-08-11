@@ -42,7 +42,7 @@ const Login = () => {
 
         try {
             const result = await loginUser(credentials).unwrap();
-            console.log(result, "result");
+ 
 
             if (result) {
                 const token = result?.data;
@@ -55,7 +55,7 @@ const Login = () => {
             }
         } catch (error) {
             toast.dismiss();
-            console.error("Login error", error);
+
             toast.error(error?.data?.message || "An error occurred during login.");
         }
     };

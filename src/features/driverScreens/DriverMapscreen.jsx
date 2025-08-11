@@ -15,7 +15,7 @@ const defaultCenter = {
 };
 
 const DriverMapscreen = ({ pickupCoords, dropoffCoords, currentLocation,height }) => {
-    console.log(height,"height--->");
+
     const containerStyle = {
     width: '100%',
     height: `${height}` || '100%',

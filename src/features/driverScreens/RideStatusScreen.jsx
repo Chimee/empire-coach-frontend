@@ -14,7 +14,7 @@ const RideStatusScreen = () => {
     const [show, setShow] = useState(false);
     const [updatedLocation, setUpdateLocation] = useState(false);
     const [currentLocation, setCurrentLocation] = useState(null);
-    console.log(currentLocation, "currentLocation");
+
 
     const navigate = useNavigate();
 
@@ -22,13 +22,13 @@ const RideStatusScreen = () => {
     const { id, driverId } = useParams();
     const { data: jobDetails } = useGetJobPickupDetailsQuery({ id }, { skip: !id });
     const { data: fetchRideDetails } = useGetRideDetailsQuery({ id }, { skip: !id });
-    console.log(fetchRideDetails, "fetchRideDetails");
+
 
     const rideData = fetchRideDetails?.data || {};
     const backendCurrentLocation = rideData?.current_latitude && rideData?.current_longitude
         ? { lat: rideData.current_latitude, lng: rideData.current_longitude }
         : null;
-    console.log(backendCurrentLocation, "backendCurrentLocation");
+ 
 
     const pickup = jobDetails?.data?.jobData;
     const pickupCoords = pickup ? { lat: pickup.pickup_latitude, lng: pickup.pickup_longitude } : null;
@@ -50,7 +50,6 @@ const RideStatusScreen = () => {
                 const { latitude, longitude } = position.coords;
                 const location = { lat: latitude, lng: longitude };
                 setCurrentLocation(location);
-                debugger;
                 const formData = new FormData();
                 formData.append("jobId", id);
                 formData.append("driverId", driverId);
@@ -67,12 +66,12 @@ const RideStatusScreen = () => {
                     toast.success(res.data.message);
                     setUpdateLocation(true);
                 } catch (error) {
-                    console.error(error?.data?.message, error);
+              
                     toast.error(error?.data?.message || "Update ride details failed");
                 }
             },
             (error) => {
-                console.error("Geolocation error:", error);
+            
                 switch (error.code) {
                     case error.PERMISSION_DENIED:
                         toast.error("Permission denied for location access");

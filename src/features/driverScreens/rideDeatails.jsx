@@ -14,7 +14,7 @@ const RideDeatails = () => {
 
     const { data: jobDetails } = useGetJobPickupDetailsQuery({ id }, { skip: !id });
     const [starRide, { isLoading }] = useStartRideMutation();
-    console.log(jobDetails, "jobDetails");
+
     const [currentLocation, setCurrentLocation] = useState(null);
 
     const pickup = jobDetails?.data?.jobData;
@@ -90,8 +90,6 @@ const RideDeatails = () => {
                     )}
                 </div>
             </div>
-            {console.log(jobDetails?.data?.jobData?.isLinkExpired, "jobDetails?.data?.jobData.isLinkExpired")
-            }
             {!jobDetails?.data?.jobData?.isLinkExpired && (
                 <div className='text-center px-3 pb-3'>
                     {jobDetails?.data?.jobData.request_status === "delivered" ? (

@@ -126,7 +126,7 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
       onClose();
     } catch (err) {
       toast.error(err?.data?.message || 'Reschedule failed');
-      console.error(err);
+      
     }
   };
 
@@ -142,7 +142,7 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
       onClose();
     } catch (err) {
       toast.error(err?.data?.message || 'Reschedule failed');
-      console.error(err);
+     
     }
   };
 
