@@ -25,7 +25,7 @@ const QuickJobsList = () => {
   const parseToken = token ? jwtDecode(token) : {};
 
   // Decide which query hook to use based on role
-  const isUser = parseToken?.role === "user";
+  const isUser = parseToken?.role === "customer";
   const queryHook = isUser ? useGetAllJobsByStatusQuery : useGetAllJobsByStatusAdminQuery;
 
   const { data, isFetching, isLoading } = queryHook(

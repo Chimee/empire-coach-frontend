@@ -141,7 +141,7 @@ const customerApi = dmApi.injectEndpoints({
         }),
         getJobDetails: build.query({
             query: ({ id }) => {
-                debugger
+           
                 return{
                 url: `customer/get-job-details?jobId=${id}`,
                 method: "GET",
@@ -185,7 +185,7 @@ const customerApi = dmApi.injectEndpoints({
 
         FillingPoNumber: build.mutation({
             query: ({ jobId, po_number }) => {
-                debugger;
+                
                 return {
                     url: `customer/fill-po-number`,
                     method: "PUT",
@@ -199,6 +199,16 @@ const customerApi = dmApi.injectEndpoints({
             invalidatesTags: ['getAllJobsByStatusApi'],
         }),
 
+         getAllCompletedJobs: build.query({
+            query: ({ page = 1, limit = 10, search = '',} = {}) => ({
+                url: `customer/completed-jobs?page=${page}&limit=${limit}&search=${search}`,
+                method: "GET",
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryError(queryFulfilled);
+            },
+        }),
     })
 })
 export const {
@@ -215,5 +225,6 @@ export const {
     useDeleteDeliveryAddressMutation,
     useCancelRescheduleJobMutation,
     useRescheduleJobDateMutation,
-    useFillingPoNumberMutation
+    useFillingPoNumberMutation,
+    useGetAllCompletedJobsQuery,
 } = customerApi;

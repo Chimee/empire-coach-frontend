@@ -42,6 +42,7 @@ import TripStarted from "./features/driverScreens/TripStarted";
 import RideStatusScreen from "./features/driverScreens/RideStatusScreen";
 import UploadDocument from "./features/driverScreens/UploadDocument";
 import CompleteDelivery from "./features/driverScreens/CompleteDelivery";
+import CompletedJobs from "./features/Jobs/completedJobs";
 
 function App() {
     const error = useSelector((state) => state.global.error);
@@ -128,6 +129,7 @@ function App() {
                         <Route path={AppRoutes.AddDriver.path} element={<AddDriver/>}/>
                         <Route path={AppRoutes.DriverDetails.path} element={<DriverDetails/>}/>
                         <Route path={AppRoutes.CreateJob.path} element={<CreateJob/>}/>
+                         <Route path={AppRoutes.CompletedJobs.path} element={<CompletedJobs/>}/>
 
 
                     </Route>

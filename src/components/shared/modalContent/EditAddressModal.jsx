@@ -30,7 +30,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, message, type
   };
 
   const handleSubmit = async () => {
-    debugger;
+    
     if (!selectedPlace) {
       toast.error("Please select a location from the autocomplete.");
       return;

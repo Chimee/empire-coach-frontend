@@ -80,7 +80,7 @@ const CreatePassword = () => {
     }
 
     if (!decodedData?.email || !decodedData?.id) {
-      alert("Invalid reset token.");
+      toast.error("Invalid reset token.");
       return;
     }
 
@@ -100,7 +100,7 @@ const CreatePassword = () => {
       navigate("/login");
     } catch (err) {
       console.error("Reset password error", err);
-      alert(err?.data?.loggedError || err?.data?.message || "Failed to reset password");
+      toast.error(err?.data?.loggedError || err?.data?.message || "Failed to reset password");
     }
   };
 

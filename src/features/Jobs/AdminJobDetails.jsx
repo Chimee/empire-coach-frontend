@@ -14,9 +14,13 @@ import CancelConfirmationModal from '../../components/shared/modalContent/Cancel
 import AssignDriverModal from '../../components/shared/modalContent/AssignDriverPopup'
 import { getClassAndTitleByStatus } from '../../helpers/Utils'
 import { useGetUpdateLocationLogsQuery } from "../../app/globalApi"
+import TickSvg from '../../images/tickSvg.svg'
+import DriverMapscreen from '../driverScreens/DriverMapscreen'
+import { getLocationName } from '../../helpers/Utils'
 const AdminJobDetails = () => {
     const { id } = useParams();
     const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });
+    console.log(jobDetails)
     const { state } = useLocation();
     const [sentLink, setSentLink] = useState(false)
 
@@ -33,9 +37,28 @@ const AdminJobDetails = () => {
         { id, driverId },
         { skip: !id || !driverId }
     );
+    console.log(getLocationUpdates, "getLocationUpdates");
+      const [locationNames, setLocationNames] = useState([]);
+
+  useEffect(() => {
+    async function fetchLocationNames() {
+      if (!getLocationUpdates?.data) return;
+
+      const names = await Promise.all(
+        getLocationUpdates.data.map(async (log) => {
+          return await getLocationName(log.latitude, log.longitude);
+        })
+      );
+
+      setLocationNames(names);
+    }
+
+    fetchLocationNames();
+  }, [getLocationUpdates]);
 
     const { data: fetchRideDetails } = useGetRideDetailsQuery({ id }, { skip: !id });
-   
+    console.log(fetchRideDetails);
+    const vehicle_photo = fetchRideDetails?.data?.delivery_photos
 
     const breadcrumbItems = [
         { name: 'Jobs', path: '/admin-jobs' },
@@ -82,7 +105,8 @@ const AdminJobDetails = () => {
         }
     };
     const statusMeta = getClassAndTitleByStatus(jobDetails?.data?.jobData?.request_status);
-
+    const pickupCoords = { lat: jobDetails?.data?.jobData?.pickup_latitude, lng: jobDetails?.data?.jobData?.pickup_longitude } || null;
+    const dropoffCoords = { lat: jobDetails?.data?.jobData?.dropoff_latitude, lng: jobDetails?.data?.jobData?.dropoff_longitude } || null;
     return (
         <>
             <Row>
@@ -97,7 +121,7 @@ const AdminJobDetails = () => {
                             />
                             <span className={`${statusMeta?.className} fn-badge mt-4 text-capitalize`}>{jobDetails?.data?.jobData?.request_status}</span>
                             {["awaiting_for_cancellation", "cancelled"].includes(jobDetails?.data?.jobData?.request_status) && (
-                                <p className='fn-tag mt-4'>Cancel Reason: {jobDetails?.data?.jobData?.request_status}</p>
+                                <p className='fn-tag mt-4'>Cancel Reason: {jobDetails?.data?.jobData?.cancellation_reason}</p>
                             )}
                         </div>
                         <div className='d-flex gap-2'>
@@ -208,13 +232,54 @@ const AdminJobDetails = () => {
                                 </Col>
                             </Row>
                             <Col lg={12} className='mt-3'>
-                                <h6 className='small-heading'>Location Tracking</h6>
-                                {<ul>
-                                    <li>
-
-                                    </li>
-                                </ul>}
+                                <DriverMapscreen
+                                    height="247px"
+                                    pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
                             </Col>
+                            <Col lg={12} className='mt-3'>
+                                {/* {getLocationName} */}
+                                <h6 className='small-heading'>Location Tracking</h6>
+                                <ul className="p-0 timeline d-flex flex-column gap-3 mt-3 tripProgress">
+      {getLocationUpdates?.data?.map((log, i) => (
+        <li
+          key={i}
+          className="d-flex gap-3 align-items-center position-relative"
+        >
+          <img src={TickSvg} alt="tick" className="position-relative z-3" />
+          <div className="timeline_status">
+            <span className="d-block text-capitalize">
+              {locationNames[i] || "Loading..."}
+            </span>
+            <span>{formatDateToMDY(log?.createdAt)}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+                                    {/* <li className='d-flex gap-3 align-items-center position-relative'>
+                                        <img src={TickSvg} alt='picture' className='position-relative z-3' />
+                                        <div class="timeline_status" >
+                                            <span class="d-block text-capitalize">
+                                                submitted</span>
+                                            <span>7/28/2025</span>
+                                        </div>
+                                    </li>
+                                </ul>} */}
+                            </Col>
+                            <Row>
+                                {console.log(vehicle_photo, "vehicle_photo")
+                                }
+                                {vehicle_photo?.map((curelem, index) => {
+                                    return (
+
+                                        <Col lg={3} key={index}>
+                                            <div className='rounded bg-body-secondary'>
+                                                <img src={curelem} alt="picture" className='img-fluid' />
+                                            </div>
+                                        </Col>
+
+                                    )
+                                })}
+                            </Row>
                         </Col>
                         <Col lg={3}>
                             <h6 className='timeline-title'>Timeline</h6>
@@ -253,7 +318,6 @@ const AdminJobDetails = () => {
                                             ? "Driver not assigned"
                                             : jobDetails?.data?.jobData?.driver_name}
                                     </h5>
-
                                     {(
                                         jobDetails?.data?.jobData?.request_status === "approved"
                                     ) && (
@@ -266,7 +330,7 @@ const AdminJobDetails = () => {
                                                 />
                                             ) : (
                                                 <Button
-                                                    disabled={sentLink}
+                                                    disabled={sentLink || jobDetails?.data?.jobData?.JobAssignments.isLinkSent}
                                                     loading={isSending}
                                                     label="Send Link"
                                                     className="rounded"

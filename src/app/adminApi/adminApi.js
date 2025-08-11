@@ -58,6 +58,7 @@ const adminApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
+             providesTags: ['getAdminListAPI']
         }),
         getAdminJobDetails: build.query({
             query: ({ id }) => ({
@@ -66,7 +67,7 @@ const adminApi = dmApi.injectEndpoints({
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
-                debugger;
+              
                 await handleQueryError(queryFulfilled);
             },
             providesTags: ['getAdminJobDetailsApi']
@@ -151,7 +152,7 @@ const adminApi = dmApi.injectEndpoints({
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
-                await handleQueryErrorAndSuccess(queryFulfilled, "Details", "fetch");
+                await handleQueryError(queryFulfilled);
             },
             invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),

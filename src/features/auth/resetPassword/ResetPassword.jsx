@@ -5,6 +5,7 @@ import Button from '../../../components/shared/buttons/button';
 import LoginInfo from '../login/LoginInfo';
 import { EyeSvg } from '../../../svgFiles/EyeSvg';
 import { CloseEyeSvg } from '../../../svgFiles/CloseEyeSvg';
+import toast from 'react-hot-toast';
 
 const ResetPassword = () => {
   const [credentials, setCredentials] = useState({
@@ -31,7 +32,7 @@ const ResetPassword = () => {
       setPasswordCreated(true);
       // Perform API request or further steps here
     } else {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
     }
   };
 

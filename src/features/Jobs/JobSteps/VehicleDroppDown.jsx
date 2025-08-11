@@ -4,14 +4,15 @@ import { CheveronDownSvg } from "../../../svgFiles/CheveronDownSvg";
 
 const VehicleDropdown = ({ selectType, options, currentVehicle, setCurrentVehicle }) => {
   const [title, setTitle] = React.useState(`Select ${selectType}`);
-
+debugger;
   const handleSelect = (selected) => {
     const chosen = options.find((opt) => opt.value === selected);
+ 
     if (chosen) {
       setTitle(chosen.label);
       setCurrentVehicle((prev) => ({
         ...prev,
-        [selectType.toLowerCase()]: chosen.value,  // e.g. “model”
+        [selectType.toLowerCase()]: chosen.value,  
       }));
     }
   };

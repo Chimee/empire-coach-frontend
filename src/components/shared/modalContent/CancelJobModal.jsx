@@ -18,7 +18,7 @@ const CancelConfirmationModal = ({
      const isSubmitting = isLoading || isCancelling;
 
   const handleConfirm = async () => {
-    if (!reason.trim()) return alert("Please enter a reason for cancellation");
+    if (!reason.trim()) return  toast.error( "please enter cancellation reason first");
 
     if (user === "admin") {
       try {
@@ -32,7 +32,7 @@ const CancelConfirmationModal = ({
     else{
       if(type === "cancel"){
          try {
-          debugger;
+         
             const data = await cancelrescheduleJobs({ jobId, reason, type }).unwrap();
             toast.success(data.message || "Job cancelled successfully");
            setReason("");

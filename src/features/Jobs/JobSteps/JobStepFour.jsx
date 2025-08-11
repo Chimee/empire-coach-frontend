@@ -7,7 +7,6 @@ import { validateRequiredFields } from "../../../helpers/Utils";
 import toast from "react-hot-toast";
 import VehicleDroppDown from "./VehicleDroppDown";
 const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
-  console.log(formData, "formData");
   const [currentVehicle, setCurrentVehicle] = React.useState({
     year: '',
     make: '',
@@ -166,7 +165,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
           </Col>
           <Col lg={4}>
             <VehicleDroppDown
-            currentVehicle={currentVehicle}
+             currentVehicle={currentVehicle}
               setCurrentVehicle={setCurrentVehicle}
               selectType="Make"
               options={MakeOptions}

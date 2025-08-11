@@ -32,7 +32,23 @@ const JobsData = ({ tabName }) => {
     },
     { label: "Vehicle", accessor: "vehicle_make" },
     { label: "Vin Number", accessor: "vin_number" },
-    { label: "Route", accessor: "vin_number" },
+    {
+            label: "Route",
+            accessor: "route",
+            cell: ({ row }) => {
+                const pickup = row?.pickup_location || "";
+                const dropoff = row?.dropoff_location || "";
+                const fullRoute = `${pickup} to ${dropoff}`;
+                const truncate = (text, length = 15) =>
+                    text.length > length ? text.slice(0, length) + "..." : text;
+
+                return (
+                    <span title={fullRoute}>
+                       {truncate(pickup)} to {truncate(dropoff)}`
+                    </span>
+                );
+            },
+        },
     { label: "Job Link", accessor: "vin_number" },
     {
       label: "Status",

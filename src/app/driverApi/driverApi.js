@@ -120,7 +120,7 @@ const driverApi = dmApi.injectEndpoints({
 
        updateTripDocuments: build.mutation({
        query: (formData) => {
-        debugger; 
+    
         return {
             url: `driver/upload-trip-document`,
             method: "POST",

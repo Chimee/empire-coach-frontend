@@ -1,6 +1,7 @@
 
 import { showToast } from "./Utils";
 export const handleToastMessage = (error) => {
+  debugger;
   const errorResponse = error?.error?.data;
   if (errorResponse?.message === "Validation errors" && errorResponse.data) {
     const firstErrorKey = Object.keys(errorResponse.data)[0]; // First field
@@ -24,6 +25,8 @@ export const getAuthorizationHeader = () => {
  
 export const handleQueryError = async (queryFulfilled) => {
   try {
+    debugger;
+    console.log(queryFulfilled)
     await queryFulfilled;
   } catch (error) {
     handleToastMessage(error);

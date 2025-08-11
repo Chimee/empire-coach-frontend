@@ -18,7 +18,7 @@ const AdminJobsData = ({ tabName }) => {
     const handleSearchJobs = (value) => {
         setSearch(value);
     }
-     debugger;
+
     const { data: jobsList, isLoading, error } = useGetAllJobsByStatusAdminQuery({ tabName: tabName, page: page, search: search });
     console.log(jobsList, "data from jobs api");
 
@@ -38,19 +38,35 @@ const AdminJobsData = ({ tabName }) => {
         },
         { label: "Vehicle", accessor: "vehicle_make" },
         { label: "Vin Number", accessor: "vin_number" },
-        { label: "Route", accessor: "vin_number" },
+      {
+            label: "Route",
+            accessor: "route",
+            cell: ({ row }) => {
+                const pickup = row?.pickup_location || "";
+                const dropoff = row?.dropoff_location || "";
+                const fullRoute = `${pickup} to ${dropoff}`;
+                const truncate = (text, length = 15) =>
+                    text.length > length ? text.slice(0, length) + "..." : text;
+
+                return (
+                    <span title={fullRoute}>
+                        {truncate(pickup)} to {truncate(dropoff)}`
+                    </span>
+                );
+            },
+        },
         { label: "Job Link", accessor: "vin_number" },
         {
-      label: "PO Number",
-      accessor: "po-number",
-      cell: ({ row }) => (
-        row.po_number ? (
-          <span>{row.po_number}</span>
-        ) : (
-            <span className=""> - </span>                                
-        )
-      )
-    },
+            label: "PO Number",
+            accessor: "po-number",
+            cell: ({ row }) => (
+                row.po_number ? (
+                    <span>{row.po_number}</span>
+                ) : (
+                    <span className=""> - </span>
+                )
+            )
+        },
         {
             label: "Status",
             accessor: "actions",
@@ -69,7 +85,7 @@ const AdminJobsData = ({ tabName }) => {
             accessor: "pickupDate",
             cell: ({ row }) => (
                 <span>
-                    {formatDateToMDY(row?.pickup_date)}
+                    {row?.pickup_date ? formatDateToMDY(row.pickup_date) : "-"}
                 </span>
             ),
         },
@@ -78,10 +94,11 @@ const AdminJobsData = ({ tabName }) => {
             accessor: "pickupDate",
             cell: ({ row }) => (
                 <span>
-                    {formatDateToMDY(row?.dropoff_date)}
+                    {row?.dropoff_date ? formatDateToMDY(row.dropoff_date) : "-"}
                 </span>
             ),
         },
+
         { label: "Driver", accessor: "vin_number" },
         {
             label: "Actions",

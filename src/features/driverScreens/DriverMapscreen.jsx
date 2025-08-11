@@ -7,19 +7,19 @@ import {
     DirectionsRenderer,
 } from '@react-google-maps/api';
 
-const containerStyle = {
-    width: '100%',
-    height: '100%',
-};
+
 
 const defaultCenter = {
     lat: 28.6139,
     lng: 77.2090,
 };
 
-const DriverMapscreen = ({ pickupCoords, dropoffCoords, currentLocation }) => {
-    console.log(currentLocation,"currentLocation--->");
-    
+const DriverMapscreen = ({ pickupCoords, dropoffCoords, currentLocation,height }) => {
+    console.log(height,"height--->");
+    const containerStyle = {
+    width: '100%',
+    height: `${height}` || '100%',
+};
     const [directionsResponse, setDirectionsResponse] = useState(null);
 
     const center = currentLocation || pickupCoords || defaultCenter;

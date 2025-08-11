@@ -7,7 +7,7 @@ import {
     useUpdateTripDocumentsMutation,
     useGetAllTripDocumentsQuery
 } from '../../app/driverApi/driverApi';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import toast from "react-hot-toast";
 
 const UploadDocument = () => {
@@ -19,9 +19,10 @@ const UploadDocument = () => {
         otherReceipts: [null],
     });
     const { id, driverId } = useParams();
-
-    const { data: fetchTripDocuments } = useGetAllTripDocumentsQuery({ id, driverId });
-
+    const location = useLocation();
+    const { request_status } = location.state || {};
+    const { data: fetchTripDocuments } = useGetAllTripDocumentsQuery({ id, driverId }, { refetchOnMountOrArgChange: true });
+     console.log(fetchTripDocuments);
     const [notes, setNotes] = useState("");
     const navigate = useNavigate();
     const [updateTripDocuments, { isLoading: isUpdating }] = useUpdateTripDocumentsMutation();
@@ -221,69 +222,75 @@ const UploadDocument = () => {
         </div>
     );
 
-  const handleDocuments = async () => {
-    try {
-        const formData = new FormData();
-        formData.append("job_id", id);
-        formData.append("driver_id", driverId);
-        formData.append("additional_notes", notes);
+    const handleDocuments = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("job_id", id);
+            formData.append("driver_id", driverId);
+            formData.append("additional_notes", notes);
 
-           console.log(files);
-           debugger;
-        if (files.fuel instanceof File) {
-            formData.append("fuel_receipt", files.fuel);
-        } else if (files.fuel === null) {
-            formData.append("fuel_receipt", "null"); 
-        }
+            console.log(files);
+            debugger;
 
-       
-        if (files.hotel instanceof File) {
-            formData.append("hotel_receipt", files.hotel);
-        } else if (files.hotel === null) {
-            formData.append("hotel_receipt", "null");
-        }
-
-      
-        if (files.flight instanceof File) {
-            formData.append("flight_confirmation", files.flight);
-        } else if (files.flight === null) {
-            formData.append("flight_confirmation", "null");
-        }
-
-     
-        if (files.driverLog instanceof File) {
-            formData.append("daily_driver_log", files.driverLog);
-        } else if (files.driverLog === null) {
-            formData.append("daily_driver_log", "null");
-        }
-
-       
-        if (files.otherReceipts?.length) {
-            let hasFile = false;
-            files.otherReceipts.forEach((file) => {
-                if (file instanceof File) {
-                    formData.append("other_receipts", file);
-                    hasFile = true;
-                }
-               else if(file && files.otherReceipts[0] != null){
-                  hasFile = true;
-               }
-            });
-            if (!hasFile) {
-                formData.append("other_receipts", "null");
+            if (files.fuel instanceof File) {
+                formData.append("fuel_receipt", files.fuel);
+            } else if (files.fuel === null) {
+                formData.append("fuel_receipt", "null");
             }
-        }
 
-        const res = await updateTripDocuments(formData);
-        if (res.data) {
-            toast.success(res.data?.message || "Trip documents have been updated");
-            navigate(`/ride-detail/jobId/${id}/driver/${driverId}`);
+
+            if (files.hotel instanceof File) {
+                formData.append("hotel_receipt", files.hotel);
+            } else if (files.hotel === null) {
+                formData.append("hotel_receipt", "null");
+            }
+
+
+            if (files.flight instanceof File) {
+                formData.append("flight_confirmation", files.flight);
+            } else if (files.flight === null) {
+                formData.append("flight_confirmation", "null");
+            }
+
+
+            if (files.driverLog instanceof File) {
+                formData.append("daily_driver_log", files.driverLog);
+            } else if (files.driverLog === null) {
+                formData.append("daily_driver_log", "null");
+            }
+
+
+            if (files.otherReceipts?.length) {
+                let hasFile = false;
+                files.otherReceipts.forEach((file) => {
+                    if (file instanceof File) {
+                        formData.append("other_receipts", file);
+                        hasFile = true;
+                    }
+                    else if (file && files.otherReceipts[0] != null) {
+                        hasFile = true;
+                    }
+                });
+                if (!hasFile) {
+                    formData.append("other_receipts", "null");
+                }
+            }
+
+            const res = await updateTripDocuments(formData);
+            if (res.data) {
+                toast.success(res.data?.message || "Trip documents have been updated");
+                if(request_status === "delivered"){
+                     navigate(`/ride-details/jobId/${id}/driver/${driverId}`)
+                }
+                 else{ navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)
+            }
+
+            }
+        } catch (error) {
+            console.error(error?.data?.message, error);
+            toast.error(error?.data?.message || "Update ride details failed");
         }
-    } catch (error) {
-        console.error(error?.data?.message, error);
-        toast.error(error?.data?.message || "Update ride details failed");
-    }
-};
+    };
 
     return (
         <div className="mobile_wrapper position-relative d-flex flex-column px-3 pt-3">
@@ -338,7 +345,11 @@ const UploadDocument = () => {
                 <Button
                     label="Back"
                     className="rounded w-100 bordered"
-                    onClick={() => navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)}
+                    onClick={() =>
+                        request_status === "delivered"
+                            ? navigate(`/ride-details/jobId/${id}/driver/${driverId}`)
+                            : navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)
+                    }
                 />
                 <Button
                     label={
