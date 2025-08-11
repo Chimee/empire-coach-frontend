@@ -34,17 +34,20 @@ const companyApi = dmApi.injectEndpoints({
             },
         }),
         getCompanyList: build.query({
+            
 
             query: ({ page = 1, limit = 10, search = "" } = {}) => ({
-
-
                 url: `admin/get-all-companies?page=${page}&limit=${limit}&search=${encodeURIComponent(
                     search
                 )}`,
                 method: "GET",
                 headers: getAuthorizationHeader(),
             }),
+            providesTags:["companyData"],
+            
             async onQueryStarted(_, { queryFulfilled }) {
+                            console.log("comes here before");
+
                 await handleQueryError(queryFulfilled);
             },
         }),

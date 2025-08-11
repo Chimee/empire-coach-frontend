@@ -4,15 +4,27 @@ import { CheveronDownSvg } from "../../../svgFiles/CheveronDownSvg";
 
 const VehicleDropdown = ({ selectType, options, currentVehicle, setCurrentVehicle }) => {
   const [title, setTitle] = React.useState(`Select ${selectType}`);
-debugger;
+
+  // Sync title with currentVehicle changes
+  React.useEffect(() => {
+    const key = selectType.toLowerCase(); // "year", "make", "model"
+    const value = currentVehicle[key];
+
+    if (!value) {
+      setTitle(`Select ${selectType}`);
+    } else {
+      const chosen = options.find((opt) => opt.value === value);
+      setTitle(chosen ? chosen.label : `Select ${selectType}`);
+    }
+  }, [currentVehicle, options, selectType]);
+
   const handleSelect = (selected) => {
     const chosen = options.find((opt) => opt.value === selected);
  
     if (chosen) {
-      setTitle(chosen.label);
       setCurrentVehicle((prev) => ({
         ...prev,
-        [selectType.toLowerCase()]: chosen.value,  
+        [selectType.toLowerCase()]: chosen.value, // updates parent state
       }));
     }
   };
