@@ -42,10 +42,10 @@ import TripStarted from "./features/driverScreens/TripStarted";
 import RideStatusScreen from "./features/driverScreens/RideStatusScreen";
 import UploadDocument from "./features/driverScreens/UploadDocument";
 import CompleteDelivery from "./features/driverScreens/CompleteDelivery";
+import Vehicle from "./features/admin/Vehicle/Vehicle";
 
 function App() {
     const error = useSelector((state) => state.global.error);
-
     const PublicRoutes = React.memo(() => {
         return (
             <>
@@ -79,14 +79,6 @@ function App() {
 
     return (
         <Router>
-            {/*<ToastContainer*/}
-            {/*    position="top-center"*/}
-            {/*    autoClose={3000}*/}
-            {/*    pauseOnHover*/}
-            {/*    pauseOnFocusLoss*/}
-            {/*    stacked*/}
-            {/*    theme='light'*/}
-            {/*/>*/}
             <Toaster position="top-center" reverseOrder={false} />
             {!error &&
                 <Routes>
@@ -128,6 +120,7 @@ function App() {
                         <Route path={AppRoutes.AddDriver.path} element={<AddDriver/>}/>
                         <Route path={AppRoutes.DriverDetails.path} element={<DriverDetails/>}/>
                         <Route path={AppRoutes.CreateJob.path} element={<CreateJob/>}/>
+                        <Route path={AppRoutes.Vehicle.path} element={<Vehicle/>}/>
 
 
                     </Route>

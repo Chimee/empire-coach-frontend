@@ -45,6 +45,13 @@ export const MenuItems = [
       subMenu: [],
     },
     {
+      title: "Settings",
+      path: "/setting",
+      roles: ["admin", "superadmin",],
+      icon: <DriverSvg />,
+      subMenu: [],
+    },
+    {
       title: "Completed Jobs",
       path: "/completed-jobs",
       roles: ["customer"],

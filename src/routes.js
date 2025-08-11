@@ -59,6 +59,9 @@ export const Routes = {
     CreateJob: {
         path: "/jobs/create-job"
     },
+    Vehicle: {
+        path: "/setting"
+    },
     Profile: {
         path: "settings/profile"
     },
