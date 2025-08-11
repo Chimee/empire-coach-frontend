@@ -10,7 +10,7 @@ import {useGetJobOverviewQuery} from "../../app/dashBoardApi"
 
 const JobsOverview = () => {
   const { data, isFetching, isLoading } = useGetJobOverviewQuery();
-  debugger;
+
   console.log(data);
     return (
         <div className='dashboard_card'>

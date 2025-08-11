@@ -292,7 +292,9 @@ h5.step_heading {
 input.form-control.pac-target-input {
   font-size: 14px;
 }
-
+.map_wrapper{
+  min-height: 247px;
+}
 input.form-control.pac-target-input:focus {
   box-shadow: unset;
   border: 1px solid #1d4ed8;
@@ -307,4 +309,17 @@ span.adress-data {
 }
 .cmn_btn.btn-cancel {
   background: #b91c1c;
+}
+.tripProgress li::before {
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background: #4F46E5;
+    content: "";
+    top: 26px;
+    left: 15px;
+}
+
+.tripProgress li:last-child::before {
+    display: none;
 }

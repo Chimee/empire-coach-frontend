@@ -295,3 +295,21 @@ export default function useClickOutside(ref, callback) {
     };
   }, [ref, callback]);
 }
+export async function getLocationName(lat, lng) {
+  const apiKey = process.env.REACT_APP_GOOGLE_MAP_API_KEY; // Keep in .env
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.status === "OK" && data.results.length > 0) {
+      return data.results[0].formatted_address;
+    } else {
+      throw new Error(data.error_message || "No location found");
+    }
+  } catch (error) {
+    console.error("Error fetching location name:", error);
+    return null;
+  }
+}

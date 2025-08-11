@@ -12,7 +12,7 @@ import { useSaveDeliveryAddressMutation } from "../../../app/customerApi/custome
 import SaveAddress from "./SaveAddress";
 import PhoneInput from "react-phone-input-2";
 
-const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => {
+ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => {
   const SelectOptions = [{ label: "Punjab", value: "punjab" }];
   const [saveDeliveryAddress] = useSaveDeliveryAddressMutation();
 
@@ -70,7 +70,7 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
   };
 
   const handleNextStep = () => {
-    debugger;
+
     if (validateStepThree()) handleNext();
   };
 
@@ -114,7 +114,7 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
         </Tab>
         <Tab eventKey="newLocation" title="New Location">
           <SaveAddress
-            key={resetKeys[prefix]} // this is the crucial bit
+            key={resetKeys[prefix]} 
             addressType={prefix}
             formData={formData}
             setFormData={setFormData}

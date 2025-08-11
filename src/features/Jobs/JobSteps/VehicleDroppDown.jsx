@@ -20,6 +20,7 @@ const VehicleDropdown = ({ selectType, options, currentVehicle, setCurrentVehicl
 
   const handleSelect = (selected) => {
     const chosen = options.find((opt) => opt.value === selected);
+ 
     if (chosen) {
       setCurrentVehicle((prev) => ({
         ...prev,

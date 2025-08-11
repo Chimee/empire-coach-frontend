@@ -54,7 +54,6 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
         },
         
       }).unwrap();
-      toast.success(`${addressType} address saved successfully`);
       setFormData((prev) => ({
         ...prev,
         [`${prefix}_location`]: "",

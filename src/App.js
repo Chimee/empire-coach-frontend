@@ -44,6 +44,7 @@ import UploadDocument from "./features/driverScreens/UploadDocument";
 import CompleteDelivery from "./features/driverScreens/CompleteDelivery";
 import Vehicle from "./features/admin/Vehicle/Vehicle";
 import AddVehicle from "./features/admin/Vehicle/AddVehicle";
+import CompletedJobs from "./features/Jobs/completedJobs";
 
 function App() {
     const error = useSelector((state) => state.global.error);
@@ -123,6 +124,7 @@ function App() {
                         <Route path={AppRoutes.CreateJob.path} element={<CreateJob/>}/>
                         <Route path={AppRoutes.Vehicle.path} element={<Vehicle/>}/>
                         <Route path={AppRoutes.AddVehicle.path} element={<AddVehicle/>}/>
+                         <Route path={AppRoutes.CompletedJobs.path} element={<CompletedJobs/>}/>
 
 
                     </Route>

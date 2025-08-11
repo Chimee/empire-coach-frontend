@@ -20,7 +20,7 @@ const ForgetPassword = () => {
         }
 
         try {
-            debugger;
+     
             await forgotPassword({ email }).unwrap();
             toast.success("A password reset email has been sent to your email address.");
             setEmail('');

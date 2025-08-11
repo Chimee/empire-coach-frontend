@@ -14,21 +14,21 @@ const RideStatusScreen = () => {
     const [show, setShow] = useState(false);
     const [updatedLocation, setUpdateLocation] = useState(false);
     const [currentLocation, setCurrentLocation] = useState(null);
-    console.log(currentLocation,"currentLocation");
-    
+    console.log(currentLocation, "currentLocation");
+
     const navigate = useNavigate();
 
     const [updateLocation, { isLoading: isUpdating }] = useUpdateRideDetailsMutation();
     const { id, driverId } = useParams();
     const { data: jobDetails } = useGetJobPickupDetailsQuery({ id }, { skip: !id });
- const { data: fetchRideDetails } = useGetRideDetailsQuery({ id }, { skip: !id });
- console.log(fetchRideDetails,"fetchRideDetails");
- 
- const rideData = fetchRideDetails?.data || {};
- const backendCurrentLocation = rideData?.current_latitude && rideData?.current_longitude
- ? { lat: rideData.current_latitude, lng: rideData.current_longitude }
- : null;
- console.log(backendCurrentLocation,"backendCurrentLocation");
+    const { data: fetchRideDetails } = useGetRideDetailsQuery({ id }, { skip: !id });
+    console.log(fetchRideDetails, "fetchRideDetails");
+
+    const rideData = fetchRideDetails?.data || {};
+    const backendCurrentLocation = rideData?.current_latitude && rideData?.current_longitude
+        ? { lat: rideData.current_latitude, lng: rideData.current_longitude }
+        : null;
+    console.log(backendCurrentLocation, "backendCurrentLocation");
 
     const pickup = jobDetails?.data?.jobData;
     const pickupCoords = pickup ? { lat: pickup.pickup_latitude, lng: pickup.pickup_longitude } : null;
@@ -44,13 +44,13 @@ const RideStatusScreen = () => {
             toast.error("Location access requires HTTPS");
             return;
         }
-   debugger;
+
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const { latitude, longitude } = position.coords;
                 const location = { lat: latitude, lng: longitude };
                 setCurrentLocation(location);
-
+                debugger;
                 const formData = new FormData();
                 formData.append("jobId", id);
                 formData.append("driverId", driverId);
@@ -142,7 +142,10 @@ const RideStatusScreen = () => {
                             <Button
                                 label='Upload Trip Documents'
                                 className='rounded w-100 bordered'
-                                onClick={() => navigate(`/upload-documents/jobId/${id}/driver/${driverId}`)}
+                                onClick={() => navigate(
+                                    `/upload-documents/jobId/${id}/driver/${driverId}`,
+                                    { state: { request_status: pickup?.request_status } }
+                                )}
                             />
                             <Button
                                 label='Start Delivery Check-Out'

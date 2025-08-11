@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PageHead from '../../components/shared/pageHead/PageHead'
 import Breadcrumb from '../../components/shared/breadcrumb/Breadcrumb'
 import { Row, Col } from 'react-bootstrap'
@@ -13,29 +13,57 @@ import ReScheduleDate from '../../components/shared/modalContent/ReschceduleDate
 import { getClassAndTitleByStatus } from '../../helpers/Utils'
 import { LuClock } from "react-icons/lu";
 import { useGetUpdateLocationLogsQuery } from "../../app/globalApi"
+import TickSvg from '../../images/tickSvg.svg'
+import DriverMapscreen from '../driverScreens/DriverMapscreen'
+import { getLocationName } from '../../helpers/Utils'
 const JobDetails = () => {
     const { id } = useParams();
+
+
+    const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id }, { skip: !id });
+    const { state } = useLocation();
+    console.log(state,"state");
     
-    
-    const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id },{ skip: !id });
-    const {state} = useLocation();
+    const isCompleted = state?.completed
     const statusMeta = getClassAndTitleByStatus(jobDetails?.data?.jobData?.request_status);
-    
+
     const [cancelConfirmation, setCancelConfirmation] = useState(false);
     const [reScheduleConfirmation, setRescheduleConfirmation] = useState(false);
-      const jobData = jobDetails?.data?.jobData;
-     const driverId = jobData?.driver_id;
-      const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
-            { id, driverId },
-            { skip: !id || !driverId }
-        );
-    
+    const jobData = jobDetails?.data?.jobData;
+    const driverId = jobData?.driver_id;
+    const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
+        { id, driverId },
+        { skip: !id || !driverId }
+    );
+    console.log(getLocationUpdates, "getLocationUpdates");
+    const [locationNames, setLocationNames] = useState([]);
 
-    const breadcrumbItems = [
-        { name: 'Jobs', path: '/jobs' },
+    useEffect(() => {
+        async function fetchLocationNames() {
+            if (!getLocationUpdates?.data) return;
 
-        { name: 'Job-441022022' },
-    ];
+            const names = await Promise.all(
+                getLocationUpdates.data.map(async (log) => {
+                    return await getLocationName(log.latitude, log.longitude);
+                })
+            );
+
+            setLocationNames(names);
+        }
+
+        fetchLocationNames();
+    }, [getLocationUpdates]);
+
+
+    const pickupCoords = { lat: jobDetails?.data?.jobData?.pickup_latitude, lng: jobDetails?.data?.jobData?.pickup_longitude } || null;
+    const dropoffCoords = { lat: jobDetails?.data?.jobData?.dropoff_latitude, lng: jobDetails?.data?.jobData?.dropoff_longitude } || null;
+   const breadcrumbItems = [
+  {
+    name: isCompleted ? 'Completed jobs' : 'Jobs',
+    path: isCompleted ? '/completed-jobs' : '/jobs',
+  },
+  { name: 'Job-441022022' },
+];
 
     return (
         <>
@@ -62,11 +90,11 @@ const JobDetails = () => {
                                         </span>
                                     ) : jobDetails?.data?.jobData?.request_status === 'submitted' ? (
                                         <>
-                                         <Button
-                                                    label="Reschedule job"
-                                                    className={'btn-square rounded'}
-                                                    onClick={() => setRescheduleConfirmation(true)}
-                                                />
+                                            <Button
+                                                label="Reschedule job"
+                                                className={'btn-square rounded'}
+                                                onClick={() => setRescheduleConfirmation(true)}
+                                            />
                                             <Button
                                                 label={"Cancel"}
                                                 type='button'
@@ -76,11 +104,11 @@ const JobDetails = () => {
                                         </>
                                     ) : jobDetails?.data?.jobData?.request_status === 'approved' ? (
                                         <>
-                                        <Button
-                                                    label="Reschedule job"
-                                                    className={'btn-square rounded'}
-                                                    onClick={() => setRescheduleConfirmation(true)}
-                                                />
+                                            <Button
+                                                label="Reschedule job"
+                                                className={'btn-square rounded'}
+                                                onClick={() => setRescheduleConfirmation(true)}
+                                            />
                                             <Button
                                                 label="Cancel"
                                                 className={'btn-square rounded'}
@@ -119,17 +147,17 @@ const JobDetails = () => {
                             </div>
                         </Col>
                     </Row>
- 
+
                 </Col>
                 <Col lg={3}>
-                {state.status !== "cancelled"  && (
-                    <>
-                    <h6 className='small-heading'>Driver</h6>
-                    <div className='no-driver'>
-                        <CarSvg />
-                        <h5 className='mb-4'>{(jobDetails?.data?.jobData?.driverName === "Driver not assigned" || jobDetails?.data?.jobData?.driverName === null) ? "Driver not assigned" : jobDetails?.data?.driverName}</h5>
-                    </div>
-                    </>)}
+                    {state.status !== "cancelled" && (
+                        <>
+                            <h6 className='small-heading'>Driver</h6>
+                            <div className='no-driver'>
+                                <CarSvg />
+                                <h5 className='mb-4'>{(jobDetails?.data?.jobData?.driverName === "Driver not assigned" || jobDetails?.data?.jobData?.driverName === null) ? "Driver not assigned" : jobDetails?.data?.driverName}</h5>
+                            </div>
+                        </>)}
                 </Col>
                 <Col lg={12} className='mt-5'>
                     <h6 className='small-heading'>Job Details</h6>
@@ -176,13 +204,34 @@ const JobDetails = () => {
                                     </ul>
                                 </Col>
                             </Row>
+                            <Col lg={9} className='mt-3'>
+                                <DriverMapscreen
+                                    height="247px"
+                                    pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
+
+                            </Col>
                             <Col lg={12} className='mt-3'>
                                 <h6 className='small-heading'>Location Tracking</h6>
+                                <ul className="p-0 timeline d-flex flex-column gap-3 mt-3 tripProgress">
+                                    {getLocationUpdates?.data?.map((log, i) => (
+                                        <li
+                                            key={i}
+                                            className="d-flex gap-3 align-items-center position-relative"
+                                        >
+                                            <img src={TickSvg} alt="tick" className="position-relative z-3" />
+                                            <div className="timeline_status">
+                                                <span className="d-block text-capitalize">
+                                                    {locationNames[i] || "Loading..."}
+                                                </span>
+                                                <span>{new Date(log.timestamp).toLocaleDateString()}</span>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
                             </Col>
+
                         </Col>
                         <Col lg={3}>
-
-
                             <h6 className='timeline-title'>Timeline</h6>
                             <ul className='p-0 timeline d-flex flex-column gap-3 mt-3'>
                                 {jobDetails?.data?.jobLogs?.length > 0 ? (
@@ -206,23 +255,23 @@ const JobDetails = () => {
                     </Row>
                 </Col>
             </Row>
-            { cancelConfirmation && (
-            <CancelConfirmationModal
-                show={cancelConfirmation}
-                setShow={setCancelConfirmation}
-                jobId = {id}
-                user = "customer"
-                type="cancel"
-            />
+            {cancelConfirmation && (
+                <CancelConfirmationModal
+                    show={cancelConfirmation}
+                    setShow={setCancelConfirmation}
+                    jobId={id}
+                    user="customer"
+                    type="cancel"
+                />
             )}
             {reScheduleConfirmation && (
-            <ReScheduleDate
-                show={reScheduleConfirmation}
-                setShow={setRescheduleConfirmation}
-                type="reschedule"
-                reqstatus={jobDetails?.data?.jobData.request_status}
-                jobId = {id}
-            />
+                <ReScheduleDate
+                    show={reScheduleConfirmation}
+                    setShow={setRescheduleConfirmation}
+                    type="reschedule"
+                    reqstatus={jobDetails?.data?.jobData.request_status}
+                    jobId={id}
+                />
             )}
         </>
 
