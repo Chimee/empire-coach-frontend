@@ -12,7 +12,8 @@ export const dmApi = createApi({
         'getJobDetailsApi',
         'getAllJobsByStatusAdminApi',
         "getAllJobsByStatusApi",
-        "getAdminJobDetailsApi"
+        "getAdminJobDetailsApi",
+        "getVehicleApi"
     ],
     endpoints: () => ({}),
 })

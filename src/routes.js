@@ -62,6 +62,9 @@ export const Routes = {
     Vehicle: {
         path: "/setting"
     },
+    AddVehicle: {
+        path: "/setting/add-vehicle"
+    },
     Profile: {
         path: "settings/profile"
     },

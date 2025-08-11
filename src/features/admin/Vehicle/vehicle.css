@@ -1,0 +1,43 @@
+li.carmodal {
+  background: #eef2ff;
+  padding: 13px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  text-transform: capitalize;
+}
+
+li.car-modal {
+  background: #f3f4f6;
+  padding: 10px;
+  border-radius: 6px;
+  text-transform: capitalize;
+}
+li.carmodal.modalActive {
+  border: 1px solid #0052cc;
+}
+li.carmodal span {
+  color: #0052cc;
+  text-transform: capitalize;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.make-icon {
+  padding: 10px;
+  border-radius: 6px;
+}
+.modalActive .make-icon svg {
+  color: #0052cc;
+}
+.make-icon svg {
+  color: #6b7280;
+}
+.vehicles-wraper h3 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+.edit-vehicle {
+  padding: 1.5rem;
+  border: 1px dashed #ddd;
+  border-radius: 10px;
+}
