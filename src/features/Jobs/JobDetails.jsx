@@ -31,6 +31,7 @@ const JobDetails = () => {
     const [cancelConfirmation, setCancelConfirmation] = useState(false);
     const [reScheduleConfirmation, setRescheduleConfirmation] = useState(false);
     const jobData = jobDetails?.data?.jobData;
+    console.log(jobDetails,"jobDetails");
     const driverId = jobData?.driver_id;
     const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
         { id, driverId },
@@ -56,8 +57,9 @@ const JobDetails = () => {
     }, [getLocationUpdates]);
 
 
-    const pickupCoords = { lat: jobDetails?.data?.jobData?.pickup_latitude, lng: jobDetails?.data?.jobData?.pickup_longitude } || null;
-    const dropoffCoords = { lat: jobDetails?.data?.jobData?.dropoff_latitude, lng: jobDetails?.data?.jobData?.dropoff_longitude } || null;
+    const pickupCoords = { lat: jobData?.pickup_latitude, lng: jobData?.pickup_longitude } || null;
+    
+    const dropoffCoords = { lat: jobData?.dropoff_latitude, lng: jobData?.dropoff_longitude } || null;
     const breadcrumbItems = [
         {
             name: isCompleted ? 'Completed jobs' : 'Jobs',
@@ -168,7 +170,7 @@ const JobDetails = () => {
                                         <img
                                             className='object-fit-cover rounded-5'
                                             src={jobDetails?.data?.jobData?.profile_Picture}
-                                            alt="picture"
+                                            alt="user"
                                             width={40}
                                             height={40}
                                         />
@@ -231,22 +233,27 @@ const JobDetails = () => {
                             </Col>
                             <Col lg={12} className='mt-3'>
                                 <h6 className='small-heading'>Location Tracking</h6>
-                                <ul className="p-0 timeline d-flex flex-column gap-3 mt-3 tripProgress">
-                                    {getLocationUpdates?.data?.map((log, i) => (
-                                        <li
-                                            key={i}
-                                            className="d-flex gap-3 align-items-center position-relative"
-                                        >
-                                            <img src={TickSvg} alt="tick" className="position-relative z-3" />
-                                            <div className="timeline_status">
-                                                <span className="d-block text-capitalize">
-                                                    {locationNames[i] || "Loading..."}
-                                                </span>
-                                                <span>{formatDateToMDY(log?.createdAt)}</span>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
+
+                                {getLocationUpdates?.data?.length > 0 ? (
+                                    <ul className="p-0 timeline d-flex flex-column gap-3 mt-3 tripProgress">
+                                        {getLocationUpdates.data.map((log, i) => (
+                                            <li
+                                                key={i}
+                                                className="d-flex gap-3 align-items-center position-relative"
+                                            >
+                                                <img src={TickSvg} alt="tick" className="position-relative z-3" />
+                                                <div className="timeline_status">
+                                                    <span className="d-block text-capitalize">
+                                                        {locationNames[i] || "Loading..."}
+                                                    </span>
+                                                    <span>{formatDateToMDY(log?.createdAt)}</span>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="mt-3 text-muted">No location updates available.</p>
+                                )}
                             </Col>
                             <Row>
                                 {vehicle_photo?.map((curelem, index) => {
@@ -254,7 +261,7 @@ const JobDetails = () => {
 
                                         <Col lg={3} key={index}>
                                             <div className='rounded bg-body-secondary'>
-                                                <img src={curelem} alt="picture" className='img-fluid' />
+                                                <img src={curelem} alt="user" className='img-fluid' />
                                             </div>
                                         </Col>
 

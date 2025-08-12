@@ -61,9 +61,9 @@ li.outerlist {
 .dashboad-filter select:focus {
   border: 1px solid #42424280;
   border-radius: 35px;
-  height: 32px;
+  height: 35px;
   min-width: 150px;
-  padding-left: 5px;
+  padding-left: 10px;
   font-weight: 500;
   font-size: 14px;
 }
@@ -115,7 +115,7 @@ span.type_tag {
 
 .location_inner span {
   font-size: 14px;
-  line-height: 100%;
+  line-height: 22px;
   color: #000000;
   font-weight: 500;
 }
@@ -162,4 +162,7 @@ h2.company_name {
   max-height: 500px;
   overflow-y: auto;
   padding-right: 8px;
+}
+.location_inner path {
+  fill: grey;
 }

@@ -164,7 +164,7 @@ import PhoneInput from "react-phone-input-2";
 
   return (
     <div>
-      <h5 className="step_heading mb-0">What’s your Timing priority</h5>
+      <h5 className="step_heading mb-3">Pickup and Drop-off Location</h5>
       <Row>
         <Col lg={6}>{renderAddressTab("pickup")}</Col>
         <Col lg={6}>{renderAddressTab("dropoff")}</Col>

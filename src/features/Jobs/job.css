@@ -12,10 +12,10 @@
   margin-top: 1rem;
 }
 .driver-driver h5 {
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 100%;
-    color: #170F49;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  color: #170f49;
 }
 span.fn-tag {
   font-weight: 400;
@@ -96,8 +96,12 @@ span.fn-tag {
   background: #0052cc26;
   padding: 10px;
   border-radius: 5px;
+  border: 1px solid transparent;
+  cursor: pointer;
 }
-
+.selected-address {
+  border: 1px solid var(--primary-color);
+}
 .address_wrapper h3 {
   font-weight: 500;
   font-size: 16px;
@@ -203,6 +207,7 @@ li.list-completed::before {
   max-width: 566px;
   margin: auto;
   width: 100%;
+  gap: 24px;
 }
 h5.step_heading {
   font-family: "Poppins";
@@ -222,8 +227,19 @@ h5.step_heading {
   width: 100%;
   margin: auto;
 }
+.step-tracker::before {
+  width: 70%;
+  border: 1px solid #d9dbe9;
+  position: absolute;
+  content: "";
+  bottom: -31px;
+  left: 50%;
+  transform: translate(-50%, 0px);
+}
+
 .step-tracker {
-  margin-bottom: 3em;
+  margin-bottom: 4.5em;
+  position: relative;
 }
 /* job-dropdown css */
 
@@ -298,7 +314,7 @@ h5.step_heading {
 input.form-control.pac-target-input {
   font-size: 14px;
 }
-.map_wrapper{
+.map_wrapper {
   min-height: 247px;
 }
 input.form-control.pac-target-input:focus {
@@ -317,15 +333,15 @@ span.adress-data {
   background: #b91c1c;
 }
 .tripProgress li::before {
-    position: absolute;
-    width: 2px;
-    height: 100%;
-    background: #4F46E5;
-    content: "";
-    top: 26px;
-    left: 15px;
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: #4f46e5;
+  content: "";
+  top: 26px;
+  left: 15px;
 }
 
 .tripProgress li:last-child::before {
-    display: none;
+  display: none;
 }

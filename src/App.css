@@ -141,7 +141,7 @@ span.cmn_badge {
 }
 
 /* input field css */
-input.cmn_input.form-control,
+.cmn_input.form-control,
 select.cmn_select.form-select {
   border-radius: 4px;
   border: 1px solid rgba(215, 222, 221, 1);
@@ -149,7 +149,8 @@ select.cmn_select.form-select {
   font-size: 13px;
   color: rgba(113, 128, 150, 1);
 }
-input.cmn_input.form-control:read-only {
+.cmn_input.form-control:read-only,
+.cmn_input.form-control:read-only:focus {
   border: 1px solid rgba(215, 222, 221, 1);
   color: #757d8a;
 }
@@ -160,11 +161,16 @@ label.cmn_label.form-label {
   color: rgba(26, 32, 44, 1);
   margin-bottom: 2px;
 }
-
-input.cmn_input.form-control:focus,
+div.react-tel-input .flag-dropdown {
+  background: unset;
+  border: unset;
+  border-right: 1px solid #cacaca;
+}
+.cmn_input.form-control:focus,
 select.cmn_select.form-select:focus,
 textarea:focus.form-control,
-textarea.cmn_input.form-control:focus {
+textarea.cmn_input.form-control:focus,
+.react-tel-input .form-control:focus {
   box-shadow: unset;
   border-color: var(--primary-color);
   color: #000;
@@ -223,8 +229,8 @@ span.input-group-text {
   gap: 13px;
 }
 button.cmn_btn.disabled {
-    opacity: 0.6;
-    cursor: no-drop;
+  opacity: 0.6;
+  cursor: no-drop;
 }
 li.grid_card {
   display: flex;

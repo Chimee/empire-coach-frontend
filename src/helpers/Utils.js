@@ -222,11 +222,11 @@ export const formatTimeTo12Hour = (timeString) => {
 
 export const formatDate = (dateString) => {
   if (!dateString) return '';
+  
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+  return date.toLocaleString('en-US', {
+    month: 'short',   // "Apr"
+    day: 'numeric',   // "30"  // AM/PM format
   });
 };
 

@@ -25,25 +25,23 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
     value: v.make
   })) || [];
 
+
   // Find selected make object to get models
   const selectedMakeObj = vehiclesData?.data?.find(
     (v) => v.make === currentVehicle.make
   );
 
-  // Generate Model options dynamically
   const ModelOptions =
     selectedMakeObj?.models?.map((m) => ({
       label: m,
       value: m
     })) || [];
 
-  const YearOptions = [
-    { label: "2024", value: "2024" },
-    { label: "2023", value: "2023" },
-    { label: "2022", value: "2022" },
-    { label: "2021", value: "2021" },
-    { label: "2020", value: "2020" }
-  ];
+  const currentYear = new Date().getFullYear();
+  const YearOptions = Array.from({ length: 10 }, (_, i) => {
+    const year = currentYear - i;
+    return { label: String(year), value: String(year) };
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -165,7 +163,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
         </div>
       )}
 
-      <h5 className="step_heading mb-0">Vehicle Details</h5>
+      <h5 className="step_heading mb-4">Vehicle Details</h5>
       <div className="vehicle_card">
         <Row>
           <Col lg={4}>
