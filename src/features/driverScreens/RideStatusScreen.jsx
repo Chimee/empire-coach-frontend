@@ -97,6 +97,7 @@ const RideStatusScreen = () => {
                     pickupCoords={pickupCoords}
                     dropoffCoords={dropoffCoords}
                     currentLocation={currentLocation || backendCurrentLocation || null}
+                       height="100%"
                 />
             </div>
 

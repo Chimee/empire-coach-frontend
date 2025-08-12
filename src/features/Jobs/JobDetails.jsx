@@ -12,6 +12,7 @@ import CancelConfirmationModal from '../../components/shared/modalContent/Cancel
 import ReScheduleDate from '../../components/shared/modalContent/ReschceduleDate'
 import { getClassAndTitleByStatus } from '../../helpers/Utils'
 import { LuClock } from "react-icons/lu";
+import { useGetRideDetailsQuery } from '../../app/adminApi/adminApi'
 import { useGetUpdateLocationLogsQuery } from "../../app/globalApi"
 import TickSvg from '../../images/tickSvg.svg'
 import DriverMapscreen from '../driverScreens/DriverMapscreen'
@@ -21,10 +22,12 @@ const JobDetails = () => {
 
 
     const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id }, { skip: !id });
+    console.log(jobDetails);
     const { state } = useLocation();
     const isCompleted = state?.completed
     const statusMeta = getClassAndTitleByStatus(jobDetails?.data?.jobData?.request_status);
-
+    const { data: fetchRideDetails } = useGetRideDetailsQuery({ id }, { skip: !id });
+    const vehicle_photo = fetchRideDetails?.data?.delivery_photos
     const [cancelConfirmation, setCancelConfirmation] = useState(false);
     const [reScheduleConfirmation, setRescheduleConfirmation] = useState(false);
     const jobData = jobDetails?.data?.jobData;
@@ -55,13 +58,13 @@ const JobDetails = () => {
 
     const pickupCoords = { lat: jobDetails?.data?.jobData?.pickup_latitude, lng: jobDetails?.data?.jobData?.pickup_longitude } || null;
     const dropoffCoords = { lat: jobDetails?.data?.jobData?.dropoff_latitude, lng: jobDetails?.data?.jobData?.dropoff_longitude } || null;
-   const breadcrumbItems = [
-  {
-    name: isCompleted ? 'Completed jobs' : 'Jobs',
-    path: isCompleted ? '/completed-jobs' : '/jobs',
-  },
-  { name: 'Job-441022022' },
-];
+    const breadcrumbItems = [
+        {
+            name: isCompleted ? 'Completed jobs' : 'Jobs',
+            path: isCompleted ? '/completed-jobs' : '/jobs',
+        },
+        { name: 'Job-441022022' },
+    ];
 
     return (
         <>
@@ -148,14 +151,32 @@ const JobDetails = () => {
 
                 </Col>
                 <Col lg={3}>
-                    {state.status !== "cancelled" && (
-                        <>
-                            <h6 className='small-heading'>Driver</h6>
-                            <div className='no-driver'>
-                                <CarSvg />
-                                <h5 className='mb-4'>{(jobDetails?.data?.jobData?.driverName === "Driver not assigned" || jobDetails?.data?.jobData?.driverName === null) ? "Driver not assigned" : jobDetails?.data?.driverName}</h5>
-                            </div>
-                        </>)}
+                    {(
+                        jobDetails?.data?.jobData?.request_status === "approved" ||
+                        jobDetails?.data?.jobData?.request_status === "in-transit" ||
+                        jobDetails?.data?.jobData?.request_status === "delivered"
+                    ) && (
+                            <>
+                                <h6 className='small-heading'>Driver</h6>
+                                {!jobDetails?.data?.jobData?.driverName ? (
+                                    <div className="no-driver">
+                                        <CarSvg />
+                                        <h5 className="mb-4">Driver not assigned</h5>
+                                    </div>
+                                ) : (
+                                    <div className="driver-driver d-flex gap-3 align-items-center mb-4">
+                                        <img
+                                            className='object-fit-cover rounded-5'
+                                            src={jobDetails?.data?.jobData?.profile_Picture}
+                                            alt="picture"
+                                            width={40}
+                                            height={40}
+                                        />
+                                        <h5>{jobDetails?.data?.jobData?.driverName}</h5>
+                                    </div>
+                                )}
+                            </>
+                        )}
                 </Col>
                 <Col lg={12} className='mt-5'>
                     <h6 className='small-heading'>Job Details</h6>
@@ -221,13 +242,25 @@ const JobDetails = () => {
                                                 <span className="d-block text-capitalize">
                                                     {locationNames[i] || "Loading..."}
                                                 </span>
-                                                <span>{new Date(log.timestamp).toLocaleDateString()}</span>
+                                                <span>{formatDateToMDY(log?.createdAt)}</span>
                                             </div>
                                         </li>
                                     ))}
                                 </ul>
                             </Col>
+                            <Row>
+                                {vehicle_photo?.map((curelem, index) => {
+                                    return (
 
+                                        <Col lg={3} key={index}>
+                                            <div className='rounded bg-body-secondary'>
+                                                <img src={curelem} alt="picture" className='img-fluid' />
+                                            </div>
+                                        </Col>
+
+                                    )
+                                })}
+                            </Row>
                         </Col>
                         <Col lg={3}>
                             <h6 className='timeline-title'>Timeline</h6>

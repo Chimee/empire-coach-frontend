@@ -51,6 +51,7 @@ const RideDeatails = () => {
                 pickupCoords={pickupCoords}
                 dropoffCoords={dropoffCoords}
                 currentLocation={currentLocation}
+                height="100%" 
             />
             <div className='loaction flex-grow-1'>
                 <ul className='p-0 pt-3'>

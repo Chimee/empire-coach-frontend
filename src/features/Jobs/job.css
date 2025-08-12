@@ -11,6 +11,12 @@
   color: #989692;
   margin-top: 1rem;
 }
+.driver-driver h5 {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 100%;
+    color: #170F49;
+}
 span.fn-tag {
   font-weight: 400;
   font-size: 14px;

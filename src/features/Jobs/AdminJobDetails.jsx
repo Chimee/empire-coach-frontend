@@ -12,6 +12,9 @@ import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 import toast from "react-hot-toast";
 import CancelConfirmationModal from '../../components/shared/modalContent/CancelJobModal'
 import AssignDriverModal from '../../components/shared/modalContent/AssignDriverPopup'
+import {
+    useGetAllTripDocumentsQuery
+} from '../../app/driverApi/driverApi';
 import { getClassAndTitleByStatus } from '../../helpers/Utils'
 import { useGetUpdateLocationLogsQuery } from "../../app/globalApi"
 import TickSvg from '../../images/tickSvg.svg'
@@ -32,11 +35,13 @@ const AdminJobDetails = () => {
     const [approveJob, { isLoading: isApproving }] = useApproveJobsByAdminMutation();
     const jobData = jobDetails?.data?.jobData;
     const driverId = jobData?.driver_id;
-
+    const { data: fetchTripDocuments } = useGetAllTripDocumentsQuery({ id, driverId: driverId },{skip: !id || !driverId });  
+    console.log(fetchTripDocuments);
     const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
         { id, driverId },
         { skip: !id || !driverId }
     );
+    console.log(getLocationUpdates);
 
     const [locationNames, setLocationNames] = useState([]);
 
@@ -259,7 +264,6 @@ const AdminJobDetails = () => {
                             <Row>
                                 {vehicle_photo?.map((curelem, index) => {
                                     return (
-
                                         <Col lg={3} key={index}>
                                             <div className='rounded bg-body-secondary'>
                                                 <img src={curelem} alt="picture" className='img-fluid' />
@@ -269,6 +273,90 @@ const AdminJobDetails = () => {
                                     )
                                 })}
                             </Row>
+
+                            {/* Trip Documents */}
+                            {/* Trip Documents */}
+                            <h6 className='small-heading mt-4'>Trip Documents</h6>
+                            <Row>
+                                {fetchTripDocuments?.data?.map((doc, index) => {
+                                    let otherReceipts = [];
+                                    try {
+                                        otherReceipts = doc.other_receipts ? JSON.parse(doc.other_receipts) : [];
+                                    } catch (err) {
+                                        console.error("Error parsing other_receipts:", err);
+                                    }
+
+                                    return (
+                                        <Col lg={12} key={index} className="mb-3">
+                                            {/* Daily Driver Log */}
+                                            {doc.daily_driver_log && (
+                                                <div className="mb-2">
+                                                    <strong>Daily Driver Log:</strong><br />
+                                                    <a href={doc.daily_driver_log} target="_blank" rel="noopener noreferrer" className="text-primary">
+                                                        View Document
+                                                    </a>
+                                                </div>
+                                            )}
+
+                                            {/* Flight Confirmation */}
+                                            {doc.flight_confirmation && (
+                                                <div className="mb-2">
+                                                    <strong>Flight Confirmation:</strong><br />
+                                                    <a href={doc.flight_confirmation} target="_blank" rel="noopener noreferrer" className="text-primary">
+                                                        View Document
+                                                    </a>
+                                                </div>
+                                            )}
+
+                                            {/* Fuel Receipt */}
+                                            {doc.fuel_receipt && (
+                                                <div className="mb-2">
+                                                    <strong>Fuel Receipt:</strong><br />
+                                                    <a href={doc.fuel_receipt} target="_blank" rel="noopener noreferrer" className="text-primary">
+                                                        View Document
+                                                    </a>
+                                                </div>
+                                            )}
+
+                                            {/* Hotel Receipt */}
+                                            {doc.hotel_receipt && (
+                                                <div className="mb-2">
+                                                    <strong>Hotel Receipt:</strong><br />
+                                                    <a href={doc.hotel_receipt} target="_blank" rel="noopener noreferrer" className="text-primary">
+                                                        View Document
+                                                    </a>
+                                                </div>
+                                            )}
+
+                                            {/* Additional Notes */}
+                                            {doc.additional_notes && (
+                                                <div className="mb-2">
+                                                    <strong>Additional Notes:</strong><br />
+                                                    <span>{doc.additional_notes}</span>
+                                                </div>
+                                            )}
+
+                                            {/* Other Receipts */}
+                                            {otherReceipts.length > 0 && (
+                                                <div className="mb-2">
+                                                    <strong>Other Receipts:</strong>
+                                                    <ul className="mt-1">
+                                                        {otherReceipts.map((item, i) => (
+                                                            <li key={i}>
+                                                                <a href={item.location} target="_blank" rel="noopener noreferrer" className="text-primary">
+                                                                    View Document {i + 1}
+                                                                </a>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </Col>
+                                    );
+                                })}
+                            </Row>
+
+
                         </Col>
                         <Col lg={3}>
                             <h6 className='timeline-title'>Timeline</h6>
@@ -299,35 +387,42 @@ const AdminJobDetails = () => {
                         jobDetails?.data?.jobData?.request_status === "delivered") && (
                             <>
                                 <h6 className="small-heading">Driver</h6>
-                                <div className="no-driver">
-                                    <CarSvg />
-                                    <h5 className="mb-4">
-                                        {!jobDetails?.data?.jobData?.driver_name ||
-                                            jobDetails?.data?.jobData?.driver_name === "Driver not assigned"
-                                            ? "Driver not assigned"
-                                            : jobDetails?.data?.jobData?.driver_name}
-                                    </h5>
-                                    {(
-                                        jobDetails?.data?.jobData?.request_status === "approved"
-                                    ) && (
-                                            !jobDetails?.data?.jobData?.driver_name ||
-                                                jobDetails?.data?.jobData?.driver_name === "Driver not assigned" ? (
-                                                <Button
-                                                    label="Assign Driver"
-                                                    className="rounded w-75"
-                                                    onClick={() => setAssignDriverPopup(true)}
-                                                />
-                                            ) : (
-                                                <Button
-                                                    disabled={sentLink || jobDetails?.data?.jobData?.JobAssignments.isLinkSent}
-                                                    loading={isSending}
-                                                    label="Send Link"
-                                                    className="rounded"
-                                                    onClick={() => handleSendLink()}
-                                                />
-                                            )
-                                        )}
-                                </div>
+                                {(!jobDetails?.data?.jobData?.driver_name ||
+                                    jobDetails?.data?.jobData?.driver_name === "Driver not assigned") ?
+                                    <div className="no-driver">
+                                        <CarSvg />
+                                        <h5 className="mb-4">
+                                            Driver not assigned
+                                        </h5>
+                                    </div>
+                                    : <div className="driver-driver d-flex gap-3 align-items-center mb-4">
+                                        <img className='object-fit-cover rounded-5' src={jobDetails?.data?.jobData?.profile_Picture} alt="picture" width={40} height={40} />
+                                        <h5 className="">
+                                            {jobDetails?.data?.jobData?.driver_name}
+                                        </h5>
+                                    </div>
+                                }
+
+                                {(
+                                    jobDetails?.data?.jobData?.request_status === "approved"
+                                ) && (
+                                        !jobDetails?.data?.jobData?.driver_name ||
+                                            jobDetails?.data?.jobData?.driver_name === "Driver not assigned" ? (
+                                            <Button
+                                                label="Assign Driver"
+                                                className="rounded w-75 m-auto"
+                                                onClick={() => setAssignDriverPopup(true)}
+                                            />
+                                        ) : (
+                                            <Button
+                                                disabled={sentLink || jobDetails?.data?.jobData?.JobAssignments.isLinkSent}
+                                                loading={isSending}
+                                                label="Send Link"
+                                                className="rounded w-75 m-auto"
+                                                onClick={() => handleSendLink()}
+                                            />
+                                        )
+                                    )}
                             </>
                         )}
 
