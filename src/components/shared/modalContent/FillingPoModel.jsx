@@ -90,7 +90,7 @@ const VehicleDetailsModal = ({ show, setShow, vehicleData = {}, job }) => {
           />
           <Button
             label={isFilling ? "Submitting..." : "Next"}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded px-4 py-2"
+            className="text-white rounded px-4 py-2"
             onClick={handleSubmit}
             disabled={isFilling}
           />

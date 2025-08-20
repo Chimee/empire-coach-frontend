@@ -273,8 +273,6 @@ const AdminJobDetails = () => {
                                     )
                                 })}
                             </Row>
-
-                            {/* Trip Documents */}
                             {/* Trip Documents */}
                             <h6 className='small-heading mt-4'>Trip Documents</h6>
                             <Row>
@@ -355,8 +353,7 @@ const AdminJobDetails = () => {
                                     );
                                 })}
                             </Row>
-
-
+                            
                         </Col>
                         <Col lg={3}>
                             <h6 className='timeline-title'>Timeline</h6>

@@ -71,8 +71,7 @@
   opacity: 0.1;
   cursor: not-allowed;
 }
-button.cmn_btn.disabled
-Specificity: (0,2,1) {
+button.cmn_btn.disabled {
   border: 1px solid #e1e3e6;
   background: #f2f2f2;
   color: #989692;

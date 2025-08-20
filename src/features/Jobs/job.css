@@ -241,7 +241,7 @@ h5.step_heading {
   box-shadow: unset;
   border: 1px solid var(--primary-color);
 }
-.vehicle_dropdown .dropdown-toggle:after {
+.vehicle_dropdown .dropdown-toggle::after {
   display: none;
 }
 .vehicle_dropdown .dropdown-toggle.show svg {
