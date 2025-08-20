@@ -135,7 +135,7 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
 
   return (
     <div>
-      <h5 className="step_heading mb-0">What’s your Timing priority</h5>
+      <h5 className="step_heading mb-4">What’s your Timing priority</h5>
       <p className="step-tag-line mb-3">
         What part of the schedule is most important to you?
       </p>

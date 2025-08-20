@@ -18,7 +18,7 @@ const VehicleDropdown = ({ selectType, options, currentVehicle, setCurrentVehicl
   };
 
   return (
-    <div>
+    <div className="mb-3">
       <label htmlFor="vehicle-dropdown" className="cmn_label form-label">
         Select {selectType}
       </label>

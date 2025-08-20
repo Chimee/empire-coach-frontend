@@ -35,7 +35,7 @@ const AdminJobDetails = () => {
     const [approveJob, { isLoading: isApproving }] = useApproveJobsByAdminMutation();
     const jobData = jobDetails?.data?.jobData;
     const driverId = jobData?.driver_id;
-    const { data: fetchTripDocuments } = useGetAllTripDocumentsQuery({ id, driverId: driverId },{skip: !id || !driverId });  
+    const { data: fetchTripDocuments } = useGetAllTripDocumentsQuery({ id, driverId: driverId }, { skip: !id || !driverId });
     console.log(fetchTripDocuments);
     const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
         { id, driverId },
@@ -242,24 +242,28 @@ const AdminJobDetails = () => {
                                     pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
                             </Col>
                             <Col lg={12} className='mt-3'>
-                                {/* {getLocationName} */}
                                 <h6 className='small-heading'>Location Tracking</h6>
-                                <ul className="p-0 timeline d-flex flex-column gap-3 mt-3 tripProgress">
-                                    {getLocationUpdates?.data?.map((log, i) => (
-                                        <li
-                                            key={i}
-                                            className="d-flex gap-3 align-items-center position-relative"
-                                        >
-                                            <img src={TickSvg} alt="tick" className="position-relative z-3" />
-                                            <div className="timeline_status">
-                                                <span className="d-block text-capitalize">
-                                                    {locationNames[i] || "Loading..."}
-                                                </span>
-                                                <span>{formatDateToMDY(log?.createdAt)}</span>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
+
+                                {Array.isArray(getLocationUpdates?.data) && getLocationUpdates.data.length > 0 ? (
+                                    <ul className="p-0 timeline d-flex flex-column gap-3 mt-3 tripProgress">
+                                        {getLocationUpdates.data.map((log, i) => (
+                                            <li
+                                                key={i}
+                                                className="d-flex gap-3 align-items-center position-relative"
+                                            >
+                                                <img src={TickSvg} alt="tick" className="position-relative z-3" />
+                                                <div className="timeline_status">
+                                                    <span className="d-block text-capitalize">
+                                                        {locationNames[i] || "Loading..."}
+                                                    </span>
+                                                    <span>{formatDateToMDY(log?.createdAt)}</span>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="mt-3 text-muted">No location updates available.</p>
+                                )}
                             </Col>
                             <Row>
                                 {vehicle_photo?.map((curelem, index) => {

@@ -3,7 +3,6 @@ import CommonModal from "../modalLayout/CommonModal";
 import Button from "../buttons/button";
 import { Autocomplete } from "@react-google-maps/api";
 import { useUpdateDeliveryAddressMutation } from "../../../app/customerApi/customerApi";
-import { Row, Col } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { validateRequiredFields } from "../../../helpers/Utils";
 
@@ -30,7 +29,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, message, type
   };
 
   const handleSubmit = async () => {
-    
+
     if (!selectedPlace) {
       toast.error("Please select a location from the autocomplete.");
       return;
@@ -38,10 +37,10 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, message, type
 
     const { address, latitude, longitude } = selectedPlace;
 
-   const requiredFields = [
-         { value: selectedPlace.address, label: `${type} location` }
-       ];
-       const error = validateRequiredFields(requiredFields);
+    const requiredFields = [
+      { value: selectedPlace.address, label: `${type} location` }
+    ];
+    const error = validateRequiredFields(requiredFields);
 
     if (error) {
       toast.error(error);
@@ -50,16 +49,16 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, message, type
 
     try {
       const otherType = type === "pickup" ? "dropoff" : "pickup";
-       const payload= {
-          addressId,
-          address,
-          [`${type}_latitude`]: latitude,
-          [`${type}_longitude`]: longitude,
-          type,
-          [`${otherType}_latitude`]: null,
-          [`${otherType}_longitude`]: null,
-        }
-   
+      const payload = {
+        addressId,
+        address,
+        [`${type}_latitude`]: latitude,
+        [`${type}_longitude`]: longitude,
+        type,
+        [`${otherType}_latitude`]: null,
+        [`${otherType}_longitude`]: null,
+      }
+
 
       await updateDeliveryAddress({
         data: {
@@ -73,37 +72,34 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, message, type
         },
       }).unwrap();
 
-      toast.success(`${type} address saved successfully`);
       setResetKey((prev) => prev + 1);
-      setShow(false); 
+      setShow(false);
     } catch (err) {
       toast.error(err?.data?.message || `Failed to save ${type} address.`);
     }
   };
 
   return (
-    <CommonModal setShow={setShow} show={show} handleClose={handleClose} className="confirmationModal">
-      <div className="p-4">
-        <h2 className="text-center text-lg font-semibold mb-4">
+    <CommonModal setShow={setShow} show={show} handleClose={handleClose} className="confirmationModal sm-width">
+      <div className="p-3">
+        <h1 className="text-center text-lg font-semibold mb-4">
           Are you sure <br />
           you want to edit this address?
-        </h2>
+        </h1>
 
         <label className="form-label">Address</label>
         <Autocomplete key={resetKey} onLoad={setAutocompleteRef} onPlaceChanged={handlePlaceChanged}>
           <input type="text" className="form-control mb-3" placeholder="Search address" />
         </Autocomplete>
 
-        <Row>
-          <Col>
-            <Button
-              label="Save"
-              className="rounded-2 w-100 mb-3"
-              size="xs"
-              onClick={handleSubmit}
-            />
-          </Col>
-        </Row>
+
+        <Button
+          label="Save"
+          className="rounded-2 w-100"
+          size="xs"
+          onClick={handleSubmit}
+        />
+
       </div>
     </CommonModal>
   );

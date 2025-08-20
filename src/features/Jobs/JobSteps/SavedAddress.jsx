@@ -72,7 +72,7 @@ import EditAddressModal from '../../../components/shared/modalContent/EditAddres
                 savedLocations.data.data.map((addr, idx) => {
                     const addressId = addr._id || addr.id || idx
                     return (
-                        <div className="d-flex gap-3 saved_address align-items-center position-relative" key={addressId}>
+                        <div className={`${selectedIndex === idx ? 'selected-address' : ''}  d-flex gap-3 saved_address align-items-center position-relative`} key={addressId}>
                             <AddressLocationSvg className="flex-shrink-0" />
                             <div className="address_wrapper flex-grow-1">
                                 <div className="toggle position-absolute">
@@ -93,14 +93,8 @@ import EditAddressModal from '../../../components/shared/modalContent/EditAddres
                                 </div>
                                 {addr.label && <h3>{addr.label}</h3>}
                                 <p
-                                  className={`${addressType} ${selectedIndex === idx ? 'selected-address' : ''}`}
-                                     style={{
-                                     cursor: "pointer",
-                                    backgroundColor: selectedIndex === idx ? "#e6f0ff" : "transparent",
-                                      borderRadius: selectedIndex === idx ? "8px" : "0",
-                                       padding: selectedIndex === idx ? "8px" : "0",
-                                         transition: "background-color 0.2s ease",
-                                             }}
+                                  className={`${addressType}`}
+                                   
                                       onClick={(e) => {
                                         e.stopPropagation();
                                          const mergedAddress = addr?.address;

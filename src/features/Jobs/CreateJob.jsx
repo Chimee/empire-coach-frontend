@@ -74,11 +74,11 @@ const CreateJob = ({ show, handleClose, setShow }) => {
 
     return (
         <div>
-            <div className='req-job-headers'>
-                <h2 className='text-center'>New Job request</h2>
-                <p className='text-center'>Please fill the form below to receive a quote for your project. Feel free to add as much detail as needed.</p>
+            <div className='req-job-headers d-flex flex-column'>
+                <h2 className='text-center mb-0'>New Job request</h2>
+                <p className='text-center mb-0'>Please fill the form below to receive a quote for your project. Feel free to add as much detail as needed.</p>
             </div>
-            <div className="job-request-modal">
+            <div className="job-request-modal mt-4">
                 {renderStepTracker()}
                 {renderStep()}
             </div>

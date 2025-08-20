@@ -4,17 +4,30 @@ import { LocationSvg } from '../../svgFiles/LocationSvg';
 import { useGetAllJobsByStatusQuery } from '../../app/customerApi/customerApi';
 import { useGetAllJobsByStatusAdminQuery } from '../../app/adminApi/adminApi';
 import { jwtDecode } from "../../helpers/AccessControlUtils";
+import { formatDate, getClassAndTitleByStatus,formatTimeTo12Hour } from '../../helpers/Utils';
+const AdminTabs = [
+  { label: "All", value: "all" },
+  { label: "Upcoming", value: "upcoming" },
+  { label: "Pending Approval", value: "pendingApproval" },
+  { label: "PO Missing", value: "poMissing" },
+  { label: "Change Request Pending", value: "awaitingRescheduled" },
+  { label: "In Transit", value: "inTransit" },
+  { label: "Delivered", value: "delivered" },
+  { label: "Awaiting Cancellation", value: "awaitingCancellation" },
+  { label: "Cancelled", value: "cancelled" },
+  { label: "Awaiting Reschedule Date", value: "awaitingRescheduled_date" }
+];
 
-const tabesName = {
-  All: 'all',
-  activeJobs: 'activeJobs',
-  awaiting_reschedule_date: 'awaiting_reschedule_date',
-  awaitingCancellation: 'awaiting_for_cancellation',
-  poMissing: 'PO_missing',
-  cancelled: 'cancelled',
-};
+const CustomerTabs = [
+  { label: "All", value: "all" },
+  { label: "Active Jobs", value: "activeJobs" },
+  { label: "Awaiting Reschedule Date", value: "awaiting_reschedule_date" },
+  { label: "Awaiting Cancellation", value: "awaiting_for_cancellation" },
+  { label: "PO Missing", value: "PO_missing" },
+  { label: "Cancelled", value: "cancelled" }
+];
 
-const QuickJobsList = () => {
+const QuickJobsList = ({ height }) => {
   const [page, setPage] = useState(1);
   const [tabName, setTabName] = useState('all');
   const [jobList, setJobList] = useState([]);
@@ -23,9 +36,8 @@ const QuickJobsList = () => {
 
   const token = localStorage.getItem("authToken");
   const parseToken = token ? jwtDecode(token) : {};
-
-  // Decide which query hook to use based on role
   const isUser = parseToken?.role === "customer";
+  const tabesName = isUser ? CustomerTabs : AdminTabs
   const queryHook = isUser ? useGetAllJobsByStatusQuery : useGetAllJobsByStatusAdminQuery;
 
   const { data, isFetching, isLoading } = queryHook(
@@ -33,18 +45,21 @@ const QuickJobsList = () => {
     { keepPreviousData: true }
   );
 
-  // Reset on tab change
+  // Reset when tab changes
   useEffect(() => {
     setPage(1);
     setJobList([]);
   }, [tabName]);
 
-  // Append or replace job list
+  // Append jobs without duplicates
   useEffect(() => {
     if (data?.data?.data?.length) {
-      setJobList(prev =>
-        page === 1 ? data.data.data : [...prev, ...data.data.data]
-      );
+      setJobList(prev => {
+        const newJobs = data.data.data.filter(
+          job => !prev.some(existing => existing.id === job.id)
+        );
+        return page === 1 ? data.data.data : [...prev, ...newJobs];
+      });
     }
   }, [data, page]);
 
@@ -65,24 +80,32 @@ const QuickJobsList = () => {
     container.addEventListener('scroll', handleScroll);
     return () => container.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
-
-  const handleFilter = e => {
-    const selectedTab = tabesName[e.target.value];
-    if (selectedTab !== tabName) {
-      setTabName(selectedTab);
+  const handleFilter = (e) => {
+    const selectedValue = e.target.value;
+    if (selectedValue !== tabName) {
+      setTabName(selectedValue);
     }
   };
 
   return (
-    <div className="dashboard_card scrollable-section" ref={scrollRef}>
+    <div
+      className="dashboard_card scrollable-section"
+      ref={scrollRef}
+      style={{ maxHeight: `${height}px` }}
+    >
       <div className="d-flex gap-10px align-items-center justify-content-between dashboad-filter">
         <h6 className="sub_heading mb-0">Quick Access</h6>
         <div className="d-flex gap-3 align-items-center">
-          <span>Status :</span>
-          <select onChange={handleFilter} className="form-select" value={tabName}>
-            {Object.keys(tabesName).map(key => (
-              <option key={key} value={key}>
-                {key}
+          <span className="text-nowrap">Status :</span>
+          {/* Controlled select to avoid flicker */}
+          <select
+            onChange={handleFilter}
+            className="form-select"
+            value={tabName}
+          >
+            {tabesName.map((tab) => (
+              <option key={tab.value} value={tab.value}>
+                {tab.label}
               </option>
             ))}
           </select>
@@ -91,48 +114,52 @@ const QuickJobsList = () => {
 
       <ul className="job_list d-flex flex-column gap-3 p-0">
         {jobList.length > 0 ? (
-          jobList.map((job, i) => (
-            <li key={job.id || i}>
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <div className="job_head">
-                  <h6 className="mb-0">Job #{job.id}</h6>
-                  <p className="mb-0">{job.id}</p>
-                </div>
-                <span className="type_tag">{job.request_status}</span>
-              </div>
+          jobList.map((job) => {
+            const { className, title } = getClassAndTitleByStatus(job?.request_status);
 
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <div className="locations w-100 border-end pr-3">
-                  <div className="location_inner">
-                    <h6>Pickups</h6>
-                    <div className="d-flex align-items-center gap-2 mb-3">
-                      <LocationSvg className="flex-shrink-0" />
-                      <span>{job.pickup_location}</span>
+            return (
+              <li key={job.id}>
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                  <div className="job_head">
+                    <h6 className="mb-0">Job #{job?.id}</h6>
+                    <p className="mb-0">{job?.companyName}</p>
+                  </div>
+                  <span className={`fn-badge ${className}`}>{title}</span>
+                </div>
+
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <div className="locations w-100 border-end pr-3">
+                    <div className="location_inner">
+                      <h6>Pickups</h6>
+                      <div className="d-flex align-items-center gap-2 mb-3">
+                        <ClockSvg className="flex-shrink-0" />
+                        <span>{`${formatDate(job?.pickup_date)} ${formatTimeTo12Hour(job?.pickup_time)}`}</span>
+                      </div>
+                      <div className="d-flex align-items-center gap-2">
+                        <LocationSvg className="flex-shrink-0" />
+                        <span>{job?.pickup_location}</span>
+                      </div>
                     </div>
-                    <div className="d-flex align-items-center gap-2">
-                      <ClockSvg className="flex-shrink-0" />
-                      <span>{job.pickup_date}</span>
+                  </div>
+                  <div className="locations w-100 text-end ps-3">
+                    <div className="location_inner d-inline-block text-start">
+                      <h6>Dropoff</h6>
+                      <div className="d-flex align-items-center gap-2 mb-3">
+                        <ClockSvg className="flex-shrink-0" />
+                           <span>{`${formatDate(job?.dropoff_date)} ${formatTimeTo12Hour(job?.dropoff_time)}`}</span>
+                      </div>
+                      <div className="d-flex align-items-center gap-2">
+                        <LocationSvg className="flex-shrink-0" />
+                        <span>{job?.dropoff_location}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="locations w-100 text-end">
-                  <div className="location_inner d-inline-block text-start">
-                    <h6>Dropoff</h6>
-                    <div className="d-flex align-items-center gap-2 mb-3">
-                      <LocationSvg className="flex-shrink-0" />
-                      <span>{job.dropoff_location}</span>
-                    </div>
-                    <div className="d-flex align-items-center gap-2">
-                      <ClockSvg className="flex-shrink-0" />
-                      <span>{job.dropoff_date}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              <h4 className="pb-2">{job?.driver_name || 'driver not assigned'}</h4>
-            </li>
-          ))
+                <h4 className="pb-2">{job?.driver_name || 'driver not assigned'}</h4>
+              </li>
+            );
+          })
         ) : !isLoading ? (
           <li className="text-muted">No jobs found.</li>
         ) : null}
