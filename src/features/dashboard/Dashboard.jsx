@@ -12,7 +12,9 @@ const Dashboard = () => {
   const token = localStorage.getItem('authToken')
   const tokenDecode = jwtDecode(token);
   const role = tokenDecode?.role
+  console.log(tokenDecode,"tokenDECODE")
   const username = tokenDecode?.username
+  console.log(username,"username-------")
   const [height, setHeight] = useState(0);
   useEffect(() => {
     const updateHeight = () => {

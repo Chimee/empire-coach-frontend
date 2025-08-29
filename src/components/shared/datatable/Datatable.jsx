@@ -24,7 +24,7 @@ const Datatable = ({
 }) => {
   const [itemsPerPage] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
- 
+
   useEffect(() => {
     if (tableData && tableData.data && Array.isArray(tableData.data)) {
       setTotalItems(tableData?.total);
@@ -84,7 +84,7 @@ const Datatable = ({
           <tbody>
             {tableData?.data?.length > 0 ? (
               tableData?.data?.map((row, rowIndex) => (
-                <tr key={rowIndex}   onClick={() => onClickRow && onClickRow(row?.id)}>
+                <tr key={rowIndex} onClick={() => onClickRow && onClickRow(row?.id)}>
                   {columns.map((column, colIndex) => {
                     let cellContent;
 
@@ -99,11 +99,13 @@ const Datatable = ({
                         index: rowIndex,
                       });
                     } else {
-                      cellContent = getNestedValue(
+                      let value = getNestedValue(
                         row,
                         column.accessor,
                         column.captialize || false
                       );
+
+                      cellContent = value;
                     }
 
                     return <td key={colIndex}>{cellContent}</td>;
@@ -113,7 +115,7 @@ const Datatable = ({
             ) : (
               <tr>
                 <td colSpan={columns.length} className="text-center">
-                  {isLoading ? ("loading", "Loading...") : ("no_data", "No data available")}
+                  {isLoading ? "Loading..." : "No data available"}
                 </td>
               </tr>
             )}
@@ -121,7 +123,7 @@ const Datatable = ({
         </Table>
       </div>
       <br />
-      {showPegination  && (
+      {showPegination && (
         <Pagination
           currentPage={page}
           totalPages={totalPages}

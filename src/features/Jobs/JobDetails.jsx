@@ -65,7 +65,7 @@ const JobDetails = () => {
             name: isCompleted ? 'Completed jobs' : 'Jobs',
             path: isCompleted ? '/completed-jobs' : '/jobs',
         },
-        { name: 'Job-441022022' },
+        { name: 'Job' },
     ];
 
     return (

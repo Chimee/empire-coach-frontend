@@ -32,6 +32,7 @@ const customerApi = dmApi.injectEndpoints({
                     "Customer"
                 );
             },
+             invalidatesTags: ["getCustomerDetailAPI"]
         }),
 
         getCustomerDetail: build.query({
@@ -118,8 +119,8 @@ const customerApi = dmApi.injectEndpoints({
             invalidatesTags: ["getDeliveryAddressesAPI"]
         }),
         getDeliveryAddresses: build.query({
-            query: ({ page = 1, limit = 10, addressType } = {}) => ({
-                url: `customer/get-delivery-address?page=${page}&limit=${limit}&addressType=${addressType}`,
+            query: ({ page = 1, limit = 10 } = {}) => ({
+                url: `customer/get-delivery-address?page=${page}&limit=${limit}`,
                 method: "GET",
                 headers: getAuthorizationHeader(),
             }),
@@ -141,11 +142,12 @@ const customerApi = dmApi.injectEndpoints({
         }),
         getJobDetails: build.query({
             query: ({ id }) => {
-           
-                return{
-                url: `customer/get-job-details?jobId=${id}`,
-                method: "GET",
-                headers: getAuthorizationHeader(),}
+
+                return {
+                    url: `customer/get-job-details?jobId=${id}`,
+                    method: "GET",
+                    headers: getAuthorizationHeader(),
+                }
             },
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
@@ -171,7 +173,15 @@ const customerApi = dmApi.injectEndpoints({
                 return {
                     url: `customer/update-job-schedule`,
                     method: "PUT",
-                    body: { jobId, pickup_date, pickup_time, dropoff_date, dropoff_time, time_relaxation, reason },
+                    body: {
+                        jobId,
+                        pickup_date,
+                        pickup_time,
+                        dropoff_date,
+                        time_relaxation,
+                        reason,
+                        ...(dropoff_time ? { dropoff_time } : {}),
+                    },
                     headers: getAuthorizationHeader(),
                 };
             },
@@ -185,7 +195,7 @@ const customerApi = dmApi.injectEndpoints({
 
         FillingPoNumber: build.mutation({
             query: ({ jobId, po_number }) => {
-                
+
                 return {
                     url: `customer/fill-po-number`,
                     method: "PUT",
@@ -199,8 +209,8 @@ const customerApi = dmApi.injectEndpoints({
             invalidatesTags: ['getAllJobsByStatusApi'],
         }),
 
-         getAllCompletedJobs: build.query({
-            query: ({ page = 1, limit = 10, search = '',} = {}) => ({
+        getAllCompletedJobs: build.query({
+            query: ({ page = 1, limit = 10, search = '', } = {}) => ({
                 url: `customer/completed-jobs?page=${page}&limit=${limit}&search=${search}`,
                 method: "GET",
                 headers: getAuthorizationHeader(),

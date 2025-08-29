@@ -50,12 +50,26 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
 
   // Validation
   const validate = () => {
+     if (!formData.pickup_date) {
+      toast.dismiss();
+      toast.error("Pickup date is required");
+      return false;
+    }
+     if (!formData.pickup_time) {
+      toast.dismiss();
+      toast.error("Pickup time is required");
+      return false;
+    }
+      if (!formData.dropoff_date) {
+      toast.dismiss();
+      toast.error("Delivery date is required");
+      return false;
+    }
+
     const now = new Date();
     now.setHours(0,0,0,0)
     const pickupDate = formData.pickup_date ? new Date(formData.pickup_date) : null;
     pickupDate.setHours(0,0,0,0)
- 
-
      const dropoffDate = formData.dropoff_date ? new Date(formData.dropoff_date) : null;
      const timeParts = formData.pickup_time.split(':');
      
@@ -79,11 +93,7 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
      
     }
 
-    if (!formData.pickup_date) {
-      toast.dismiss();
-      toast.error("Pickup date is required");
-      return false;
-    }
+   
 
     if (pickupDate.setHours(0, 0, 0, 0) < now.setHours(0, 0, 0, 0)) {
       toast.dismiss();
@@ -91,22 +101,13 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
       return false;
     }
 
-    if (!formData.pickup_time) {
-      toast.dismiss();
-      toast.error("Pickup time is required");
-      return false;
-    }
-
+   
   
     const pickupDateOnly = new Date(formData.pickup_date);
     pickupDateOnly.setHours(0, 0, 0, 0);
 
 
-    if (!formData.dropoff_date) {
-      toast.dismiss();
-      toast.error("Delivery date is required");
-      return false;
-    }
+  
 
     // Dropoff date must be after pickup date
     const dropoffDateOnly = new Date(formData.dropoff_date);
@@ -117,11 +118,11 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
       return false;
     }
 
-    if (!formData.dropoff_time) {
-      toast.dismiss();
-      toast.error("Delivery time is required");
-      return false;
-    }
+    // if (!formData.dropoff_time) {
+    //   toast.dismiss();
+    //   toast.error("Delivery time is required");
+    //   return false;
+    // }
 
     return true;
   };

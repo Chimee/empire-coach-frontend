@@ -12,7 +12,7 @@ import { useSaveDeliveryAddressMutation } from "../../../app/customerApi/custome
 import SaveAddress from "./SaveAddress";
 import PhoneInput from "react-phone-input-2";
 
- const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => {
+const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => {
   const SelectOptions = [{ label: "Punjab", value: "punjab" }];
   const [saveDeliveryAddress] = useSaveDeliveryAddressMutation();
 
@@ -24,7 +24,10 @@ import PhoneInput from "react-phone-input-2";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value.toUpperCase(),
+    }));
   };
 
   const clearAddressFields = (prefix) => {
@@ -34,7 +37,12 @@ import PhoneInput from "react-phone-input-2";
       keys.forEach((key) => {
         delete updated[`${prefix}_${key}`];
       });
+        setResetKeys((prev) => ({
+    ...prev,
+    [prefix]: prev[prefix] + 1,
+  }));
       return updated;
+    
     });
     // bump the reset key to force SaveAddress remount
     setResetKeys((prev) => ({
@@ -46,19 +54,20 @@ import PhoneInput from "react-phone-input-2";
   const validateStepThree = () => {
 
     const fields = [
+
       { value: formData.pickup_location, label: "Pickup location" },
       { value: formData.pickup_longitude, label: "Pickup longitude" },
       { value: formData.pickup_latitude, label: "Pickup latitude" },
       { value: formData.pickup_POC_name, label: "POC Name for Pickup" },
       { value: formData.pickup_POC_phone, label: "POC Phone for Pickup" },
-      { value: formData.pickup_additional_note, label: "Pickup Note" },
+      //{ value: formData.pickup_additional_note, label: "Pickup Note" },
 
       { value: formData.dropoff_location, label: "Dropoff location" },
-     { value: formData.dropoff_longitude, label: "dropoff longitude" },
+      { value: formData.dropoff_longitude, label: "dropoff longitude" },
       { value: formData.dropoff_latitude, label: "dropoff latitude" },
       { value: formData.dropoff_POC_name, label: "POC Name for Dropoff" },
       { value: formData.dropoff_POC_phone, label: "POC Phone for Dropoff" },
-      { value: formData.dropoff_additional_note, label: "Dropoff Note" },
+      //{ value: formData.dropoff_additional_note, label: "Dropoff Note" },
     ];
     const error = validateRequiredFields(fields);
     if (error) {
@@ -70,7 +79,6 @@ import PhoneInput from "react-phone-input-2";
   };
 
   const handleNextStep = () => {
-
     if (validateStepThree()) handleNext();
   };
 
@@ -87,34 +95,42 @@ import PhoneInput from "react-phone-input-2";
       >
         <Tab eventKey="savedLocation" title="Saved Location">
           <SavedAddress
+          key={resetKeys[prefix]} 
             addressType={prefix}
             onSelectAddress={(
-                          type,
-                         address,
-                       businessName,
-                      latitude,
-                      longitude
-                  ) => {
-             setFormData((prev) => ({
-           ...prev,
-               [`${type}_location`]: address,
-          ...(businessName && { [`${type}_business_name`]: businessName }),
-          ...(type === "pickup"
-           ? {
-            pickup_latitude : latitude,
-            pickup_longitude :longitude 
-            }
-           : {
-          dropoff_latitude : latitude,
-          dropoff_longitude :longitude 
-          }),
-      }));
-      }}
+              type,
+              address,
+              businessName,
+              latitude,
+              longitude
+            ) => {
+              setFormData((prev) => ({
+                ...prev,
+                [`${type}_location`]: address,
+                ...(businessName && { [`${type}_business_name`]: businessName }),
+                ...(type === "pickup"
+                  ? {
+                    pickup_latitude: latitude,
+                    pickup_longitude: longitude
+                  }
+                  : {
+                    dropoff_latitude: latitude,
+                    dropoff_longitude: longitude
+                  }),
+              }));
+            }}
           />
         </Tab>
         <Tab eventKey="newLocation" title="New Location">
+           <InputWithLabel
+              label=" Business Name"
+              placeholder="Enter name here"
+              name={`${prefix}_business_name`}
+              value={formData[`${prefix}_business_name`] || ""}
+              onChange={handleChange}
+            />
           <SaveAddress
-            key={resetKeys[prefix]} 
+            key={resetKeys[prefix]}
             addressType={prefix}
             formData={formData}
             setFormData={setFormData}

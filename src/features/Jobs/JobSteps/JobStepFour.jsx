@@ -13,7 +13,6 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
     make: "",
     model: "",
     vinNumber: "",
-    fuelType: "",
     PO_number: ""
   });
 
@@ -47,10 +46,9 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
     const { name, value } = e.target;
     setCurrentVehicle((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value.toUpperCase(),
     }));
   };
-
   const handleSelect = (name, value) => {
     setCurrentVehicle((prev) => ({
       ...prev,
@@ -60,12 +58,13 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
   };
 
   const saveVehicleDetails = () => {
+    debugger;
     if (
       !currentVehicle.year ||
       !currentVehicle.make ||
       !currentVehicle.model ||
       !currentVehicle.vinNumber ||
-      !currentVehicle.fuelType
+      !currentVehicle.fueltype
     ) {
       toast.dismiss();
       toast.error("Please fill all required fields for the current vehicle.");
@@ -80,12 +79,13 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
       make: "",
       model: "",
       vinNumber: "",
-      fuelType: "",
+      fueltype: "",
       PO_number: ""
     });
   };
 
   const handleNextStep = () => {
+    debugger;
     const isCurrentVehicleEmpty = Object.keys(currentVehicle).every(
       (key) => !currentVehicle[key]
     );
@@ -135,7 +135,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
       ...prev,
       vehicle_details: prev.vehicle_details.filter((_, i) => i !== index)
     }));
-    
+
   };
 
   return (
@@ -145,17 +145,17 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
           {formData.vehicle_details.map((vehicle, index) => (
             <div key={index} className="vehicle_item">
               <h3 className="d-flex gap-2 justify-content-between align-items-center">
-                {vehicle.year} {vehicle.make} {vehicle.model} <CiTrash  className="text-danger" onClick={() => removeVehicle(index)}/>
+                {vehicle.year} {vehicle.make} {vehicle.model} <CiTrash className="text-danger" onClick={() => removeVehicle(index)} />
               </h3>
               <div className="d-flex justify-content-between gap-2">
                 <p>
-                  PO Number <span>{vehicle.PO_number}</span>
+                  PO Number :<span>{vehicle.PO_number}</span>
                 </p>
                 <p>
-                  VIN Number <span>{vehicle.vinNumber}</span>
+                  VIN Number: <span>{vehicle.vinNumber}</span>
                 </p>
                 <p>
-                  Fuel type <span>{vehicle.fuelType}</span>
+                  Fuel type :<span>{vehicle.fueltype}</span>
                 </p>
               </div>
             </div>
@@ -203,12 +203,15 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
             />
           </Col>
           <Col lg={12}>
-            <InputWithLabel
-              label="Fuel type"
-              placeholder="Enter Fuel type here"
-              name="fuelType"
-              value={currentVehicle.fuelType || ""}
-              onChange={handleChange}
+            <VehicleDroppDown
+              selectType="fuelType" 
+              currentVehicle={currentVehicle}
+              setCurrentVehicle={setCurrentVehicle}
+              options={[
+                { label: "Petrol", value: "PETROL" },
+                { label: "Diesel", value: "DIESEL" },
+                { label: "EV", value: "EV" }
+              ]}
             />
           </Col>
           <Col lg={12}>

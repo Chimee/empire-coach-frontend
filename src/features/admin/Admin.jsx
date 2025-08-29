@@ -19,21 +19,16 @@ const Admin = () => {
 
 
 
-
-
     const columns = [
         { label: "Name", accessor: "username" },
         { label: "Phone", accessor: "phone_number" },
         { label: "E-mail", accessor: "email" },
         {
             label: "Status",
-            accessor: "actions",
+            accessor: "active_status",
             cell: ({ row }) => (
-                <span
-                    className="fn-badge"
-                    onClick={() => alert(`Clicked on user: ${row.name}`)}
-                >
-                    Active
+                <span className={`fn-badge ${row.active_status ? "badge-active" : "badge-inactive"}`}>
+                    {row.active_status == "active" ? "Active" : "Inactive"}
                 </span>
             ),
         },
@@ -43,7 +38,6 @@ const Admin = () => {
             cell: ({ row }) => (
                 <span
                     className="cursor-pointer text-primary d-inline"
-
                 >
                     <EditTableSvg
                         onClick={(e) => {
@@ -51,7 +45,7 @@ const Admin = () => {
                             navigate('/admin/add-admin', {
                                 state: {
                                     mode: 'edit',
-                                    adminId: row.id, // assuming you're inside a map or have `row`
+                                    adminId: row.id,
                                 },
                             });
                         }}

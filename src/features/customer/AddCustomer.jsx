@@ -28,7 +28,6 @@ const AddCustomer = () => {
     username: '',
     phone_number: '',
     email: '',
-    role: '',
   });
 
   useEffect(() => {
@@ -37,7 +36,7 @@ const AddCustomer = () => {
         username: data.data.username || '',
         phone_number: data.data.phone_number || '',
         email: data.data.email || '',
-        role: data.data.role || '',
+
       });
     }
   }, [data, isEditMode]);
@@ -46,7 +45,7 @@ const AddCustomer = () => {
   const [updateCustomer, { isLoading: isUpdating }] = useUpdateCustomerMutation();
 
   const breadcrumbItems = [
-    { name: 'Company', path: '/company' },
+    { name: 'Company', path: `/company/company-details/${companyId}` },
     { name: isEditMode ? 'Edit User' : 'Add User' },
   ];
 
@@ -59,27 +58,25 @@ const AddCustomer = () => {
   };
 
   const handleSubmit = async () => {
-    const { username, phone_number, email, role } = userData;
+    const { username, phone_number, email } = userData;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!username.trim()) return toast.error('Username is required.');
     if (!phone_number.trim()) return toast.error('Phone number is required.');
     if (!email.trim()) return toast.error('Email is required.');
     if (!emailRegex.test(email)) return toast.error('Invalid email format.');
-    if (!role.trim()) return toast.error('Role is required.');
     if (!companyId && !isEditMode) return toast.error('Company ID not found.');
 
     try {
       if (isEditMode) {
         await updateCustomer({ data: { ...userData, customerId: customerId } }).unwrap();
-       
+
       } else {
         await addCustomer({ data: { ...userData, companyId } }).unwrap();
         setUserData({
           username: '',
           phone_number: '',
           email: '',
-          role: '',
         });
       }
 
@@ -132,14 +129,6 @@ const AddCustomer = () => {
               value={userData.email}
               onChange={handleChange}
               readOnly={isEditMode}
-            />
-            <InputWithLabel
-              label='Role'
-              placeholder='Admin'
-              type='text'
-              name='role'
-              value={userData.role}
-              onChange={handleChange}
             />
           </div>
         </div>

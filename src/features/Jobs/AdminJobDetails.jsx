@@ -36,7 +36,6 @@ const AdminJobDetails = () => {
     const jobData = jobDetails?.data?.jobData;
     const driverId = jobData?.driver_id;
     const { data: fetchTripDocuments } = useGetAllTripDocumentsQuery({ id, driverId: driverId }, { skip: !id || !driverId });
-    console.log(fetchTripDocuments);
     const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
         { id, driverId },
         { skip: !id || !driverId }
@@ -67,7 +66,7 @@ const AdminJobDetails = () => {
 
     const breadcrumbItems = [
         { name: 'Jobs', path: '/admin-jobs' },
-        { name: 'Job-441022022' },
+        { name: 'Job' },
     ];
     //cancel job by admin
     const handleCancelApproveJob = async () => {

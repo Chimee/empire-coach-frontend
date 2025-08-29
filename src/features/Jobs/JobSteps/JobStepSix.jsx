@@ -6,15 +6,15 @@ import Button from '../../../components/shared/buttons/button'
 const JobStepSix = ({ handleNext, handlePrevious, formData, setFormData, handleSubmit, isLoading }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value.toUpperCase(),
     }));
   };
 
   return (
     <div>
-      <h5 className='step_heading mb-4'>Service Options</h5>
+      <h5 className='step_heading mb-4'>Additional Notes</h5>
       <Row>
         <Col lg={6}>
           <TextAreaWithLabel

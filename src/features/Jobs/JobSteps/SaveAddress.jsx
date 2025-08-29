@@ -4,6 +4,7 @@ import Button from "../../../components/shared/buttons/button";
 import { Row, Col } from "react-bootstrap";
 import { validateRequiredFields } from "../../../helpers/Utils";
 import toast from "react-hot-toast";
+import InputWithLabel from "../../../components/shared/fields/InputWithLabel";
 
 const libraries = ["places"];
 
@@ -50,22 +51,23 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
           type: addressType,
            [`${otherPrefix}_latitude`]: formData[`${otherPrefix}_latitude`] || null,
            [`${otherPrefix}_longitude`]: formData[`${otherPrefix}_longitude`] || null,
+           business_name: formData[`${prefix}_business_name`] || null
         },
         
       }).unwrap();
-      setFormData((prev) => ({
-        ...prev,
-        [`${prefix}_location`]: "",
-        [`${prefix}_latitude`]: "",
-        [`${prefix}_longitude`]: "",
-      }));
-      setResetKey((prev) => prev + 1);
+      // setFormData((prev) => ({
+      //   ...prev,
+      //   [`${prefix}_location`]: "",
+      //   [`${prefix}_latitude`]: "",
+      //   [`${prefix}_longitude`]: "",
+      // }));
+      //setResetKey((prev) => prev + 1);
     } catch (err) {
-      toast.error(err?.data?.message || `Failed to save ${addressType} address.`);
     }
   };
 
   return (
+    <>
     <LoadScript
       googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
       libraries={libraries}
@@ -94,6 +96,7 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
         </Col>
       </Row>
     </LoadScript>
+    </>
   );
 };
 

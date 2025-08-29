@@ -21,7 +21,7 @@ const companyApi = dmApi.injectEndpoints({
         updateCompany: build.mutation({
             query: ({ data }) => ({
                 url: "admin/update-company-details",
-              method: 'PUT',
+                method: 'PUT',
                 body: data,
                 headers: getAuthorizationHeader()
             }),
@@ -32,10 +32,9 @@ const companyApi = dmApi.injectEndpoints({
                     "Company"
                 );
             },
+            invalidatesTags: (result, error, { data }) => [{ type: 'CompanyDetail', id: data.id }],
         }),
         getCompanyList: build.query({
-            
-
             query: ({ page = 1, limit = 10, search = "" } = {}) => ({
                 url: `admin/get-all-companies?page=${page}&limit=${limit}&search=${encodeURIComponent(
                     search
@@ -43,19 +42,17 @@ const companyApi = dmApi.injectEndpoints({
                 method: "GET",
                 headers: getAuthorizationHeader(),
             }),
-            providesTags:["companyData"],
-            
+            providesTags: ["companyData"],
+
             async onQueryStarted(_, { queryFulfilled }) {
-                            console.log("comes here before");
+                console.log("comes here before");
 
                 await handleQueryError(queryFulfilled);
             },
+            invalidatesTags: ['getCompanyDetailsApi']
         }),
-        getCompanyCustomersList: build.query({
-
+        getCompanyCustomersList: build.query({ 
             query: ({ page = 1, limit = 10, search = "", id } = {}) => ({
-
-
                 url: `admin/get-company-customers?page=${page}&limit=${limit}&companyId=${id}`,
                 method: "GET",
                 headers: getAuthorizationHeader(),
@@ -73,6 +70,7 @@ const companyApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
+            providesTags: (result, error, { id }) => [{ type: 'CompanyDetail', id }], 
         }),
     })
 })

@@ -14,7 +14,7 @@ const RideDeatails = () => {
 
     const { data: jobDetails } = useGetJobPickupDetailsQuery({ id }, { skip: !id });
     const [starRide, { isLoading }] = useStartRideMutation();
-
+console.log("jobDetails",jobDetails)
     const [currentLocation, setCurrentLocation] = useState(null);
 
     const pickup = jobDetails?.data?.jobData;

@@ -8,12 +8,20 @@ import { EditTableSvg } from '../../svgFiles/EditTableSvg';
 import { useParams } from 'react-router';
 import { useGetCompanyDetailQuery } from '../../app/companyApi/companyApi';
 import { formatDateToMDY } from '../../helpers/Utils';
-import { useGetCompanyCustomersListQuery } from '../../app/companyApi/companyApi';
+import { useGetCompanyCustomersListQuery, useUpdateCompanyMutation } from '../../app/companyApi/companyApi';
+
 const CompnayDetails = () => {
     const { id } = useParams()
-    const { data: companyDetails, isLoading } = useGetCompanyDetailQuery({ id })
-    const { data: customerList } = useGetCompanyCustomersListQuery({ id })
-
+    const { data: companyDetails, isLoading } = useGetCompanyDetailQuery({ id }, { skip: !id })
+    const { data: customerList } = useGetCompanyCustomersListQuery({ id }, { skip: !id })
+    console.log("companyDetails", companyDetails)
+    const [isActive, setIsActive] = React.useState(false);
+    React.useEffect(() => {
+        if (companyDetails?.data?.active_status) {
+            setIsActive(companyDetails.data.active_status === "active");
+        }
+    }, [companyDetails]);
+    const [updateCompany] = useUpdateCompanyMutation();
 
     const navigate = useNavigate()
     const breadcrumbItems = [
@@ -33,13 +41,10 @@ const CompnayDetails = () => {
         { label: "Last Login", accessor: "last_login" },
         {
             label: "Status",
-            accessor: "actions",
+            accessor: "active_status",
             cell: ({ row }) => (
-                <span
-                    className="fn-badge"
-                    onClick={() => alert(`Clicked on user: ${row.name}`)}
-                >
-                    Active
+                <span className={`fn-badge ${row.active_status ? "badge-active" : "badge-inactive"}`}>
+                    {row.active_status == "active" ? "Active" : "Inactive"}
                 </span>
             ),
         },
@@ -50,7 +55,7 @@ const CompnayDetails = () => {
             cell: ({ row }) => (
                 <span
                     className="cursor-pointer text-primary">
-                    <EditTableSvg onClick={(e) => { e.stopPropagation(); navigate('/company/company-details/add-customer', { state: { customerId: row.id, mode: 'edit' } }); }} />
+                    <EditTableSvg onClick={(e) => { e.stopPropagation(); navigate('/company/company-details/add-customer', { state: { customerId: row.id, mode: 'edit' , companyId: id} }); }} />
                 </span>
             ),
         },
@@ -67,8 +72,22 @@ const CompnayDetails = () => {
                         type="switch"
                         id="custom-switch"
                         label="Active"
-
-                        onChange={() => { }}
+                        checked={isActive}
+                        onChange={async (e) => {
+                            const newValue = e.target.checked;
+                            setIsActive(newValue);
+                            try {
+                                await updateCompany({
+                                    data: {
+                                        companyId: id,
+                                        active_status: newValue ? "active" : "inactive",
+                                    }
+                                }).unwrap();
+                            } catch (error) {
+                                console.error("Failed to update status:", error);
+                                setIsActive(!newValue);
+                            }
+                        }}
                     />
                 </div>
                 <div className='right_list'>
@@ -113,9 +132,13 @@ const CompnayDetails = () => {
                 page={page}
                 showPegination={true}
                 isLoading={false}
-                showFilter={true}
+                showFilter={false}
                 title="Customer Users"
-                onClickRow={(id) => navigate(`/company/customer-details/${id}`)}
+                onClickRow={(customerId) =>
+                    navigate(`/company/customer-details/${customerId}`, {
+                        state: { companyId: id }
+                    })
+                }
             />
         </>
     )

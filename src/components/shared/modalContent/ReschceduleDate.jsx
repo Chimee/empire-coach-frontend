@@ -98,7 +98,7 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
       }
     }
 
-    if (!dropoffDate || !formData.dropoff_time) {
+    if (!dropoffDate) {
       toast.error('Delivery date and time are required');
       return false;
     }
@@ -119,14 +119,22 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
 
     if (!validate()) return;
 
-     const { pickup_date, pickup_time, dropoff_date, dropoff_time, time_relaxation } = formData
+    const { pickup_date, pickup_time, dropoff_date, dropoff_time, time_relaxation } = formData
     try {
-      const data = await rescheduleDate({ jobId, pickup_date, pickup_time, dropoff_date, dropoff_time, time_relaxation,   reason: reqstatus === "awaiting_reschedule_date" ? "" : reason, }).unwrap();
+      const data = await rescheduleDate({
+        jobId,
+        pickup_date,
+        pickup_time,
+        dropoff_date,
+        time_relaxation,
+        reason: reqstatus === "awaiting_reschedule_date" ? "" : reason,
+        ...(dropoff_time ? { dropoff_time } : {}),
+      }).unwrap();
       toast.success(data?.message || 'Job rescheduled successfully');
       onClose();
     } catch (err) {
       toast.error(err?.data?.message || 'Reschedule failed');
-      
+
     }
   };
 
@@ -142,7 +150,7 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
       onClose();
     } catch (err) {
       toast.error(err?.data?.message || 'Reschedule failed');
-     
+
     }
   };
 

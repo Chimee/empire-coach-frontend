@@ -24,13 +24,10 @@ const Company = () => {
         { label: "E-mail", accessor: "email" },
         {
             label: "Status",
-            accessor: "actions",
+            accessor: "active_status",
             cell: ({ row }) => (
-                <span
-                    className="fn-badge"
-                    onClick={() => alert(`Clicked on user: ${row.name}`)}
-                >
-                    Active
+                <span className={`fn-badge ${row.active_status ? "badge-active" : "badge-inactive"}`}>
+                    {row.active_status == "active" ? "Active" : "Inactive"}
                 </span>
             ),
         },
@@ -40,7 +37,7 @@ const Company = () => {
             cell: ({ row }) => (
                 <span
                     className="cursor-pointer text-primary"                >
-                    <EditTableSvg onClick={(e) => { e.stopPropagation(); navigate("/company/edit-company", { state: { companyId: row?.id} }); }} />
+                    <EditTableSvg onClick={(e) => { e.stopPropagation(); navigate("/company/edit-company", { state: { companyId: row?.id } }); }} />
                 </span>
             ),
         },
