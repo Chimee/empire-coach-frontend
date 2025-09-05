@@ -122,7 +122,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
         make: "",
         model: "",
         vinNumber: "",
-        fuelType: "",
+        fueltype: "",
         PO_number: ""
       });
     }
@@ -172,6 +172,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
               setCurrentVehicle={setCurrentVehicle}
               selectType="Year"
               options={YearOptions}
+              value={currentVehicle.year}
               onChange={(val) => handleSelect("year", val)}
             />
           </Col>
@@ -181,6 +182,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
               setCurrentVehicle={setCurrentVehicle}
               selectType="Make"
               options={MakeOptions}
+              value={currentVehicle.make}
               onChange={(val) => handleSelect("make", val)}
             />
           </Col>
@@ -190,6 +192,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
               setCurrentVehicle={setCurrentVehicle}
               selectType="Model"
               options={ModelOptions}
+              value={currentVehicle.model}
               onChange={(val) => handleSelect("model", val)}
             />
           </Col>
@@ -204,14 +207,16 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
           </Col>
           <Col lg={12}>
             <VehicleDroppDown
-              selectType="fuelType" 
+              selectType ="fueltype"
               currentVehicle={currentVehicle}
               setCurrentVehicle={setCurrentVehicle}
+              value={currentVehicle.fueltype}  
               options={[
-                { label: "Petrol", value: "PETROL" },
                 { label: "Diesel", value: "DIESEL" },
-                { label: "EV", value: "EV" }
+                { label: "Electric", value: "Electric" },
+                { label: "Gas", value: "Gas" },
               ]}
+                onChange={(val) => handleSelect("fueltype", val)}
             />
           </Col>
           <Col lg={12}>

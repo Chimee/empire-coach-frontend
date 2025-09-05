@@ -31,7 +31,7 @@ const JobDetails = () => {
     const [cancelConfirmation, setCancelConfirmation] = useState(false);
     const [reScheduleConfirmation, setRescheduleConfirmation] = useState(false);
     const jobData = jobDetails?.data?.jobData;
-    console.log(jobDetails,"jobDetails");
+    console.log(jobDetails, "jobDetails");
     const driverId = jobData?.driver_id;
     const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
         { id, driverId },
@@ -58,14 +58,14 @@ const JobDetails = () => {
 
 
     const pickupCoords = { lat: jobData?.pickup_latitude, lng: jobData?.pickup_longitude } || null;
-    
+
     const dropoffCoords = { lat: jobData?.dropoff_latitude, lng: jobData?.dropoff_longitude } || null;
     const breadcrumbItems = [
         {
             name: isCompleted ? 'Completed jobs' : 'Jobs',
             path: isCompleted ? '/completed-jobs' : '/jobs',
         },
-        { name: 'Job' },
+        { name: `Job-${jobDetails?.data?.jobData?.id}` },
     ];
 
     return (
@@ -79,8 +79,7 @@ const JobDetails = () => {
                                     <Breadcrumb items={breadcrumbItems} />
                                     <PageHead
                                         title={'Jobs'}
-                                        description={'Created on Apr 14/2025, 3:30PM'}
-
+                                        description={`Created On: ${formatDateToMDY(jobDetails?.data?.jobData?.createdAt)}`}
                                     />
                                     {jobDetails?.data?.jobData?.request_status && (
                                         <span className={`${statusMeta.className} fn-badge mt-4 text-capitalize`}>{jobDetails.data.jobData.request_status}</span>
@@ -184,21 +183,23 @@ const JobDetails = () => {
                     <h6 className='small-heading'>Job Details</h6>
                     <Row className='mt-5'>
                         <Col lg={9}>
-
                             <Row>
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Vehicle Details</h6>
                                     <ul className='p-0 job-list-bullets'>
-                                        <li>2022 Ford Transit</li>
+                                        <li>{jobDetails?.data?.jobData.vehicle_year} {jobDetails?.data?.jobData.vehicle_make} {jobDetails?.data?.jobData.vehicle_model}</li>
                                         <li>VIN : {jobDetails?.data?.jobData.vin_number}</li>
                                         <li>Fuel Type: {jobDetails?.data?.jobData.fuel_type}</li>
-                                        <li>PO Number:{jobDetails?.data?.jobData.po_number}</li>
+                                        {jobDetails?.data?.jobData?.po_number && (
+                                            <li>PO Number: {jobDetails?.data?.jobData?.po_number}</li>
+                                        )}
                                     </ul>
                                 </Col>
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Service options</h6>
                                     <ul className='p-0 job-list-bullets'>
-                                        {jobDetails?.data?.jobData.deliver_washed === true && <li>Deliver Washed</li>}
+                                        {jobDetails?.data?.jobData.deliver_washed === true && <li>Deliver washed</li>}
+                                        {jobDetails?.data?.jobData.deliver_full === true && <li>Deliver full</li>}
                                         {jobDetails?.data?.jobData.send_driver_contact_info === true && <li>Send driver contact info</li>}
                                     </ul>
                                 </Col>
@@ -207,6 +208,7 @@ const JobDetails = () => {
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Pickup Details</h6>
                                     <ul className='p-0 job-list-bullets'>
+                                        <li> Business name : {jobDetails?.data?.jobData?.pickup_business_name}</li>
                                         <li> {jobDetails?.data?.jobData.pickup_location}</li>
                                         <li>{formatDateToMDY(jobDetails?.data?.jobData.pickup_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData.pickup_time)}</li>
                                         <li>Contact : {jobDetails?.data?.jobData.pickup_POC_name}</li>
@@ -217,6 +219,7 @@ const JobDetails = () => {
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Drop-off Details</h6>
                                     <ul className='p-0 job-list-bullets'>
+                                        <li> Business name : {jobDetails?.data?.jobData?.dropoff_business_name}</li>
                                         <li> {jobDetails?.data?.jobData.dropoff_location}</li>
                                         <li>{formatDateToMDY(jobDetails?.data?.jobData.dropoff_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData.dropoff_time)}</li>
                                         <li>Contact : {jobDetails?.data?.jobData.dropoff_POC_name}</li>

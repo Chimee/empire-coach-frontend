@@ -29,7 +29,6 @@ const Sidebar = () => {
 
     const handleLogout = () => {
         localStorage.clear();
-        dispatch(dmApi.util.resetApiState());
         navigate("/login");
     };
 

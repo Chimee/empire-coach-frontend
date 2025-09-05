@@ -345,3 +345,7 @@ span.adress-data {
 .tripProgress li:last-child::before {
   display: none;
 }
+.address-list{
+  max-height: 350px;
+  overflow: auto;
+}

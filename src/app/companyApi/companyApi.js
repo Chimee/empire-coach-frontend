@@ -32,7 +32,7 @@ const companyApi = dmApi.injectEndpoints({
                     "Company"
                 );
             },
-            invalidatesTags: (result, error, { data }) => [{ type: 'CompanyDetail', id: data.id }],
+            invalidatesTags: ['companyData']
         }),
         getCompanyList: build.query({
             query: ({ page = 1, limit = 10, search = "" } = {}) => ({
@@ -57,6 +57,7 @@ const companyApi = dmApi.injectEndpoints({
                 method: "GET",
                 headers: getAuthorizationHeader(),
             }),
+              providesTags: ["customerData"],
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
@@ -67,10 +68,11 @@ const companyApi = dmApi.injectEndpoints({
                 method: "GET",
                 headers: getAuthorizationHeader(),
             }),
+              providesTags:["companyDetails"], 
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
-            providesTags: (result, error, { id }) => [{ type: 'CompanyDetail', id }], 
+          
         }),
     })
 })

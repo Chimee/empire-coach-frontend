@@ -18,7 +18,10 @@ export const dmApi = createApi({
         "GetCompanyListAPI",
         "CompanyDetail",
         "companyData",
-        "CompanyList"
+        "getAdminListAPI",
+        "CompanyList",
+        "customerData",
+        "companyDetails"
     ],
     endpoints: () => ({}),
 })

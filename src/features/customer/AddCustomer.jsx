@@ -25,17 +25,21 @@ const AddCustomer = () => {
   );
 
   const [userData, setUserData] = useState({
-    username: '',
+    firstName: '',
+    lastName: '',
     phone_number: '',
     email: '',
   });
 
   useEffect(() => {
+    const fullName = data?.data.username || '';
+    const [firstName, ...lastParts] = fullName.split(' ');
     if (data?.data && isEditMode) {
       setUserData({
-        username: data.data.username || '',
-        phone_number: data.data.phone_number || '',
+        firstName: firstName || '',
+        lastName: lastParts.join(' ') || '',
         email: data.data.email || '',
+        phone_number: data.data.phone_number || '',
 
       });
     }
@@ -58,10 +62,11 @@ const AddCustomer = () => {
   };
 
   const handleSubmit = async () => {
-    const { username, phone_number, email } = userData;
+    const { firstName, lastName, phone_number, email } = userData;
+    const username = `${firstName} ${lastName}`.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!username.trim()) return toast.error('Username is required.');
+    if (!firstName.trim()) return toast.error('First name is required.');
     if (!phone_number.trim()) return toast.error('Phone number is required.');
     if (!email.trim()) return toast.error('Email is required.');
     if (!emailRegex.test(email)) return toast.error('Invalid email format.');
@@ -69,21 +74,25 @@ const AddCustomer = () => {
 
     try {
       if (isEditMode) {
-        await updateCustomer({ data: { ...userData, customerId: customerId } }).unwrap();
-
+        await updateCustomer({
+          data: { username, email, phone_number, customerId },
+        }).unwrap();
       } else {
-        await addCustomer({ data: { ...userData, companyId } }).unwrap();
+        await addCustomer({
+          data: { username, email, phone_number, companyId },
+        }).unwrap();
         setUserData({
-          username: '',
+          firstName: '',
+          lastName: '',
           phone_number: '',
           email: '',
         });
       }
-
     } catch (error) {
       toast.error(error?.data?.message || 'Operation failed.');
     }
   };
+
 
   return (
     <>
@@ -97,11 +106,21 @@ const AddCustomer = () => {
             <Row>
               <Col lg={6}>
                 <InputWithLabel
-                  label='User Name'
-                  placeholder='Michael Smith'
+                  label='First Name'
+                  placeholder='Michael'
                   type='text'
-                  name='username'
-                  value={userData.username}
+                  name='firstName'
+                  value={userData.firstName}
+                  onChange={handleChange}
+                />
+              </Col>
+              <Col lg={6}>
+                <InputWithLabel
+                  label='Last Name'
+                  placeholder={isEditMode ? '' : 'Smith'}
+                  type='text'
+                  name='lastName'
+                  value={userData.lastName}
                   onChange={handleChange}
                 />
               </Col>
@@ -120,16 +139,18 @@ const AddCustomer = () => {
                   containerClass='w-100'
                 />
               </Col>
+              <Col lg={6}>
+                <InputWithLabel
+                  label='E-mail'
+                  placeholder='E-mail'
+                  type='email'
+                  name='email'
+                  value={userData.email}
+                  onChange={handleChange}
+                  readOnly={isEditMode}
+                />
+              </Col>
             </Row>
-            <InputWithLabel
-              label='E-mail'
-              placeholder='E-mail'
-              type='email'
-              name='email'
-              value={userData.email}
-              onChange={handleChange}
-              readOnly={isEditMode}
-            />
           </div>
         </div>
         <div className='d-flex gap-3 justify-content-end mt-4'>

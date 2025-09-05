@@ -12,27 +12,32 @@ import { dmApi } from '../../app/dmApi';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 const AddAdmin = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { state } = useLocation();
   const isEditMode = state?.mode === 'edit';
   const adminId = state?.adminId;
 
-  const { data} = useGetAdminDetailQuery(
+  const { data } = useGetAdminDetailQuery(
     { id: adminId },
-    { skip: !isEditMode,refetchOnMountOrArgChange: true, }
+    { skip: !isEditMode, refetchOnMountOrArgChange: true, }
   );
 
   const [adminData, setAdminData] = useState({
-    username: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone_number: '',
   });
 
+
   useEffect(() => {
     if (data?.data) {
+      const fullName = data.data.username || '';
+      const [firstName, ...lastParts] = fullName.split(' ');
       setAdminData({
-        username: data.data.username || '',
+        firstName: firstName || '',
+        lastName: lastParts.join(' ') || '',
         email: data.data.email || '',
         phone_number: data.data.phone_number || '',
       });
@@ -51,25 +56,26 @@ const AddAdmin = () => {
   };
 
   const handleSubmit = async () => {
-    const { username, email, phone_number } = adminData;
+    const { firstName, lastName, email, phone_number } = adminData;
+    const username = `${firstName} ${lastName}`.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     toast.dismiss();
-    if (!username.trim()) return toast.error('Admin name is required.');
+    if (!firstName.trim()) return toast.error('First name is required.');
     if (!email.trim()) return toast.error('Email is required.');
     if (!emailRegex.test(email)) return toast.error('Invalid email format.');
     if (!phone_number.trim()) return toast.error('Phone number is required.');
 
     try {
       if (isEditMode) {
-        await updateAdmin({ data: { ...adminData, id: adminId } }).unwrap();
-        navigate('/admin')
+        await updateAdmin({ data: { username, email, phone_number, id: adminId } }).unwrap();
+        navigate('/admin');
       } else {
-        await addAdmin({ data: adminData }).unwrap();
+        await addAdmin({ data: { username, email, phone_number } }).unwrap();
         dispatch(dmApi.util.invalidateTags(['getAdminListAPI']));
-        setAdminData({ username: '', email: '', phone_number: '' });
-         navigate('/admin')
+        setAdminData({ firstName: '', lastName: '', email: '', phone_number: '' });
+        navigate('/admin');
       }
-
     } catch (err) {
       toast.error(err?.data?.message || 'Failed to save admin.');
     }
@@ -93,14 +99,28 @@ const AddAdmin = () => {
             <AddSvg /> {isEditMode ? 'Edit Admin' : 'Add Admin'}
           </h2>
           <div className='form-card mt-4'>
-            <InputWithLabel
-              label='Admin Name'
-              placeholder='Acme Logistics'
-              type='text'
-              name='username'
-              value={adminData.username}
-              onChange={handleChange}
-            />
+            <Row>
+              <Col lg={6}>
+                <InputWithLabel
+                  label='First Name'
+                  placeholder='Acme'
+                  type='text'
+                  name='firstName'
+                  value={adminData.firstName}
+                  onChange={handleChange}
+                />
+              </Col>
+              <Col lg={6}>
+                <InputWithLabel
+                  label='Last Name'
+                  placeholder={isEditMode ? '' : 'Smith'}
+                  type='text'
+                  name='lastName'
+                  value={adminData.lastName}
+                  onChange={handleChange}
+                />
+              </Col>
+            </Row>
             <Row>
               <Col lg={6}>
                 <InputWithLabel

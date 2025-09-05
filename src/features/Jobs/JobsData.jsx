@@ -33,22 +33,22 @@ const JobsData = ({ tabName }) => {
     { label: "Vehicle", accessor: "vehicle_make" },
     { label: "Vin Number", accessor: "vin_number" },
     {
-            label: "Route",
-            accessor: "route",
-            cell: ({ row }) => {
-                const pickup = row?.pickup_location || "";
-                const dropoff = row?.dropoff_location || "";
-                const fullRoute = `${pickup} to ${dropoff}`;
-                const truncate = (text, length = 15) =>
-                    text.length > length ? text.slice(0, length) + "..." : text;
+      label: "Route",
+      accessor: "route",
+      cell: ({ row }) => {
+        const pickup = row?.pickup_location || "";
+        const dropoff = row?.dropoff_location || "";
+        const fullRoute = `${pickup} to ${dropoff}`;
+        const truncate = (text, length = 15) =>
+          text.length > length ? text.slice(0, length) + "..." : text;
 
-                return (
-                    <span title={fullRoute}>
-                       {truncate(pickup)} to {truncate(dropoff)}`
-                    </span>
-                );
-            },
-        },
+        return (
+          <span title={fullRoute}>
+            {truncate(pickup)} to {truncate(dropoff)}`
+          </span>
+        );
+      },
+    },
     {
       label: "Status",
       accessor: "status",
@@ -65,7 +65,11 @@ const JobsData = ({ tabName }) => {
     {
       label: "Delivery Date",
       accessor: "deliveryDate",
-      cell: ({ row }) => <span>{formatDateToMDY(row?.dropoff_date)}</span>,
+      cell: ({ row }) => (
+        <span>
+          {row?.dropoff_date ? formatDateToMDY(row.dropoff_date) : "-"}
+        </span>
+      ),
     },
     {
       label: "PO Number",
@@ -122,7 +126,7 @@ const JobsData = ({ tabName }) => {
           show={addPoPopup}
           setShow={setPoPopup}
           job={selectedJob}
-          vehicleData={selectedJob} 
+          vehicleData={selectedJob}
         />
       )}
     </>

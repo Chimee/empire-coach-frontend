@@ -98,15 +98,15 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
       }
     }
 
-    if (!dropoffDate) {
-      toast.error('Delivery date and time are required');
-      return false;
-    }
+    // if (!dropoffDate) {
+    //   toast.error('Delivery date and time are required');
+    //   return false;
+    // }
 
-    if (dropoffDate.setHours(0, 0, 0, 0) <= pickupDate.setHours(0, 0, 0, 0)) {
-      toast.error('Delivery date must be after pickup date');
-      return false;
-    }
+    // if (dropoffDate.setHours(0, 0, 0, 0) <= pickupDate.setHours(0, 0, 0, 0)) {
+    //   toast.error('Delivery date must be after pickup date');
+    //   return false;
+    // }
 
     return true;
   };

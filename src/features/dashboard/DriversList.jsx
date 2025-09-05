@@ -7,9 +7,10 @@ import { useGetDriversListQuery } from '../../app/driverApi/driverApi'
 
 const DriversList = () => {
     const [page, setPage] = useState(1);
-    const { data, isFetching, isLoading } = useGetDriversListQuery({ page, limit: 10, search: "" },  { keepPreviousData: true });
+    const { data, isFetching, isLoading } = useGetDriversListQuery({ page, limit: 10, search: "" }, { keepPreviousData: true });
     const [driverList, setDriverList] = useState([]);
     const scrollRef = useRef(null);
+    const hasMore = data?.data?.data?.length > 0;
 
     useEffect(() => {
         if (data?.data?.data?.length) {
@@ -24,10 +25,14 @@ const DriversList = () => {
         if (!scrollcontaner) return;
         const { scrollTop, scrollHeight, clientHeight } = scrollcontaner;
 
-        if (scrollTop + clientHeight >= scrollHeight - 50) {
-            setPage(prev => prev + 1);
+        if (
+            scrollTop + clientHeight >= scrollHeight - 50 &&
+            !isFetching &&
+            hasMore
+        ) {
+            setPage((prev) => prev + 1);
         }
-    }, [isFetching]);
+    }, [isFetching, hasMore]);
 
     useEffect(() => {
         const scrollcontaner = scrollRef.current
@@ -35,8 +40,6 @@ const DriversList = () => {
         scrollcontaner.addEventListener("scroll", handleScroll);
         return () => scrollcontaner.removeEventListener("scroll", handleScroll);
     }, [handleScroll]);
-
-
 
 
 
@@ -88,6 +91,7 @@ const DriversList = () => {
 
 
             </ul>
+             {isFetching && <p className="text-center">Loading more...</p>}
         </div>
     )
 }

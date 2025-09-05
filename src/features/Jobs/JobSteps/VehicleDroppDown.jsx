@@ -3,28 +3,30 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { CheveronDownSvg } from "../../../svgFiles/CheveronDownSvg";
 
 const VehicleDropdown = ({ selectType, options, currentVehicle, setCurrentVehicle }) => {
-  const [title, setTitle] = React.useState(`Select ${selectType}`);
+
+  const key = selectType.toLowerCase();
+
+  const selectedValue = currentVehicle[key] || "";
+  const selectedOption = options.find((opt) => opt.value === selectedValue);
 
   const handleSelect = (selected) => {
     const chosen = options.find((opt) => opt.value === selected);
- 
     if (chosen) {
-      setTitle(chosen.label);
       setCurrentVehicle((prev) => ({
         ...prev,
-        [selectType.toLowerCase()]: chosen.value,  
+        [key]: chosen.value,
       }));
     }
   };
 
   return (
     <div className="mb-3">
-      <label htmlFor="vehicle-dropdown" className="cmn_label form-label">
+      <label htmlFor={`vehicle-${key}`} className="cmn_label form-label">
         Select {selectType}
       </label>
       <Dropdown className="vehicle_dropdown">
-        <Dropdown.Toggle variant="unset" id="dropdown-basic">
-          {title} <CheveronDownSvg />
+        <Dropdown.Toggle variant="unset" id={`vehicle-${key}`}>
+          {selectedOption ? selectedOption.label : `Select ${selectType}`} <CheveronDownSvg />
         </Dropdown.Toggle>
 
         <Dropdown.Menu>

@@ -15,6 +15,7 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
  
 
   const handlePlaceChanged = () => {
+    debugger;
     if (!autocompleteRef) return;
 
     const place = autocompleteRef.getPlace();
@@ -28,10 +29,12 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
       [`${prefix}_location`]: place.formatted_address,
       [`${prefix}_latitude`]: place.geometry.location.lat(),
       [`${prefix}_longitude`]: place.geometry.location.lng(),
+      [`${prefix}_business_name`]:place.name
     }));
   };
 
   const handleSave = async () => {
+    debugger;
     const requiredFields = [
       { value: formData[`${prefix}_location`], label: `${addressType} location` }
     ];

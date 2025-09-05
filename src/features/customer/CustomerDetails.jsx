@@ -12,6 +12,7 @@ const CustomerDetails = () => {
     const { data: companyDetails, isLoading } = useGetCustomerDetailQuery({ id });
     const { state } = useLocation();
     const companyId = state?.companyId;
+    console.log(companyDetails)
 
     const breadcrumbItems = [
         { name: 'Company', path: `/company/company-details/${companyId}` },
@@ -41,7 +42,7 @@ const CustomerDetails = () => {
                         type="switch"
                         id="custom-switch"
                         label="Active"
-                       checked={isActive}
+                        checked={isActive}
                         onChange={async (e) => {
                             const newValue = e.target.checked;
                             setIsActive(newValue);

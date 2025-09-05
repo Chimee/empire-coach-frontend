@@ -17,6 +17,7 @@ const SavedAddress = ({
   }, []);
 
     const { data: savedLocations, isLoading, error } = useGetDeliveryAddressesQuery()
+    console.log(savedLocations);
     const [deleteDeliveryAddress, { isLoading: isDeleting }] = useDeleteDeliveryAddressMutation()
     const [showConfirmationModal, setShowConfirmationModal] = useState(false)
     const [editAddressModal, setEditAddressModal] = useState(false)
@@ -53,7 +54,7 @@ const SavedAddress = ({
     if (error) return <div>Failed to load addresses.</div>
 
     return (
-        <div className="d-flex flex-column gap-3">
+        <div className="d-flex flex-column gap-3 address-list">
             <ConfirmationModal
                 show={showConfirmationModal}
                 setShow={setShowConfirmationModal}
@@ -80,9 +81,9 @@ const SavedAddress = ({
                             key={addressId}
                             className={`${selectedIndex === idx ? "selected-address" : ""} d-flex gap-3 saved_address align-items-center position-relative`}
                             onClick={(e) => {
+                                debugger;
                                 // prevent toggle clicks from selecting
                                 if (e.target.closest(".toggle")) return;
-
                                 const mergedAddress = addr?.address;
                                 const mergedLabel = addr?.label;
                                 const latitude = addr.pickup_latitude ?

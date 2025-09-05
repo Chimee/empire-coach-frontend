@@ -40,6 +40,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
 
     setSelectedPlace((prev) => ({
       ...prev,
+      business_name:place.name,
       address: place.formatted_address,
       latitude: place.geometry.location.lat(),
       longitude: place.geometry.location.lng(),

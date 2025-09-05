@@ -25,7 +25,7 @@ const JobStepFive = ({ handleNext, handlePrevious, formData, setFormData }) => {
               onChange={handleCheckbox}
             />
         <Form.Check
-              label="Deliver full (DEF/diesel)"
+              label="Deliver full (DEF/Fuel)"
               name="deliver_full"
               type={'checkbox'}
               id='deliver_full'

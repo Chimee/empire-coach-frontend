@@ -23,7 +23,7 @@ import { getLocationName } from '../../helpers/Utils'
 const AdminJobDetails = () => {
     const { id } = useParams();
     const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });
-
+    console.log(jobDetails);
     const { state } = useLocation();
     const [sentLink, setSentLink] = useState(false)
 
@@ -66,7 +66,7 @@ const AdminJobDetails = () => {
 
     const breadcrumbItems = [
         { name: 'Jobs', path: '/admin-jobs' },
-        { name: 'Job' },
+        { name: `Job-${jobDetails?.data?.jobData?.id}` },
     ];
     //cancel job by admin
     const handleCancelApproveJob = async () => {
@@ -115,13 +115,12 @@ const AdminJobDetails = () => {
         <>
             <Row>
                 <Col lg={12}>
-
                     <div className='d-flex gap-3 justify-content-between align-items-center'>
                         <div className='job_info'>
                             <Breadcrumb items={breadcrumbItems} />
                             <PageHead
-                                title={'Jobs'}
-                                description={'Created on Apr 14/2025, 3:30PM'}
+                                title="Jobs"
+                                description={`Created On: ${formatDateToMDY(jobDetails?.data?.jobData?.createdAt)}`}
                             />
                             <span className={`${statusMeta?.className} fn-badge mt-4 text-capitalize`}>{jobDetails?.data?.jobData?.request_status}</span>
                             {["awaiting_for_cancellation", "cancelled"].includes(jobDetails?.data?.jobData?.request_status) && (
@@ -194,21 +193,28 @@ const AdminJobDetails = () => {
                     <h6 className='small-heading'>Job Details</h6>
                     <Row className='mt-5'>
                         <Col lg={9}>
+                            <h6 className='small-heading'>{jobDetails?.data?.jobData?.company_name}</h6>
+                            <p className="text-muted small  mb-4">
+                                Requested by: {jobDetails?.data?.jobData?.customer_name}
+                            </p>
 
                             <Row>
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Vehicle Details</h6>
                                     <ul className='p-0 job-list-bullets'>
-                                        <li>2022 Ford Transit</li>
+                                        <li>{jobDetails?.data?.jobData.vehicle_year} {jobDetails?.data?.jobData.vehicle_make} {jobDetails?.data?.jobData.vehicle_model}</li>
                                         <li>VIN : {jobDetails?.data?.jobData?.vin_number}</li>
                                         <li>Fuel Type: {jobDetails?.data?.jobData?.fuel_type}</li>
-                                        <li>PO Number:{jobDetails?.data?.jobData?.po_number}</li>
+                                        {jobDetails?.data?.jobData?.po_number && (
+                                            <li>PO Number: {jobDetails?.data?.jobData?.po_number}</li>
+                                        )}
                                     </ul>
                                 </Col>
                                 <Col lg={6}>
-                                    <h6 className='small-heading'>Service options</h6>
+                                    <h6 className='small-heading mt-0'>Service options</h6>
                                     <ul className='p-0 job-list-bullets'>
-                                        {jobDetails?.data?.jobData?.deliver_washed === true && <li>Deliver Washed</li>}
+                                        {jobDetails?.data?.jobData.deliver_washed === true && <li>Deliver washed</li>}
+                                        {jobDetails?.data?.jobData.deliver_full === true && <li>Deliver full</li>}
                                         {jobDetails?.data?.jobData?.send_driver_contact_info === true && <li>Send driver contact info</li>}
                                     </ul>
                                 </Col>
@@ -217,6 +223,7 @@ const AdminJobDetails = () => {
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Pickup Details</h6>
                                     <ul className='p-0 job-list-bullets'>
+                                        <li> Business name : {jobDetails?.data?.jobData?.pickup_business_name}</li>
                                         <li> {jobDetails?.data?.jobData?.pickup_location}</li>
                                         <li>{formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}</li>
                                         <li>Contact : {jobDetails?.data?.jobData?.pickup_POC_name}</li>
@@ -227,6 +234,7 @@ const AdminJobDetails = () => {
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Drop-off Details</h6>
                                     <ul className='p-0 job-list-bullets'>
+                                        <li> Business name : {jobDetails?.data?.jobData?.dropoff_business_name}</li>
                                         <li> {jobDetails?.data?.jobData?.dropoff_location}</li>
                                         <li>{formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}</li>
                                         <li>Contact : {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
@@ -356,7 +364,7 @@ const AdminJobDetails = () => {
                                     );
                                 })}
                             </Row>
-                            
+
                         </Col>
                         <Col lg={3}>
                             <h6 className='timeline-title'>Timeline</h6>

@@ -17,6 +17,7 @@ const customerApi = dmApi.injectEndpoints({
                     "Customer"
                 );
             },
+              invalidatesTags: ["customerData"]
         }),
         updateCustomer: build.mutation({
             query: ({ data }) => ({
@@ -32,7 +33,7 @@ const customerApi = dmApi.injectEndpoints({
                     "Customer"
                 );
             },
-             invalidatesTags: ["getCustomerDetailAPI"]
+             invalidatesTags: ["customerData"]
         }),
 
         getCustomerDetail: build.query({
@@ -54,6 +55,8 @@ const customerApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
+            invalidatesTags: ["companyDetails"]
+            
         }),
         createJob: build.mutation({
             query: ({ data }) => ({

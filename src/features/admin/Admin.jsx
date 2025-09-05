@@ -71,7 +71,7 @@ const Admin = () => {
                 showPegination={true}
                 isLoading={false}
                 showFilter={true}
-                title="companies"
+                title="Admin"
                 onClickRow={(id) => navigate(`/admin/admin-details/${id}`)}
                 onFilterSearch={handleSearch}
             />
