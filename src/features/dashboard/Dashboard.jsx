@@ -36,7 +36,7 @@ const Dashboard = () => {
               <h1 className='text-capitalize'>Hello {username ? username : "Admin"}</h1>
               <p className='mb-0'>It’s good to see you again.</p>
             </div>
-            <img src='/images/bus.png' alt="bus" />
+            <img src='/images/bus-imageDashboard.png' alt="bus" />
           </div>
         </div>
         <div className='right_list'>

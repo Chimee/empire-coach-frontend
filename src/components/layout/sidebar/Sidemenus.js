@@ -47,7 +47,7 @@ export const MenuItems = [
     {
       title: "Settings",
       path: "/setting",
-      roles: ["admin", "superadmin",],
+      roles: ["admin", "superadmin","customer"],
       icon: <DriverSvg />,
       subMenu: [],
     },

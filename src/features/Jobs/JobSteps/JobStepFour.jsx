@@ -38,10 +38,9 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
 
   const currentYear = new Date().getFullYear();
   const YearOptions = Array.from({ length: 10 }, (_, i) => {
-    const year = currentYear - i;
+    const year = currentYear - 1 - i;
     return { label: String(year), value: String(year) };
   });
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCurrentVehicle((prev) => ({
@@ -207,16 +206,16 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
           </Col>
           <Col lg={12}>
             <VehicleDroppDown
-              selectType ="fueltype"
+              selectType="fueltype"
               currentVehicle={currentVehicle}
               setCurrentVehicle={setCurrentVehicle}
-              value={currentVehicle.fueltype}  
+              value={currentVehicle.fueltype}
               options={[
                 { label: "Diesel", value: "DIESEL" },
                 { label: "Electric", value: "Electric" },
                 { label: "Gas", value: "Gas" },
               ]}
-                onChange={(val) => handleSelect("fueltype", val)}
+              onChange={(val) => handleSelect("fueltype", val)}
             />
           </Col>
           <Col lg={12}>

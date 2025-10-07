@@ -37,12 +37,12 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
       keys.forEach((key) => {
         delete updated[`${prefix}_${key}`];
       });
-        setResetKeys((prev) => ({
-    ...prev,
-    [prefix]: prev[prefix] + 1,
-  }));
+      setResetKeys((prev) => ({
+        ...prev,
+        [prefix]: prev[prefix] + 1,
+      }));
       return updated;
-    
+
     });
     // bump the reset key to force SaveAddress remount
     setResetKeys((prev) => ({
@@ -52,7 +52,7 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
   };
 
   const validateStepThree = () => {
-debugger;
+    debugger;
     const fields = [
 
       { value: formData.pickup_location, label: "Pickup location" },
@@ -95,7 +95,7 @@ debugger;
       >
         <Tab eventKey="savedLocation" title="Saved Location">
           <SavedAddress
-          key={resetKeys[prefix]} 
+            key={resetKeys[prefix]}
             addressType={prefix}
             onSelectAddress={(
               type,
@@ -122,13 +122,6 @@ debugger;
           />
         </Tab>
         <Tab eventKey="newLocation" title="New Location">
-           <InputWithLabel
-              label=" Business Name"
-              placeholder="Enter name here"
-              name={`${prefix}_business_name`}
-              value={formData[`${prefix}_business_name`] || ""}
-              onChange={handleChange}
-            />
           <SaveAddress
             key={resetKeys[prefix]}
             addressType={prefix}
@@ -141,6 +134,17 @@ debugger;
             label="Use for this trip only"
             className="rounded-2 w-100 bordered"
             size="xs"
+            onClick={() => {
+              if (formData[`${prefix}_location`]) {  
+                toast.success(
+                  `${prefix === "pickup" ? "Pickup" : "Dropoff"} address will be used only for this trip`
+                );
+              } else {    
+                toast.error(
+                  `Please enter a ${prefix === "pickup" ? "pickup" : "dropoff"} address first`
+                );
+              }
+            }}
           />
         </Tab>
       </Tabs>

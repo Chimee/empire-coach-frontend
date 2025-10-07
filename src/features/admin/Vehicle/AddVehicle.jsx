@@ -25,7 +25,7 @@ const AddVehicle = () => {
 
     const addModelField = () => {
         if (models[models.length - 1].trim() === '') {
-            showToast('Please fill the previous model before adding a new one.',"error");
+            showToast('Please fill the previous model before adding a new one.', "error");
             return;
         }
         setModels([...models, '']);
@@ -33,12 +33,12 @@ const AddVehicle = () => {
 
     const handleSave = async () => {
         if (!make.trim()) {
-            showToast('Please enter make.',"error");
+            showToast('Please enter make.', "error");
             return;
         }
         const filteredModels = models.filter(m => m.trim() !== '');
         if (filteredModels.length === 0) {
-            showToast('Please add at least one model.','error');
+            showToast('Please add at least one model.', 'error');
             return;
         }
 
@@ -75,7 +75,7 @@ const AddVehicle = () => {
                             placeholder='Make Label'
                             type='text'
                             value={make}
-                            onChange={(e) => setMake(e.target.value)}
+                            onChange={(e) => setMake(e.target.value.toUpperCase())}
                         />
 
                         <div className="mt-3">
@@ -86,7 +86,7 @@ const AddVehicle = () => {
                                         placeholder='Model Label'
                                         type='text'
                                         value={model}
-                                        onChange={(e) => handleModelChange(e.target.value, idx)}
+                                        onChange={(e) => handleModelChange(e.target.value.toUpperCase(), idx)}
                                     />
                                 </div>
                             ))}

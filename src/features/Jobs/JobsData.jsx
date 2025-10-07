@@ -12,7 +12,6 @@ const JobsData = ({ tabName }) => {
   const [search, setSearch] = useState("");
 
   const { data: jobsList, isLoading } = useGetAllJobsByStatusQuery({ tabName, page, search });
-
   const [addPoPopup, setPoPopup] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
 
@@ -36,8 +35,14 @@ const JobsData = ({ tabName }) => {
       label: "Route",
       accessor: "route",
       cell: ({ row }) => {
-        const pickup = row?.pickup_location || "";
-        const dropoff = row?.dropoff_location || "";
+        const pickup = row?.pickup_business_name?.trim()
+          ? row.pickup_business_name
+          : (row?.pickup_location || "");
+
+        const dropoff = row?.dropoff_business_name?.trim()
+          ? row.dropoff_business_name
+          : (row?.dropoff_location || "");
+
         const fullRoute = `${pickup} to ${dropoff}`;
         const truncate = (text, length = 15) =>
           text.length > length ? text.slice(0, length) + "..." : text;

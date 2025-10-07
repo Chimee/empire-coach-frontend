@@ -153,7 +153,7 @@ export const getClassAndTitleByStatus = (status) => {
     },
     cancelled: {
       className: 'class-cancelled',
-      title: 'Canceled',
+      title: 'Cancelled',
     },
     awaiting_for_cancellation: {
       className: 'class-awaiting-for-cancellation',

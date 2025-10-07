@@ -55,7 +55,7 @@ const JobsOverview = () => {
                 </li>
                 <li className='d-flex justify-content-between'>
                     <div>
-                        <h6>Canceled</h6>
+                        <h6>Cancelled</h6>
                         <h5>{data?.data.cancelledJobs}</h5>
                     </div>
                   <CancelledSvg/>

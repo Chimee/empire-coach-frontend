@@ -208,23 +208,27 @@ const JobDetails = () => {
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Pickup Details</h6>
                                     <ul className='p-0 job-list-bullets'>
-                                        <li> Business name : {jobDetails?.data?.jobData?.pickup_business_name}</li>
-                                        <li> {jobDetails?.data?.jobData.pickup_location}</li>
-                                        <li>{formatDateToMDY(jobDetails?.data?.jobData.pickup_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData.pickup_time)}</li>
-                                        <li>Contact : {jobDetails?.data?.jobData.pickup_POC_name}</li>
-                                        <li>Phone : {jobDetails?.data?.jobData.pickup_POC_phone}</li>
-                                        <li>Notes : {jobDetails?.data?.jobData.pickup_additional_note}</li>
+                                        <li>{jobDetails?.data?.jobData?.pickup_business_name}</li>
+                                        <li>{jobDetails?.data?.jobData?.pickup_location}</li>
+                                        <li>{formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}</li>
+                                        <li>Contact: {jobDetails?.data?.jobData?.pickup_POC_name}</li>
+                                        <li>Phone: {jobDetails?.data?.jobData?.pickup_POC_phone}</li>
+                                        {jobDetails?.data?.jobData?.pickup_additional_note?.trim() && (
+                                            <li>Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>
+                                        )}
                                     </ul>
                                 </Col>
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Drop-off Details</h6>
                                     <ul className='p-0 job-list-bullets'>
-                                        <li> Business name : {jobDetails?.data?.jobData?.dropoff_business_name}</li>
-                                        <li> {jobDetails?.data?.jobData.dropoff_location}</li>
-                                        <li>{formatDateToMDY(jobDetails?.data?.jobData.dropoff_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData.dropoff_time)}</li>
-                                        <li>Contact : {jobDetails?.data?.jobData.dropoff_POC_name}</li>
-                                        <li>Phone : {jobDetails?.data?.jobData.dropoff_POC_phone}</li>
-                                        <li>Notes : {jobDetails?.data?.jobData.dropoff_additional_note}</li>
+                                        <li>{jobDetails?.data?.jobData?.dropoff_business_name}</li>
+                                        <li>{jobDetails?.data?.jobData?.dropoff_location}</li>
+                                        <li>{formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}</li>
+                                        <li>Contact: {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
+                                        <li>Phone: {jobDetails?.data?.jobData?.dropoff_POC_phone}</li>
+                                        {jobDetails?.data?.jobData?.dropoff_additional_note?.trim() && (
+                                            <li>Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>
+                                        )}
                                     </ul>
                                 </Col>
                             </Row>

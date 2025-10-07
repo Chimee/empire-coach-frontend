@@ -15,7 +15,6 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
  
 
   const handlePlaceChanged = () => {
-    debugger;
     if (!autocompleteRef) return;
 
     const place = autocompleteRef.getPlace();

@@ -20,6 +20,8 @@ const AdminJobsData = ({ tabName }) => {
     }
 
     const { data: jobsList, isLoading, error } = useGetAllJobsByStatusAdminQuery({ tabName: tabName, page: page, search: search });
+
+    
     const columns = [
         {
             label: "Job Id",
@@ -34,12 +36,18 @@ const AdminJobsData = ({ tabName }) => {
         },
         { label: "Vehicle", accessor: "vehicle_make" },
         { label: "Vin Number", accessor: "vin_number" },
-      {
+        {
             label: "Route",
             accessor: "route",
             cell: ({ row }) => {
-                const pickup = row?.pickup_location || "";
-                const dropoff = row?.dropoff_location || "";
+                const pickup = row?.pickup_business_name?.trim()
+                    ? row.pickup_business_name
+                    : (row?.pickup_location || "");
+
+                const dropoff = row?.dropoff_business_name?.trim()
+                    ? row.dropoff_business_name
+                    : (row?.dropoff_location || "");
+
                 const fullRoute = `${pickup} to ${dropoff}`;
                 const truncate = (text, length = 15) =>
                     text.length > length ? text.slice(0, length) + "..." : text;
@@ -51,7 +59,7 @@ const AdminJobsData = ({ tabName }) => {
                 );
             },
         },
-        
+
         {
             label: "PO Number",
             accessor: "po-number",

@@ -18,14 +18,14 @@ const JobStepSix = ({ handleNext, handlePrevious, formData, setFormData, handleS
       <Row>
         <Col lg={6}>
           <TextAreaWithLabel
-            label="For empire "
+            label="For Empire"
             placeholder="Add note"
             name="empire_notes"
             value={formData.empire_notes || ''}
             onChange={handleChange}
           /></Col>
         <Col lg={6}> <TextAreaWithLabel
-          label="For driver "
+          label="For Driver"
           placeholder="Add note"
           name="driver_notes"
           value={formData.driver_notes || ''}

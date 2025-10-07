@@ -5,6 +5,7 @@ import { useGetAllJobsByStatusQuery } from '../../app/customerApi/customerApi';
 import { useGetAllJobsByStatusAdminQuery } from '../../app/adminApi/adminApi';
 import { jwtDecode } from "../../helpers/AccessControlUtils";
 import { formatDate, getClassAndTitleByStatus, formatTimeTo12Hour } from '../../helpers/Utils';
+import { useNavigate } from "react-router-dom";
 const AdminTabs = [
   { label: "All", value: "all" },
   { label: "Upcoming", value: "upcoming" },
@@ -40,6 +41,7 @@ const QuickJobsList = ({ height }) => {
   const isUser = parseToken?.role === "customer";
   const tabesName = isUser ? CustomerTabs : AdminTabs
   const queryHook = isUser ? useGetAllJobsByStatusQuery : useGetAllJobsByStatusAdminQuery;
+  const navigate = useNavigate();
 
   const { data, isFetching, isLoading } = queryHook(
     { tabName, page, search: '' },
@@ -122,7 +124,15 @@ const QuickJobsList = ({ height }) => {
             const { className, title } = getClassAndTitleByStatus(job?.request_status);
 
             return (
-              <li key={job.id}>
+              <li
+                key={job.id}
+                onClick={() =>
+                  isUser
+                    ? navigate(`/jobs/job-details/${job.id}`)
+                    : navigate(`/admin-jobs/job-details/${job.id}`)
+                }
+                style={{ cursor: "pointer" }}
+              >
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <div className="job_head">
                     <h6 className="mb-0">Job #{job?.id}</h6>
