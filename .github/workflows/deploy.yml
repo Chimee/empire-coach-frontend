@@ -1,0 +1,34 @@
+name: Deploy Frontend to EC2
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and deploy frontend
+        uses: appleboy/ssh-action@v1
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: GIT_TOKEN
+          port: ${{ secrets.EC2_PORT || 22 }}
+          script: |
+            set -e
+            node -v && npm -v
+            git config --global url."https://oauth2:${GIT_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+            cd /home/ubuntu/driveaway/empire-coach-frontend
+            git fetch --all
+            git reset --hard origin/main
+
+            npm ci || npm install
+            npm run build
+
+            sudo nginx -t
+            sudo systemctl reload nginx
