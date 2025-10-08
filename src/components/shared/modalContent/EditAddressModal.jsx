@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import CommonModal from "../modalLayout/CommonModal";
 import Button from "../buttons/button";
-import { Autocomplete } from "@react-google-maps/api";
+import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { useUpdateDeliveryAddressMutation } from "../../../app/customerApi/customerApi";
 import toast from "react-hot-toast";
 
 const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, message, type }) => {
+  // debugger;  
   const [autocompleteRef, setAutocompleteRef] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState({
     business_name: "",
@@ -98,6 +99,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
           }
         />
         <label className="form-label">Address</label>
+        
         <Autocomplete key={resetKey} onLoad={setAutocompleteRef} onPlaceChanged={handlePlaceChanged}>
           <input
             type="text"

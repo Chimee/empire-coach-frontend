@@ -17,7 +17,7 @@ const SavedAddress = ({
   }, []);
 
     const { data: savedLocations, isLoading, error } = useGetDeliveryAddressesQuery()
-    console.log(savedLocations);
+  
     const [deleteDeliveryAddress, { isLoading: isDeleting }] = useDeleteDeliveryAddressMutation()
     const [showConfirmationModal, setShowConfirmationModal] = useState(false)
     const [editAddressModal, setEditAddressModal] = useState(false)
