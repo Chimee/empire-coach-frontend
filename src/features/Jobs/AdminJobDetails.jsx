@@ -20,9 +20,14 @@ import { useGetUpdateLocationLogsQuery } from "../../app/globalApi"
 import TickSvg from '../../images/tickSvg.svg'
 import DriverMapscreen from '../driverScreens/DriverMapscreen'
 import { getLocationName } from '../../helpers/Utils'
+import EditAddressModal from "../../components/shared/modalContent/EditAddressModal"
+import { FaPencilAlt } from 'react-icons/fa';
+import { LoadScript } from "@react-google-maps/api";
+
 const AdminJobDetails = () => {
     const { id } = useParams();
     const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });
+    debugger;
     console.log(jobDetails);
     const { state } = useLocation();
     const [sentLink, setSentLink] = useState(false)
@@ -40,8 +45,13 @@ const AdminJobDetails = () => {
         { id, driverId },
         { skip: !id || !driverId }
     );
-    console.log(getLocationUpdates);
 
+    const [editAddressModal, setEditAddressModal] = useState(false);
+    const [selectedAddressData, setSelectedAddressData] = useState(null);
+    console.log(selectedAddressData, "selectedAddressData");
+
+    const [selectedAddressId, setSelectedAddressId] = useState(null);
+    const [selectedAddressType, setSelectedAddressType] = useState('pickup');
     const [locationNames, setLocationNames] = useState([]);
 
     useEffect(() => {
@@ -101,9 +111,9 @@ const AdminJobDetails = () => {
     const handleApproveJob = async () => {
         try {
             await approveJob({ jobId: id }).unwrap();
-            if (jobDetails?.data?.jobData?.request_status === 'submitted') {
-                setAssignDriverPopup(true);
-            }
+            // if (jobDetails?.data?.jobData?.request_status === 'submitted') {
+            //     setAssignDriverPopup(true);
+            // }
         } catch (err) {
             toast.error(err?.data?.message || "Job approval failed", 'err');
         }
@@ -223,30 +233,78 @@ const AdminJobDetails = () => {
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Pickup Details</h6>
                                     <ul className='p-0 job-list-bullets'>
-                                        <li> Business name : {jobDetails?.data?.jobData?.pickup_business_name}</li>
-                                        <li> {jobDetails?.data?.jobData?.pickup_location}</li>
-                                        <li>{formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}</li>
-                                        <li>Contact : {jobDetails?.data?.jobData?.pickup_POC_name}</li>
-                                        <li>Phone : {jobDetails?.data?.jobData?.pickup_POC_phone}</li>
-                                        <li>Notes : {jobDetails?.data?.jobData?.pickup_additional_note}</li>
+                                        <li>
+                                            Business name: {jobDetails?.data?.jobData?.pickup_business_name}
+                                        </li>
+                                        <li>
+                                            {jobDetails?.data?.jobData?.pickup_location}
+                                            <FaPencilAlt
+                                                className="ms-2 cursor-pointer"
+                                                onClick={() => {
+                                                    setSelectedAddressId(jobDetails?.data?.jobData?.id);
+                                                    setSelectedAddressData({
+                                                        address: jobDetails?.data?.jobData?.pickup_location,
+                                                        label: jobDetails?.data?.jobData?.pickup_business_name || jobDetails?.data?.jobData?.pickup_location,
+                                                        pickup_latitude: jobDetails?.data?.jobData?.pickup_latitude,
+                                                        pickup_longitude: jobDetails?.data?.jobData?.pickup_longitude,
+                                                        dropoff_latitude: jobDetails?.data?.jobData?.dropoff_latitude,
+                                                        dropoff_longitude: jobDetails?.data?.jobData?.dropoff_longitude
+                                                    });
+                                                    setSelectedAddressType("pickup");
+                                                    setEditAddressModal(true);
+                                                }}
+                                            />
+                                        </li>
+                                        <li>
+                                            {formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}
+                                        </li>
+                                        <li>Contact: {jobDetails?.data?.jobData?.pickup_POC_name}</li>
+                                        <li>Phone: {jobDetails?.data?.jobData?.pickup_POC_phone}</li>
+                                        <li>Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>
                                     </ul>
                                 </Col>
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Drop-off Details</h6>
                                     <ul className='p-0 job-list-bullets'>
-                                        <li> Business name : {jobDetails?.data?.jobData?.dropoff_business_name}</li>
-                                        <li> {jobDetails?.data?.jobData?.dropoff_location}</li>
-                                        <li>{formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)}  {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}</li>
-                                        <li>Contact : {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
-                                        <li>Phone : {jobDetails?.data?.jobData?.dropoff_POC_phone}</li>
-                                        <li>Notes : {jobDetails?.data?.jobData?.dropoff_additional_note}</li>
+                                        <li>
+                                            Business name: {jobDetails?.data?.jobData?.dropoff_business_name}
+                                        </li>
+                                        <li>
+                                            {jobDetails?.data?.jobData?.dropoff_location}
+                                            <FaPencilAlt
+                                                className="ms-2 cursor-pointer"
+                                                onClick={() => {
+                                                    setSelectedAddressId(jobDetails?.data?.jobData?.id);
+                                                    setSelectedAddressData({
+                                                        address: jobDetails?.data?.jobData?.dropoff_location,
+                                                        label: jobDetails?.data?.jobData?.dropoff_business_name || jobDetails?.data?.jobData?.dropoff_location,
+                                                        pickup_latitude: jobDetails?.data?.jobData?.pickup_latitude,
+                                                        pickup_longitude: jobDetails?.data?.jobData?.pickup_longitude,
+                                                        dropoff_latitude: jobDetails?.data?.jobData?.dropoff_latitude,
+                                                        dropoff_longitude: jobDetails?.data?.jobData?.dropoff_longitude
+                                                    });
+                                                    setSelectedAddressType("dropoff");
+                                                    setEditAddressModal(true);
+                                                }}
+                                            />
+                                        </li>
+                                        <li>
+                                            {formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}
+                                        </li>
+                                        <li>Contact: {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
+                                        <li>Phone: {jobDetails?.data?.jobData?.dropoff_POC_phone}</li>
+                                        <li>Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>
                                     </ul>
                                 </Col>
+
                             </Row>
                             <Col lg={12} className='mt-3'>
+                                {/* {console.log(pickupCoords,"pickupCoords")
+                               } */}
                                 <DriverMapscreen
                                     height="247px"
                                     pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
+
                             </Col>
                             <Col lg={12} className='mt-3'>
                                 <h6 className='small-heading'>Location Tracking</h6>
@@ -372,11 +430,19 @@ const AdminJobDetails = () => {
                                 {jobDetails?.data?.jobLogs?.length > 0 ? (
                                     jobDetails.data.jobLogs.map((logs, index) => (
                                         <li key={index} className='d-flex gap-3 align-items-center'>
-                                            <span className='d-flex justify-content-center rounded-5 align-items-center shrink-0 timeline-count'>
+                                            <span className='d-flex justify-content-center rounded-5 align-items-center flex-shrink-0 timeline-count'>
                                                 {index + 1}
                                             </span>
                                             <div className='timeline_status'>
-                                                <span className='d-block text-capitalize'>{logs?.request_status}</span>
+                                                <span className='d-block text-capitalize'>
+                                                    {logs?.request_status}
+                                                    {logs?.User?.username && (
+                                                        <span className='text-muted ms-2'>
+                                                            by <strong>{logs.User.username}</strong>
+                                                        </span>
+                                                    )}
+                                                </span>
+
                                                 <span>{formatDateToMDY(logs?.createdAt)}</span>
                                             </div>
                                         </li>
@@ -423,7 +489,6 @@ const AdminJobDetails = () => {
                                             />
                                         ) : (
                                             <Button
-                                                disabled={sentLink || jobDetails?.data?.jobData?.JobAssignments.isLinkSent}
                                                 loading={isSending}
                                                 label="Send Link"
                                                 className="rounded w-75 m-auto"
@@ -438,6 +503,19 @@ const AdminJobDetails = () => {
 
             </Row>
 
+
+
+            <EditAddressModal
+                show={editAddressModal}
+                setShow={setEditAddressModal}
+                handleClose={() => setEditAddressModal(false)}
+                addressId={selectedAddressId}
+                addressData={selectedAddressData}
+                message="you want to edit this address?"
+                type={selectedAddressType}
+                jobId={jobData?.id} />
+
+
             <CancelConfirmationModal
                 show={cancelConfirmationPopup}
                 setShow={setCancelConfirmation}
@@ -451,6 +529,8 @@ const AdminJobDetails = () => {
                 setShow={setAssignDriverPopup}
                 jobId={id} />
         </>
+
+
     )
 }
 

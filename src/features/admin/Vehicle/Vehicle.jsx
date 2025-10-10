@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router';
 const Vehicle = () => {
     const navigate = useNavigate()
     const { data: vehiclesData } = useGetVehicleQuery();
-    const [updateVehicle , {isloading:isUpdating}] = useUpdateVehicleMutation();
+    const [updateVehicle, { isloading: isUpdating }] = useUpdateVehicleMutation();
     const vehicles = vehiclesData?.data || [];
 
     const [selectedMakeId, setSelectedMakeId] = useState(null);
@@ -50,15 +50,15 @@ const Vehicle = () => {
         setEditModels(normalizedModels);
     };
 
- const addModelField = () => {
-    // Check if there is at least one empty field
-    if (editModels.length > 0 && editModels[editModels.length - 1].trim() === '') {
-        showToast('Please fill the previous model before adding a new one.',"error");
-        return;
-    }
+    const addModelField = () => {
+        // Check if there is at least one empty field
+        if (editModels.length > 0 && editModels[editModels.length - 1].trim() === '') {
+            showToast('Please fill the previous model before adding a new one.', "error");
+            return;
+        }
 
-    setEditModels([...editModels, '']);
-};
+        setEditModels([...editModels, '']);
+    };
 
     const removeModelField = (idx) => {
         setEditModels(editModels.filter((_, index) => index !== idx));
@@ -87,7 +87,7 @@ const Vehicle = () => {
                 description="Overview of all transport operations"
                 addTitle="Add Vehicle"
                 addDescritpion="Add a new Vehicle"
-                onClick={() => {navigate("/setting/add-vehicle") }}
+                onClick={() => { navigate("/setting/add-vehicle") }}
             />
 
             <Row>
@@ -124,7 +124,7 @@ const Vehicle = () => {
                         <h3>Model</h3>
                         <ul className="p-0 d-flex flex-column gap-2">
                             {models.length > 0
-                                ? models.map((model, index) => <li key={index} className="car-modal">{model}</li>)
+                                ? models.map((model, index) => <li key={index} className="car-modal">{model.toUpperCase()}</li>)
                                 : <li className="text-muted">No models available</li>
                             }
                         </ul>
@@ -141,7 +141,7 @@ const Vehicle = () => {
                                 <h3>Edit Make</h3>
                                 <input
                                     className="w-100 mb-2 cmn_input form-control"
-                                    value={editMakeName}
+                                    value={editMakeName.toUpperCase()}
                                     onChange={(e) => setEditMakeName(e.target.value)}
                                 />
                             </div>
@@ -155,21 +155,21 @@ const Vehicle = () => {
                                         <div key={idx} className="d-flex gap-2 align-items-center">
                                             <input
                                                 className="w-100 mb-0 cmn_input form-control"
-                                                value={model}
+                                                value={model.toUpperCase()}
                                                 onChange={(e) => handleModelChange(e.target.value, idx)}
                                                 placeholder='Add New Model'
                                             />
-                                         {editModels.length > 1 &&  <CiTrash className='text-danger cursor-pointer' size={24}   onClick={() => removeModelField(idx)}/> }
+                                            {editModels.length > 1 && <CiTrash className='text-danger cursor-pointer' size={24} onClick={() => removeModelField(idx)} />}
                                         </div>
                                     ))}
                                 </ul>
-                                <Button label="+ Add Model"  onClick={addModelField} className="mt-2 rounded"/>
+                                <Button label="+ Add Model" onClick={addModelField} className="mt-2 rounded" />
                             </div>
                         </Col>
                     </Row>
                     <div className="mt-3 text-end">
-                        <Button className='rounded' label="Update" loading={isUpdating} disabled={isUpdating} onClick={handleSave}/>
-                        <Button className='rounded ms-3' label="Cancel" onClick={() => setEditMakeId(null)}/>
+                        <Button className='rounded' label="Update" loading={isUpdating} disabled={isUpdating} onClick={handleSave} />
+                        <Button className='rounded ms-3' label="Cancel" onClick={() => setEditMakeId(null)} />
                     </div>
                 </div>
             )}

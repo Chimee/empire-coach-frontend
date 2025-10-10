@@ -31,7 +31,7 @@ const DriverMapscreen = ({ pickupCoords, dropoffCoords, currentLocation,height }
     }, [pickupCoords, dropoffCoords]);
 
     return (
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}>
+        
             <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
                 {/* Markers */}
                 {/* Pickup marker - label "P" */}
@@ -71,7 +71,7 @@ const DriverMapscreen = ({ pickupCoords, dropoffCoords, currentLocation,height }
                     />
                 )}
             </GoogleMap>
-        </LoadScript>
+      
     );
 };
 

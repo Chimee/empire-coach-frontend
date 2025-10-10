@@ -70,10 +70,7 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
 
   return (
     <>
-    <LoadScript
-      googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
-      libraries={libraries}
-    >
+ 
       <label className="form-label">Address</label>
       <Autocomplete
         key={resetKey}
@@ -97,7 +94,7 @@ const SaveAddress = ({ addressType, formData, setFormData, saveDeliveryAddress }
           />
         </Col>
       </Row>
-    </LoadScript>
+ 
     </>
   );
 };

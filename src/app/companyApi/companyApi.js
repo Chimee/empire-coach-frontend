@@ -57,7 +57,7 @@ const companyApi = dmApi.injectEndpoints({
                 method: "GET",
                 headers: getAuthorizationHeader(),
             }),
-              providesTags: ["customerData"],
+            providesTags: ["getCompanyCustomersListAPI"],
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },

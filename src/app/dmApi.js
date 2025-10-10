@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const dmApi = createApi({
     reducerPath: "dmApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: '/api/v1',
+        baseUrl: '/api/v1/',
     }),
     tagTypes: ["supplier",
         "getAdminListAPI",
@@ -21,7 +21,10 @@ export const dmApi = createApi({
         "getAdminListAPI",
         "CompanyList",
         "customerData",
-        "companyDetails"
+        "companyDetails",
+        "getCompanyCustomersListAPI"
+        
+
     ],
     endpoints: () => ({}),
 })

@@ -17,7 +17,7 @@ const customerApi = dmApi.injectEndpoints({
                     "Customer"
                 );
             },
-              invalidatesTags: ["customerData"]
+            invalidatesTags: ["customerData","getCompanyCustomersListAPI"]
         }),
         updateCustomer: build.mutation({
             query: ({ data }) => ({
@@ -33,7 +33,7 @@ const customerApi = dmApi.injectEndpoints({
                     "Customer"
                 );
             },
-             invalidatesTags: ["customerData"]
+          invalidatesTags: ["customerData","getCompanyCustomersListAPI"]
         }),
 
         getCustomerDetail: build.query({
@@ -45,6 +45,7 @@ const customerApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
+                providesTags: ['getCompanyCustomersListAPI']
         }),
         getCustomerProfile: build.query({
             query: () => ({
@@ -56,7 +57,7 @@ const customerApi = dmApi.injectEndpoints({
                 await handleQueryError(queryFulfilled);
             },
             invalidatesTags: ["companyDetails"]
-            
+
         }),
         createJob: build.mutation({
             query: ({ data }) => ({
@@ -104,7 +105,7 @@ const customerApi = dmApi.injectEndpoints({
                     "Delivery Address"
                 );
             },
-            invalidatesTags: ["getDeliveryAddressesAPI"]
+            invalidatesTags: ["getDeliveryAddressesAPI","getAdminJobDetailsApi"]
         }),
         deleteDeliveryAddress: build.mutation({
             query: ({ addressId }) => ({
