@@ -9,7 +9,7 @@ import {
 } from '../../app/customerApi/customerApi';
 const CustomerDetails = () => {
     const { id } = useParams();
-    const { data: companyDetails, isLoading } = useGetCustomerDetailQuery({ id });
+    const { data: companyDetails, isLoading,isFetching } = useGetCustomerDetailQuery({ id });
     const { state } = useLocation();
     const companyId = state?.companyId;
     console.log(companyDetails)
@@ -26,7 +26,9 @@ const CustomerDetails = () => {
             setIsActive(companyDetails.data.active_status === "active");
         }
     }, [companyDetails]);
-
+        if(isLoading || isFetching){
+            return
+        }
     return (
         <>
             <div className='d-flex justify-content-between gap-3'>

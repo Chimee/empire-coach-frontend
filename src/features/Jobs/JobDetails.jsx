@@ -286,7 +286,14 @@ const JobDetails = () => {
                                                 {index + 1}
                                             </span>
                                             <div className='timeline_status'>
-                                                <span className='d-block text-capitalize'>{logs?.request_status}</span>
+                                                <span className='d-block text-capitalize'>
+                                                    {logs?.request_status}
+                                                    {logs?.User?.username && (
+                                                        <span className='text-muted ms-2'>
+                                                            by <strong>{logs.User.username}</strong>
+                                                        </span>
+                                                    )}
+                                                </span>
                                                 <span>{formatDateToMDY(logs?.createdAt)}</span>
                                             </div>
                                         </li>

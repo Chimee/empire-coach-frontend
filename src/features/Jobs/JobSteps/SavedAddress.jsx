@@ -81,7 +81,7 @@ const SavedAddress = ({
                             key={addressId}
                             className={`${selectedIndex === idx ? "selected-address" : ""} d-flex gap-3 saved_address align-items-center position-relative`}
                             onClick={(e) => {
-                                debugger;
+                               
                                 // prevent toggle clicks from selecting
                                 if (e.target.closest(".toggle")) return;
                                 const mergedAddress = addr?.address;

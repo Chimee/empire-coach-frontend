@@ -27,6 +27,7 @@ import { LoadScript } from "@react-google-maps/api";
 const AdminJobDetails = () => {
     const { id } = useParams();
     const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });
+    debugger;
     console.log(jobDetails);
     const { state } = useLocation();
     const [sentLink, setSentLink] = useState(false)
@@ -47,6 +48,8 @@ const AdminJobDetails = () => {
 
     const [editAddressModal, setEditAddressModal] = useState(false);
     const [selectedAddressData, setSelectedAddressData] = useState(null);
+    console.log(selectedAddressData, "selectedAddressData");
+
     const [selectedAddressId, setSelectedAddressId] = useState(null);
     const [selectedAddressType, setSelectedAddressType] = useState('pickup');
     const [locationNames, setLocationNames] = useState([]);
@@ -108,9 +111,9 @@ const AdminJobDetails = () => {
     const handleApproveJob = async () => {
         try {
             await approveJob({ jobId: id }).unwrap();
-            if (jobDetails?.data?.jobData?.request_status === 'submitted') {
-                setAssignDriverPopup(true);
-            }
+            // if (jobDetails?.data?.jobData?.request_status === 'submitted') {
+            //     setAssignDriverPopup(true);
+            // }
         } catch (err) {
             toast.error(err?.data?.message || "Job approval failed", 'err');
         }
@@ -296,11 +299,12 @@ const AdminJobDetails = () => {
 
                             </Row>
                             <Col lg={12} className='mt-3'>
-                               
-                                    <DriverMapscreen
-                                        height="247px"
-                                        pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
-                              
+                                {/* {console.log(pickupCoords,"pickupCoords")
+                               } */}
+                                <DriverMapscreen
+                                    height="247px"
+                                    pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
+
                             </Col>
                             <Col lg={12} className='mt-3'>
                                 <h6 className='small-heading'>Location Tracking</h6>
@@ -426,11 +430,19 @@ const AdminJobDetails = () => {
                                 {jobDetails?.data?.jobLogs?.length > 0 ? (
                                     jobDetails.data.jobLogs.map((logs, index) => (
                                         <li key={index} className='d-flex gap-3 align-items-center'>
-                                            <span className='d-flex justify-content-center rounded-5 align-items-center shrink-0 timeline-count'>
+                                            <span className='d-flex justify-content-center rounded-5 align-items-center flex-shrink-0 timeline-count'>
                                                 {index + 1}
                                             </span>
                                             <div className='timeline_status'>
-                                                <span className='d-block text-capitalize'>{logs?.request_status}</span>
+                                                <span className='d-block text-capitalize'>
+                                                    {logs?.request_status}
+                                                    {logs?.User?.username && (
+                                                        <span className='text-muted ms-2'>
+                                                            by <strong>{logs.User.username}</strong>
+                                                        </span>
+                                                    )}
+                                                </span>
+
                                                 <span>{formatDateToMDY(logs?.createdAt)}</span>
                                             </div>
                                         </li>
@@ -477,7 +489,6 @@ const AdminJobDetails = () => {
                                             />
                                         ) : (
                                             <Button
-                                                disabled={sentLink || jobDetails?.data?.jobData?.JobAssignments.isLinkSent}
                                                 loading={isSending}
                                                 label="Send Link"
                                                 className="rounded w-75 m-auto"
@@ -492,18 +503,17 @@ const AdminJobDetails = () => {
 
             </Row>
 
-          
 
-            
-         
-          <EditAddressModal
+
+            <EditAddressModal
                 show={editAddressModal}
                 setShow={setEditAddressModal}
                 handleClose={() => setEditAddressModal(false)}
                 addressId={selectedAddressId}
                 addressData={selectedAddressData}
                 message="you want to edit this address?"
-                type={selectedAddressType} />
+                type={selectedAddressType}
+                jobId={jobData?.id} />
 
 
             <CancelConfirmationModal

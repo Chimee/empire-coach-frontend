@@ -5,8 +5,8 @@ import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { useUpdateDeliveryAddressMutation } from "../../../app/customerApi/customerApi";
 import toast from "react-hot-toast";
 
-const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, message, type }) => {
-  // debugger;  
+const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, message, type,jobId =null }) => {
+    
   const [autocompleteRef, setAutocompleteRef] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState({
     business_name: "",
@@ -49,7 +49,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
   };
 
   const handleSubmit = async () => {
-    debugger;
+ 
     const { business_name, address, latitude, longitude } = selectedPlace;
 
     if (!business_name && !address) {
@@ -70,6 +70,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
           type,
           [`${otherType}_latitude`]: null,
           [`${otherType}_longitude`]: null,
+          jobId
         },
       }).unwrap();
 
