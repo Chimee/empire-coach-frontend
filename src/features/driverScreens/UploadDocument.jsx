@@ -280,7 +280,7 @@ const UploadDocument = () => {
                     className="form-control"
                     rows={6}
                     value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
+                    onChange={(e) => setNotes(e.target.value.toUpperCase())}
                     placeholder="Enter any Additional notes..."
                 ></textarea>
             </div>

@@ -5,6 +5,7 @@ import { DriverDropLocationSvg } from '../../svgFiles/DriverDropLocationSvg'
 import { useParams, useLocation, useNavigate } from 'react-router'
 import toast from "react-hot-toast";
 import { useGetJobPickupDetailsQuery, useStartRideMutation } from '../../app/driverApi/driverApi'
+import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 
 import Button from '../../components/shared/buttons/button'
 import DriverMapscreen from './DriverMapscreen'
@@ -14,7 +15,6 @@ const RideDeatails = () => {
 
     const { data: jobDetails } = useGetJobPickupDetailsQuery({ id }, { skip: !id });
     const [starRide, { isLoading }] = useStartRideMutation();
-     console.log("jobDetails",jobDetails)
     const [currentLocation, setCurrentLocation] = useState(null);
 
     const pickup = jobDetails?.data?.jobData;
@@ -51,7 +51,7 @@ const RideDeatails = () => {
                 pickupCoords={pickupCoords}
                 dropoffCoords={dropoffCoords}
                 currentLocation={currentLocation}
-                height="100%" 
+                height="100%"
             />
             <div className='loaction flex-grow-1'>
                 <ul className='p-0 pt-3'>
@@ -59,8 +59,9 @@ const RideDeatails = () => {
                         <DriverLocationSvg className="shrink-0" />
                         <div className='loc-details d-flex flex-column gap-2'>
                             <h6>Pickup Details</h6>
-                            <span className='d-block'>{jobDetails?.data?.jobData.pickup_date}</span>
+                            <span className='d-block'>{jobDetails?.data?.jobData.pickup_business_name}</span>
                             <span className='d-block'>{jobDetails?.data?.jobData.pickup_location}</span>
+                            <span className='d-block'>{formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}</span>
                             <span className='d-block'>Contact : {jobDetails?.data?.jobData.pickup_POC_name}</span>
                             <span className='d-block'>Phone : {jobDetails?.data?.jobData.pickup_POC_phone}</span>
                             <span className='d-block'>Notes :{jobDetails?.data?.jobData.pickup_additional_note}</span>
@@ -69,12 +70,14 @@ const RideDeatails = () => {
                     <li className='d-flex gap-2'>
                         <DriverDropLocationSvg className="flex-shrink-0 bg-white z-3" />
                         <div className='loc-details d-flex flex-column gap-2'>
-
                             <h6>Drop-off details</h6>
+                            <span className='d-block'>{jobDetails?.data?.jobData.dropoff_business_name}</span>
                             <span className='d-block'>{jobDetails?.data?.jobData.dropoff_location}</span>
-                            <span className='d-block'>{jobDetails?.data?.jobData.dropoff_date}</span>
+                            {jobDetails?.data?.jobData.dropoff_date && (
+                                <span className='d-block'>{formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}</span>
+                            )}
                             <span className='d-block'>Phone :{jobDetails?.data?.jobData.dropoff_POC_phone}</span>
-                            <span className='d-block'>Note : {jobDetails?.data?.jobData.dropoff_additional_note}</span>
+                            <span className='d-block'>Notes : {jobDetails?.data?.jobData.dropoff_additional_note}</span>
                         </div>
                     </li>
                 </ul>

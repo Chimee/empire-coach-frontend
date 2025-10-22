@@ -141,7 +141,7 @@ const StartPickup = () => {
           className='form-control'
           rows={6}
           value={damageNotes}
-          onChange={(e) => setDamageNotes(e.target.value)}
+       onChange={(e) => setDamageNotes(e.target.value.toUpperCase())} 
           placeholder='Enter any damage notes...'
         />
       </div>

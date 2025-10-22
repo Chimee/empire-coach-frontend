@@ -27,7 +27,7 @@ import { LoadScript } from "@react-google-maps/api";
 const AdminJobDetails = () => {
     const { id } = useParams();
     const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });
-    debugger;
+  
     console.log(jobDetails);
     const { state } = useLocation();
     const [sentLink, setSentLink] = useState(false)
@@ -234,7 +234,7 @@ const AdminJobDetails = () => {
                                     <h6 className='small-heading'>Pickup Details</h6>
                                     <ul className='p-0 job-list-bullets'>
                                         <li>
-                                            Business name: {jobDetails?.data?.jobData?.pickup_business_name}
+                                         {jobDetails?.data?.jobData?.pickup_business_name}
                                         </li>
                                         <li>
                                             {jobDetails?.data?.jobData?.pickup_location}
@@ -267,7 +267,7 @@ const AdminJobDetails = () => {
                                     <h6 className='small-heading'>Drop-off Details</h6>
                                     <ul className='p-0 job-list-bullets'>
                                         <li>
-                                            Business name: {jobDetails?.data?.jobData?.dropoff_business_name}
+                                         {jobDetails?.data?.jobData?.dropoff_business_name}
                                         </li>
                                         <li>
                                             {jobDetails?.data?.jobData?.dropoff_location}

@@ -48,6 +48,8 @@ const QuickJobsList = ({ height }) => {
     { keepPreviousData: true }
   );
 
+
+
   // Reset when tab changes
   useEffect(() => {
     setPage(1);
@@ -149,6 +151,9 @@ const QuickJobsList = ({ height }) => {
                         <ClockSvg className="flex-shrink-0" />
                         <span>{`${formatDate(job?.pickup_date)} ${formatTimeTo12Hour(job?.pickup_time)}`}</span>
                       </div>
+                      {job?.pickup_business_name && (
+                        <p className="mb-1 fw-medium">{job.pickup_business_name}</p>
+                      )}
                       <div className="d-flex align-items-center gap-2">
                         <LocationSvg className="flex-shrink-0" />
                         <span>{job?.pickup_location}</span>
@@ -158,12 +163,16 @@ const QuickJobsList = ({ height }) => {
                   <div className="locations w-100 text-end ps-3">
                     <div className="location_inner d-inline-block text-start">
                       <h6>Dropoff</h6>
-                      <div className="d-flex align-items-center gap-2 mb-3">
+                      {job?.dropoff_date && (<div className="d-flex align-items-center gap-2 mb-3">
                         <ClockSvg className="flex-shrink-0" />
                         <span>{`${formatDate(job?.dropoff_date)} ${formatTimeTo12Hour(job?.dropoff_time)}`}</span>
-                      </div>
+                      </div>)}
+                      {job?.dropoff_business_name && (
+                        <p className="mb-1 fw-medium">{job.dropoff_business_name}</p>
+                      )}
                       <div className="d-flex align-items-center gap-2">
                         <LocationSvg className="flex-shrink-0" />
+
                         <span>{job?.dropoff_location}</span>
                       </div>
                     </div>

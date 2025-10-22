@@ -2,10 +2,9 @@ import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { CheveronDownSvg } from "../../../svgFiles/CheveronDownSvg";
 
-const VehicleDropdown = ({ selectType, options, currentVehicle, setCurrentVehicle }) => {
+const VehicleDropdown = ({ selectType, options, currentVehicle, setCurrentVehicle,label }) => {
 
   const key = selectType.toLowerCase();
-
   const selectedValue = currentVehicle[key] || "";
   const selectedOption = options.find((opt) => opt.value === selectedValue);
 
@@ -22,7 +21,7 @@ const VehicleDropdown = ({ selectType, options, currentVehicle, setCurrentVehicl
   return (
     <div className="mb-3">
       <label htmlFor={`vehicle-${key}`} className="cmn_label form-label">
-        Select {selectType}
+        Select {label}
       </label>
       <Dropdown className="vehicle_dropdown">
         <Dropdown.Toggle variant="unset" id={`vehicle-${key}`}>
