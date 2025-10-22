@@ -9,7 +9,9 @@ import JobStepFour from './JobSteps/JobStepFour';
 import JobStepFive from './JobSteps/JobStepFive';
 import JobStepSix from './JobSteps/JobStepSix';
 import { useCreateJobMutation } from '../../app/customerApi/customerApi';
+import { useNavigate } from 'react-router';
 const CreateJob = ({ show, handleClose, setShow }) => {
+    const navigate = useNavigate()
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({});
     const [createJob, { isLoading }] = useCreateJobMutation();
@@ -28,7 +30,7 @@ const CreateJob = ({ show, handleClose, setShow }) => {
         try {
             
             await createJob({ data: formData }).unwrap();
-            setStep(1);
+          navigate("/")
             setFormData({});
             handleClose();
         } catch (error) {

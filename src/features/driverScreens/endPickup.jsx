@@ -139,7 +139,7 @@ const EndPickup = () => {
                     className='form-control'
                     rows={6}
                     value={deliveryNotes}
-                    onChange={(e) => setDeliveryNotes(e.target.value)}
+                    onChange={(e) => setDeliveryNotes(e.target.value.toUpperCase())}
                     placeholder='Enter any delivery notes...'
                 />
             </div>

@@ -52,7 +52,7 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
   };
 
   const validateStepThree = () => {
-    debugger;
+    
     const fields = [
 
       { value: formData.pickup_location, label: "Pickup location" },

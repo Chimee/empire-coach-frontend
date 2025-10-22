@@ -118,6 +118,7 @@ span.type_tag {
   line-height: 22px;
   color: #000000;
   font-weight: 500;
+  max-width: 200px;
 }
 
 .job_list h4 {

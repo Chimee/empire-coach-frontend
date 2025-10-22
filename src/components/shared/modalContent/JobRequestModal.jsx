@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import CommonModal from '../modalLayout/CommonModal';
+import { useNavigate } from 'react-router-dom'; 
 
 // Step components
 import JobStepOne from '../../../features/Jobs/JobSteps/JobStepOne';
@@ -14,6 +15,7 @@ const JobRequestModal = ({ show, handleClose, setShow }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
   const [createJob, { isLoading }] = useCreateJobMutation();
+  const navigate = useNavigate()
 
   const handleNext = () => {
     if (step < 6) setStep(step + 1);
@@ -28,8 +30,10 @@ const JobRequestModal = ({ show, handleClose, setShow }) => {
     try {
       await createJob({ data: formData }).unwrap();
       setStep(1);
+      //navigate("/dashboard")
       setFormData({});
       handleClose();
+      
     } catch (error) {
    
     }
