@@ -30,7 +30,7 @@ const CreateJob = ({ show, handleClose, setShow }) => {
         try {
             
             await createJob({ data: formData }).unwrap();
-          navigate("/")
+          navigate("/dashboard")
             setFormData({});
             handleClose();
         } catch (error) {
