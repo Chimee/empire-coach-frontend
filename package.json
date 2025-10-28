@@ -12,6 +12,7 @@
     "highcharts": "^12.1.2",
     "highcharts-react-official": "^3.2.1",
     "jwt-decode": "^4.0.0",
+    "libphonenumber-js": "^1.12.25",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
@@ -32,7 +33,7 @@
     "start": "react-scripts start",
     "start:dev": "env-cmd -f .env.dev npm run-script start",
     "build": "react-scripts build --no-minify",
-     "build:debug": "react-scripts build --no-minify",
+    "build:debug": "react-scripts build --no-minify",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build:dev": "env-cmd -f .env.dev npm run-script build"

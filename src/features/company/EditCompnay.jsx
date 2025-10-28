@@ -20,7 +20,7 @@ const EditCompany = () => {
 
   const { data, isLoading: isFetching } = useGetCompanyDetailQuery({ id: companyId });
 
-  
+
   const [updateCompany, { isLoading }] = useUpdateCompanyMutation();
 
   const [companyData, setCompanyData] = useState({
@@ -46,9 +46,14 @@ const EditCompany = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let updatedValue = value;
+    if (name === "company_name") {
+      updatedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
     setCompanyData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: updatedValue,
     }));
   };
 
@@ -72,7 +77,7 @@ const EditCompany = () => {
         companyId,
         ...companyData,
       };
-      await updateCompany({data:payload}).unwrap();
+      await updateCompany({ data: payload }).unwrap();
     } catch (err) {
       toast.error(err?.data?.message || 'Failed to update company.');
     }

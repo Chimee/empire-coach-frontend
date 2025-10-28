@@ -7,7 +7,7 @@ import Datatable from '../../components/shared/datatable/Datatable';
 import { EditTableSvg } from '../../svgFiles/EditTableSvg';
 import { useParams } from 'react-router';
 import { useGetCompanyDetailQuery } from '../../app/companyApi/companyApi';
-import { formatDateToMDY } from '../../helpers/Utils';
+import { formatDateToMDY ,formatPhoneNumber} from '../../helpers/Utils';
 import { useGetCompanyCustomersListQuery, useUpdateCompanyMutation } from '../../app/companyApi/companyApi';
 
 const CompnayDetails = () => {
@@ -94,8 +94,8 @@ const CompnayDetails = () => {
 
                     <div className='d-flex job_req justify-content-between align-items-center'>
                         <div className='create_job'>
-                            <h6 className='text-white'>Add User</h6>
-                            <p>{'Add a new user to company'}</p>
+                            <h6 className='text-white'>Add Customer Users</h6>
+                            <p>{'Add a new customer user to company'}</p>
                         </div>
                         <PlusButtonSvg onClick={() => {
                             navigate('/company/company-details/add-customer', {
@@ -120,7 +120,7 @@ const CompnayDetails = () => {
                 </Col>
                 <Col lg={4}>
                     <h5 className='info-label'>POC Phone</h5>
-                    <p className='info-value'> {isLoading ? "----" : companyDetails?.data?.contact_person_phone}</p>
+                    <p className='info-value'> {isLoading ? "----" : formatPhoneNumber(companyDetails?.data?.contact_person_phone)}</p>
                     <h5 className='info-label'>Last Updated</h5>
                     <p className='info-value'> {isLoading ? "----" : formatDateToMDY(companyDetails?.data?.updatedAt)}</p>
                 </Col>

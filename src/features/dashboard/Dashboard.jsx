@@ -42,7 +42,7 @@ const Dashboard = () => {
         <div className='right_list'>
           <div className='d-flex job_req justify-content-between align-items-center'>
             <div className='create_job'>
-              <h6 className='text-white'>{role === "customer" ? ' Job Request' : "Company Request"}</h6>
+              <h6 className='text-white'>{role === "customer" ? ' Job Request' : "Add Customer Company"}</h6>
               <p>Create a {role === "customer" ? " job request" : "Company"}</p>
             </div>
             {role === "customer" ? <PlusButtonSvg onClick={() => navigate('/jobs/create-job')} /> : <PlusButtonSvg onClick={() => navigate('/company/add-company')} />}

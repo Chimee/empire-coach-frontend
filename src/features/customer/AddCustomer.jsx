@@ -12,6 +12,7 @@ import {
   useUpdateCustomerMutation,
   useGetCustomerDetailQuery,
 } from '../../app/customerApi/customerApi';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 const AddCustomer = () => {
   const { state } = useLocation();
@@ -55,9 +56,14 @@ const AddCustomer = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let updatedValue = value;
+    if (name === "firstName") {
+      updatedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
     setUserData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: updatedValue,
     }));
   };
 
@@ -71,6 +77,23 @@ const AddCustomer = () => {
     if (!email.trim()) return toast.error('Email is required.');
     if (!emailRegex.test(email)) return toast.error('Invalid email format.');
     if (!companyId && !isEditMode) return toast.error('Company ID not found.');
+
+    // const formattedPhone = phone_number.startsWith("+")
+    //   ? phone_number
+    //   : `+${phone_number}`;
+
+    // let parsedPhone =
+    //   parsePhoneNumberFromString(formattedPhone)
+    // if (!parsedPhone.country) {
+    //  parsedPhone = parsePhoneNumberFromString(formattedPhone, 'US');
+    // }
+
+    // if (!parsedPhone || !parsedPhone.isValid()) {
+    //   toast.dismiss();
+    //   toast.error("Invalid phone number. Please check the country code and format.");
+    //   return;
+    // }
+
 
     try {
       if (isEditMode) {

@@ -1,13 +1,14 @@
 import { toast } from 'react-hot-toast';
 import React from 'react';
+import { parsePhoneNumberFromString, getCountries, getCountryCallingCode } from "libphonenumber-js";
 export const isNullOrEmpty = (data) => {
-    return (
-        data === null ||
-        data === undefined ||
-        data === '' ||
-        (Array.isArray(data) && data.length === 0) ||
-        (typeof data === 'object' && Object?.keys(data).length === 0)
-    );
+  return (
+    data === null ||
+    data === undefined ||
+    data === '' ||
+    (Array.isArray(data) && data.length === 0) ||
+    (typeof data === 'object' && Object?.keys(data).length === 0)
+  );
 };
 
 // export const showToast = (message = '', type = 'info') => {
@@ -21,128 +22,128 @@ export const capitalize = (str) => {
   if (!str) return str; // Handle null or undefined strings
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
- 
+
 const allowedTypes = ['success', 'error', 'info', 'loading'];
 
 export const showToast = (message = '', type = 'info', options = {}) => {
-    if (!message) return;
+  if (!message) return;
 
-    const toastType = allowedTypes.includes(type) ? type : 'info';
+  const toastType = allowedTypes.includes(type) ? type : 'info';
 
-    toast(message, {
-        type: toastType,
-        id: options.id || message, // fallback to message if no custom id
-        duration: options.duration || 4000,
-        position: options.position || 'top-center',
-        ...options, // spread other custom react-hot-toast options
-    });
+  toast(message, {
+    type: toastType,
+    id: options.id || message, // fallback to message if no custom id
+    duration: options.duration || 4000,
+    position: options.position || 'top-center',
+    ...options, // spread other custom react-hot-toast options
+  });
 };
 
 
 export function serialize(obj) {
-    let str = [];
-    for (let p in obj) {
-        if (obj.hasOwnProperty(p)) {
-            if (Array.isArray(obj[p])) {
-                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p].join(',')));
-            } else {
-                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-            }
-        }
+  let str = [];
+  for (let p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      if (Array.isArray(obj[p])) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p].join(',')));
+      } else {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      }
     }
-    return str.join("&");
+  }
+  return str.join("&");
 }
 
 export const createOptionListForSelectTag = (data = null, label = "", value = "", suffix = "", overrideLabel = "") => {
-    let list = [];
+  let list = [];
 
-    if (isNullOrEmpty(data) || isNullOrEmpty(label) || isNullOrEmpty(value)) {
-        return list;
-    }
-
-    if (!Array.isArray(data)) {
-        return list;
-    }
-
-    list = data?.map(cur => {
-        const labelText =
-            (isNullOrEmpty(overrideLabel) || isNullOrEmpty(cur[overrideLabel]))
-                ? cur[label]
-                : cur[overrideLabel];
-
-        return {
-            value: cur[value],
-            label: labelText + (isNullOrEmpty(suffix) ? "" : " (" + cur[suffix] + ")"),
-        };
-    });
-
+  if (isNullOrEmpty(data) || isNullOrEmpty(label) || isNullOrEmpty(value)) {
     return list;
+  }
+
+  if (!Array.isArray(data)) {
+    return list;
+  }
+
+  list = data?.map(cur => {
+    const labelText =
+      (isNullOrEmpty(overrideLabel) || isNullOrEmpty(cur[overrideLabel]))
+        ? cur[label]
+        : cur[overrideLabel];
+
+    return {
+      value: cur[value],
+      label: labelText + (isNullOrEmpty(suffix) ? "" : " (" + cur[suffix] + ")"),
+    };
+  });
+
+  return list;
 };
 
 
 export const validatePassword = (password, confirmPassword) => {
-    const regexForUppercase = new RegExp("(?=.*[A-Z])");
-    const regexForLowercase = new RegExp("(?=.*[a-z])");
-    const regexForNum = new RegExp(/\d/);
-    const regexForSpecialChar = new RegExp("(?=.*\\W)");
-    const regexForLength = new RegExp(/^.{12,50}$/);
+  const regexForUppercase = new RegExp("(?=.*[A-Z])");
+  const regexForLowercase = new RegExp("(?=.*[a-z])");
+  const regexForNum = new RegExp(/\d/);
+  const regexForSpecialChar = new RegExp("(?=.*\\W)");
+  const regexForLength = new RegExp(/^.{12,50}$/);
 
-    let error = {
-        isValidSubmission: false,
-    };
+  let error = {
+    isValidSubmission: false,
+  };
 
-    if (!regexForUppercase.test(password)) {
-        error.uppercaseChar = "Must contain at least one uppercase letter (A - Z)";
-    } else {
-        error.uppercaseCheck = "true";
-    }
+  if (!regexForUppercase.test(password)) {
+    error.uppercaseChar = "Must contain at least one uppercase letter (A - Z)";
+  } else {
+    error.uppercaseCheck = "true";
+  }
 
-    if (!regexForLowercase.test(password)) {
-        error.lowercaseChar = "Must contain at least one lowercase letter (a - z)";
-    } else {
-        error.lowercaseCheck = "true";
-    }
+  if (!regexForLowercase.test(password)) {
+    error.lowercaseChar = "Must contain at least one lowercase letter (a - z)";
+  } else {
+    error.lowercaseCheck = "true";
+  }
 
-    if (!regexForNum.test(password)) {
-        error.number = "Must contain at least one number (0 - 9)";
-    } else {
-        error.numberCheck = "true";
-    }
+  if (!regexForNum.test(password)) {
+    error.number = "Must contain at least one number (0 - 9)";
+  } else {
+    error.numberCheck = "true";
+  }
 
-    if (!regexForSpecialChar.test(password)) {
-        error.specialChar = "Must contain at least one special character (e.g. !, #, $, %)";
-    } else {
-        error.specialCharCheck = "true";
-    }
+  if (!regexForSpecialChar.test(password)) {
+    error.specialChar = "Must contain at least one special character (e.g. !, #, $, %)";
+  } else {
+    error.specialCharCheck = "true";
+  }
 
-    if (!regexForLength.test(password)) {
-        error.length = "Must contain between 12 and 50 characters";
-    } else {
-        error.lengthCheck = "true";
-    }
+  if (!regexForLength.test(password)) {
+    error.length = "Must contain between 12 and 50 characters";
+  } else {
+    error.lengthCheck = "true";
+  }
 
-    if (password !== confirmPassword && confirmPassword !== null && confirmPassword !== "") {
-        error.match = "Password and Confirm Password don't match!";
-    } else {
-        error.match = "";
-    }
+  if (password !== confirmPassword && confirmPassword !== null && confirmPassword !== "") {
+    error.match = "Password and Confirm Password don't match!";
+  } else {
+    error.match = "";
+  }
 
-    error.isValidSubmission =
-        regexForUppercase.test(password) &&
-        regexForLowercase.test(password) &&
-        regexForNum.test(password) &&
-        regexForSpecialChar.test(password) &&
-        regexForLength.test(password);
+  error.isValidSubmission =
+    regexForUppercase.test(password) &&
+    regexForLowercase.test(password) &&
+    regexForNum.test(password) &&
+    regexForSpecialChar.test(password) &&
+    regexForLength.test(password);
 
-    if (error.isValidSubmission) {
-        delete error.uppercaseChar;
-        delete error.lowercaseChar;
-        delete error.number;
-        delete error.specialChar;
-        delete error.length;
-    }
+  if (error.isValidSubmission) {
+    delete error.uppercaseChar;
+    delete error.lowercaseChar;
+    delete error.number;
+    delete error.specialChar;
+    delete error.length;
+  }
 
-    return error;
+  return error;
 };
 
 export const getClassAndTitleByStatus = (status) => {
@@ -171,7 +172,7 @@ export const getClassAndTitleByStatus = (status) => {
       className: 'class-rescheduled',
       title: 'Rescheduled',
     },
-  
+
     in_transit: {
       className: 'class-in-transit',
       title: 'In-Transit',
@@ -184,7 +185,7 @@ export const getClassAndTitleByStatus = (status) => {
       className: 'class-awaiting-reschedule-date',
       title: 'Awaiting Reschedule Date',
     },
-    
+
   };
 
   return (
@@ -222,7 +223,7 @@ export const formatTimeTo12Hour = (timeString) => {
 
 export const formatDate = (dateString) => {
   if (!dateString) return '';
-  
+
   const date = new Date(dateString);
   return date.toLocaleString('en-US', {
     month: 'short',   // "Apr"
@@ -295,14 +296,13 @@ export default function useClickOutside(ref, callback) {
     };
   }, [ref, callback]);
 }
-export async function getLocationName(lat, lng) {
+   export async function getLocationName(lat, lng) {
   const apiKey = process.env.REACT_APP_GOOGLE_MAP_API_KEY; // Keep in .env
   const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
 
   try {
     const response = await fetch(url);
     const data = await response.json();
-
     if (data.status === "OK" && data.results.length > 0) {
       return data.results[0].formatted_address;
     } else {
@@ -314,10 +314,49 @@ export async function getLocationName(lat, lng) {
   }
 }
 
-export const appendFileOrNull = (key, value ,formData) => {
-        if (value instanceof File) {
-            formData.append(key, value);
-        } else if (value === null) {
-            formData.append(key, "null");
-        }
-    };
+export const appendFileOrNull = (key, value, formData) => {
+  if (value instanceof File) {
+    formData.append(key, value);
+  } else if (value === null) {
+    formData.append(key, "null");
+  }
+};
+
+
+
+
+
+export const formatPhoneNumber = (phone) => {
+  if (!phone) return "";
+
+  try {
+    let formatted = phone.trim();
+    if (!formatted.startsWith("+")) {
+      const onlyDigits = formatted.replace(/\D/g, "");
+      const countries = getCountries();
+      const matchedCountry = countries.find((country) => {
+        const code = getCountryCallingCode(country);
+        return onlyDigits.startsWith(code);
+      });
+
+      if (matchedCountry) {
+        formatted = `+${onlyDigits}`;
+      } else {
+       
+        formatted = `+${onlyDigits}`;
+      }
+    }
+
+    let phoneNumber = parsePhoneNumberFromString(formatted);
+    if (!phoneNumber?.country) {
+      phoneNumber = parsePhoneNumberFromString(formatted, "US");
+    }
+    if (phoneNumber) {
+      return phoneNumber.formatInternational();
+    }
+    return phone;
+  } catch (error) {
+    console.warn("formatPhoneNumber error:", error);
+    return phone;
+  }
+};

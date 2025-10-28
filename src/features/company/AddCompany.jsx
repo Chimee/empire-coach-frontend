@@ -8,6 +8,7 @@ import { useAddCompanyMutation } from '../../app/companyApi/companyApi';
 import toast from 'react-hot-toast';
 import PhoneInput from 'react-phone-input-2';
 import { validateRequiredFields } from '../../helpers/Utils';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 const AddCompany = () => {
   const [companyData, setCompanyData] = useState({
     company_name: "",
@@ -26,9 +27,14 @@ const AddCompany = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let updatedValue = value;
+    if (name === "company_name") {
+      updatedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
     setCompanyData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: updatedValue,
     }));
   };
 
@@ -63,6 +69,22 @@ const AddCompany = () => {
       toast.error("Please enter a valid email address.");
       return;
     }
+
+    // const formattedPhone = contact_person_phone.startsWith("+")
+    //   ? contact_person_phone
+    //   : `+${contact_person_phone}`;
+
+    // let parsedPhone =
+    //   parsePhoneNumberFromString(formattedPhone) 
+    //   if(!parsedPhone.country){
+    //    parsedPhone =  parsePhoneNumberFromString(formattedPhone, 'US');
+    //   }
+      
+    // if (!parsedPhone || !parsedPhone.isValid()) {
+    //   toast.dismiss();
+    //   toast.error("Invalid phone number. Please check the country code and format.");
+    //   return;
+    // }
 
     try {
       await addCompany({ data: companyData }).unwrap();

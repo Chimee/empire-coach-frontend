@@ -9,14 +9,14 @@ export const MenuItems = [
       subMenu: [],
     },
      {
-      title: "Admin",
+      title: "Empire Users",
       path: "/admin",
       roles: ["superadmin",],
       icon: <AdminSvg />,
       subMenu: [],
     },
     {
-      title: "Users",
+      title: "Customer Companies",
       path: "/company",
       roles: ["admin", "superadmin" ],
       icon: <CompanySvg />,
