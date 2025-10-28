@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import TableFilter from "./TableFilter";
 import Pagination from "../pagination/Pagination";
-import { capitalize } from "../../../helpers/Utils";
+import { capitalize, formatPhoneNumber } from "../../../helpers/Utils";
 
 const Datatable = ({
   tableData,
@@ -24,6 +24,8 @@ const Datatable = ({
 }) => {
   const [itemsPerPage] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
+
+ 
 
   useEffect(() => {
     if (tableData && tableData.data && Array.isArray(tableData.data)) {
@@ -88,7 +90,7 @@ const Datatable = ({
                   {columns.map((column, colIndex) => {
                     let cellContent;
 
-                    if (column.cell) {
+                    if (column.cell) {            
                       cellContent = column.cell({
                         row,
                         value: getNestedValue(
@@ -105,6 +107,15 @@ const Datatable = ({
                         column.captialize || false
                       );
 
+                      if (
+                        column.accessor?.toLowerCase().includes("phone") ||
+                        column.label?.toLowerCase().includes("phone")
+                      ) {
+
+                        value = formatPhoneNumber(value);
+                      }
+
+                      console.log("Formatting phone:", value);
                       cellContent = value;
                     }
 

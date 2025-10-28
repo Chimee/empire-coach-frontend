@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { useSaveDeliveryAddressMutation } from "../../../app/customerApi/customerApi";
 import SaveAddress from "./SaveAddress";
 import PhoneInput from "react-phone-input-2";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => {
   const SelectOptions = [{ label: "Punjab", value: "punjab" }];
@@ -29,6 +30,33 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
       [name]: value.toUpperCase(),
     }));
   };
+
+  // const validatePhoneNumber = (number, label) => {
+  //   if (!number) {
+  //     toast.error(`${label} is required.`);
+  //     return false;
+  //   }
+
+  //   try {
+  //     const formatted = number.startsWith("+") ? number : `+${number}`;
+  //     let parsed = parsePhoneNumberFromString(formatted);
+
+  //     if (!parsed?.country) {
+  //       parsed = parsePhoneNumberFromString(formatted, "US");
+  //     }
+
+  //     if (!parsed || !parsed.isValid()) {
+  //       toast.error(`Invalid ${label}. Please check the number and country code.`);
+  //       return false;
+  //     }
+
+  //     return true;
+  //   } catch (err) {
+  //     toast.error(`Invalid ${label} format.`);
+  //     return false;
+  //   }
+  // };
+
 
   const clearAddressFields = (prefix) => {
     const keys = ["business_name", "latitude", "longitude", "location"];
@@ -52,7 +80,7 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
   };
 
   const validateStepThree = () => {
-    
+
     const fields = [
 
       { value: formData.pickup_location, label: "Pickup location" },
@@ -135,11 +163,11 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
             className="rounded-2 w-100 bordered"
             size="xs"
             onClick={() => {
-              if (formData[`${prefix}_location`]) {  
+              if (formData[`${prefix}_location`]) {
                 toast.success(
                   `${prefix === "pickup" ? "Pickup" : "Dropoff"} address will be used only for this trip`
                 );
-              } else {    
+              } else {
                 toast.error(
                   `Please enter a ${prefix === "pickup" ? "pickup" : "dropoff"} address first`
                 );

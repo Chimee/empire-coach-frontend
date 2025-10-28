@@ -12,6 +12,7 @@ import './driver.css';
 import Image from 'react-bootstrap/Image';
 import { useNavigate } from 'react-router';
 import PhoneInput from 'react-phone-input-2';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 const AddDriver = () => {
   const navigate = useNavigate()
   const { state } = useLocation();
@@ -27,6 +28,7 @@ const AddDriver = () => {
     phone: '',
     note: '',
   });
+
 
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -51,7 +53,11 @@ const AddDriver = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserData((prev) => ({ ...prev, [name]: value }));
+    let updatedValue = value;
+    if (name === "name") {
+      updatedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+    setUserData((prev) => ({ ...prev, [name]: updatedValue }));
   };
 
   const handleFileChange = (e) => {
@@ -65,46 +71,62 @@ const AddDriver = () => {
   };
 
   const handleSubmit = async () => {
-  const { name, email, phone, note } = userData;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const { name, email, phone, note } = userData;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (!name.trim()) return toast.error('User name is required.');
-  if (!email.trim()) return toast.error('Email is required.');
-  if (!emailRegex.test(email)) return toast.error('Invalid email format.');
-  if (!phone.trim()) return toast.error('Phone number is required.');
+    if (!name.trim()) return toast.error('User name is required.');
+    if (!email.trim()) return toast.error('Email is required.');
+    if (!emailRegex.test(email)) return toast.error('Invalid email format.');
+    if (!phone.trim()) return toast.error('Phone number is required.');
+    // const formattedPhone = phone.startsWith("+")
+    //   ? phone
+    //   : `+${phone}`;
 
-  const formData = new FormData();
-  formData.append('name', name);
-  formData.append('email', email);
-  formData.append('phone', phone);
-  formData.append('note', note);
+    // let parsedPhone =
+    //   parsePhoneNumberFromString(formattedPhone)
+    // if (!parsedPhone.country) {
+    //   parsedPhone = parsePhoneNumberFromString(formattedPhone, 'US');
+    // }
 
-  if (profileImage) {
-    formData.append('profile_picture', profileImage);
-  } else if (!isEditMode) {
-    formData.append(
-      'profile_picture',
-      'https://windingroad.com/wp-content/uploads/autos_db/thumbnails/DJ1.jpg'
-    );
-  }
+    // if (!parsedPhone || !parsedPhone.isValid()) {
+    //   toast.dismiss();
+    //   toast.error("Invalid phone number. Please check the country code and format.");
+    //   return;
+    // }
 
-  if (isEditMode) formData.append('driverId', driverId);
 
-  try {
-    if (isEditMode) {
-      await updateDriver(formData).unwrap();
-      navigate('/drivers');
-    } else {
-      await addDriver(formData).unwrap();
-      setUserData({ name: '', email: '', phone: '', note: '' });
-      setProfileImage(null);
-      setImagePreview(null);
-      navigate('/drivers');
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('phone', phone);
+    formData.append('note', note);
+
+    if (profileImage) {
+      formData.append('profile_picture', profileImage);
+    } else if (!isEditMode) {
+      formData.append(
+        'profile_picture',
+        'https://windingroad.com/wp-content/uploads/autos_db/thumbnails/DJ1.jpg'
+      );
     }
-  } catch (err) {
-    toast.error(err?.data?.message || 'Operation failed.');
-  }
-};
+
+    if (isEditMode) formData.append('driverId', driverId);
+
+    try {
+      if (isEditMode) {
+        await updateDriver(formData).unwrap();
+        navigate('/drivers');
+      } else {
+        await addDriver(formData).unwrap();
+        setUserData({ name: '', email: '', phone: '', note: '' });
+        setProfileImage(null);
+        setImagePreview(null);
+        navigate('/drivers');
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || 'Operation failed.');
+    }
+  };
 
   const breadcrumbItems = [
     { name: 'Drivers', path: '/drivers' },
@@ -152,20 +174,19 @@ const AddDriver = () => {
                 />
               </Col>
               <Col lg={6}>
-              
-                 <label className='input-label form-label'>Phone</label>
-                                <PhoneInput
-                                  country={'us'}
-                                   value={userData.phone}
-                                  onChange={(value) =>
-                                    setUserData((prev) => ({
-                                      ...prev,
-                                      phone: value,
-                                    }))
-                                  }
-                                  inputClass='form-control'
-                                  containerClass='w-100'
-                                />
+                <label className='input-label form-label'>Phone</label>
+                <PhoneInput
+                  country={'us'}
+                  value={userData.phone}
+                  onChange={(value) =>
+                    setUserData((prev) => ({
+                      ...prev,
+                      phone: value,
+                    }))
+                  }
+                  inputClass='form-control'
+                  containerClass='w-100'
+                />
               </Col>
               <Col xs={12}>
                 <label className='input-label form-label'>For Admin/internal use (Optional)</label>

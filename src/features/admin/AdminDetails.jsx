@@ -3,7 +3,8 @@ import Breadcrumb from '../../components/shared/breadcrumb/Breadcrumb';
 import { Row, Col, Form } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import { useGetAdminDetailQuery, useUpdateAdminMutation } from '../../app/adminApi/adminApi';
-import { formatDateToMDY } from '../../helpers/Utils';
+import { formatDateToMDY, formatPhoneNumber } from '../../helpers/Utils';
+
 
 const AdminDetails = () => {
     const breadcrumbItems = [
@@ -62,7 +63,7 @@ const AdminDetails = () => {
                 </Col>
                 <Col lg={4}>
                     <h5 className='info-label'>Phone</h5>
-                    <p className='info-value'>{isLoading ? "----" : data?.data?.phone_number}</p>
+                    <p className='info-value'>{isLoading ? "----" : formatPhoneNumber(data?.data?.phone_number)}</p>
                     <h5 className='info-label'>Registration Date</h5>
                     <p className='info-value'>{isLoading ? "----" : formatDateToMDY(data?.data?.createdAt)}</p>
                 </Col>

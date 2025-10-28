@@ -22,7 +22,6 @@ const JobDetails = () => {
 
 
     const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id }, { skip: !id });
-    console.log(jobDetails);
     const { state } = useLocation();
     const isCompleted = state?.completed
     const statusMeta = getClassAndTitleByStatus(jobDetails?.data?.jobData?.request_status);
@@ -31,7 +30,6 @@ const JobDetails = () => {
     const [cancelConfirmation, setCancelConfirmation] = useState(false);
     const [reScheduleConfirmation, setRescheduleConfirmation] = useState(false);
     const jobData = jobDetails?.data?.jobData;
-    console.log(jobDetails, "jobDetails");
     const driverId = jobData?.driver_id;
     const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
         { id, driverId },
@@ -65,7 +63,7 @@ const JobDetails = () => {
             name: isCompleted ? 'Completed jobs' : 'Jobs',
             path: isCompleted ? '/completed-jobs' : '/jobs',
         },
-        { name: `Job-${jobDetails?.data?.jobData?.id}` },
+        { name: `${jobDetails?.data?.jobData?.id}` },
     ];
 
     return (

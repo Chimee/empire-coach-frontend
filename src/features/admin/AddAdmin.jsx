@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import { dmApi } from '../../app/dmApi';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { parsePhoneNumberFromString } from "libphonenumber-js/max";
 const AddAdmin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -49,9 +50,14 @@ const AddAdmin = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let updatedValue = value;
+    if (name === "firstName") {
+      updatedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
     setAdminData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: updatedValue,
     }));
   };
 
@@ -65,7 +71,22 @@ const AddAdmin = () => {
     if (!email.trim()) return toast.error('Email is required.');
     if (!emailRegex.test(email)) return toast.error('Invalid email format.');
     if (!phone_number.trim()) return toast.error('Phone number is required.');
+    // const formattedPhone = phone_number.startsWith("+")
+    //   ? phone_number
+    //   : `+${phone_number}`;
 
+    // let parsedPhone =
+    //   parsePhoneNumberFromString(formattedPhone)
+    // if (!parsedPhone.country) {
+    //  parsedPhone = parsePhoneNumberFromString(formattedPhone, 'US');
+    // }
+    // debugger;
+
+    // if (!parsedPhone || !parsedPhone.isValid()) {
+    //   toast.dismiss();
+    //   toast.error("Invalid phone number. Please check the country code and format.");
+    //   return;
+    // }
     try {
       if (isEditMode) {
         await updateAdmin({ data: { username, email, phone_number, id: adminId } }).unwrap();

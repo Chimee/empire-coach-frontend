@@ -24,13 +24,13 @@ const AdminJobsData = ({ tabName }) => {
     
     const columns = [
         {
-            label: "Job Id",
+            label: "Id",
             accessor: "id",
             cell: ({ row }) => (
                 <span
 
                 >
-                    {`job-${row?.id}`}
+                    {`${row?.id}`}
                 </span>
             ),
         },
@@ -103,7 +103,7 @@ const AdminJobsData = ({ tabName }) => {
             ),
         },
 
-        { label: "Driver", accessor: "vin_number" },
+        { label: "Driver", accessor: "driver_name" },
         {
             label: "Actions",
             accessor: "actions",

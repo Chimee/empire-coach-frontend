@@ -76,7 +76,7 @@ const AdminJobDetails = () => {
 
     const breadcrumbItems = [
         { name: 'Jobs', path: '/admin-jobs' },
-        { name: `Job-${jobDetails?.data?.jobData?.id}` },
+        { name: `${jobDetails?.data?.jobData?.id}` },
     ];
     //cancel job by admin
     const handleCancelApproveJob = async () => {
