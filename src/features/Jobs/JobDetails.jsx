@@ -210,7 +210,7 @@ const JobDetails = () => {
                                         <li>{jobDetails?.data?.jobData?.pickup_location}</li>
                                         <li>{formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}</li>
                                         <li>Contact: {jobDetails?.data?.jobData?.pickup_POC_name}</li>
-                                        <li>Phone: {jobDetails?.data?.jobData?.pickup_POC_phone}</li>
+                                        <li>Phone: {jobDetails?.data?.jobData?.raw_pickup_POC_phone}</li>
                                         {jobDetails?.data?.jobData?.pickup_additional_note?.trim() && (
                                             <li>Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>
                                         )}
@@ -223,7 +223,7 @@ const JobDetails = () => {
                                         <li>{jobDetails?.data?.jobData?.dropoff_location}</li>
                                         <li>{formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}</li>
                                         <li>Contact: {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
-                                        <li>Phone: {jobDetails?.data?.jobData?.dropoff_POC_phone}</li>
+                                        <li>Phone: {jobDetails?.data?.jobData?.raw_dropoff_POC_phone}</li>
                                         {jobDetails?.data?.jobData?.dropoff_additional_note?.trim() && (
                                             <li>Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>
                                         )}

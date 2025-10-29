@@ -106,16 +106,6 @@ const Datatable = ({
                         column.accessor,
                         column.captialize || false
                       );
-
-                      if (
-                        column.accessor?.toLowerCase().includes("phone") ||
-                        column.label?.toLowerCase().includes("phone")
-                      ) {
-
-                        value = formatPhoneNumber(value);
-                      }
-
-                      console.log("Formatting phone:", value);
                       cellContent = value;
                     }
 

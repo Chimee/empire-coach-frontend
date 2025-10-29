@@ -20,7 +20,7 @@ const Company = () => {
     const columns = [
         { label: "Company name", accessor: "name" },
         { label: "POC Name", accessor: "contact_person_name" },
-        { label: "POC Phone", accessor: "contact_person_phone" },
+        { label: "POC Phone", accessor: "raw_phone" },
         { label: "E-mail", accessor: "email" },
         {
             label: "Status",

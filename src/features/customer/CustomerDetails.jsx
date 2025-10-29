@@ -76,7 +76,7 @@ const CustomerDetails = () => {
                 </Col>
                 <Col lg={4}>
                     <h5 className='info-label'>Phone</h5>
-                    <p className='info-value'>{isLoading ? "----" : companyDetails?.data?.phone_number}</p>
+                    <p className='info-value'>{isLoading ? "----" : companyDetails?.data?.raw_phone}</p>
                     <h5 className='info-label'>Registration Date</h5>
                     <p className='info-value'>{isLoading ? "----" : formatDateToMDY(companyDetails?.data?.createdAt)}</p>
                 </Col>

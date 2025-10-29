@@ -71,28 +71,25 @@ const AddAdmin = () => {
     if (!email.trim()) return toast.error('Email is required.');
     if (!emailRegex.test(email)) return toast.error('Invalid email format.');
     if (!phone_number.trim()) return toast.error('Phone number is required.');
-    // const formattedPhone = phone_number.startsWith("+")
-    //   ? phone_number
-    //   : `+${phone_number}`;
 
-    // let parsedPhone =
-    //   parsePhoneNumberFromString(formattedPhone)
-    // if (!parsedPhone.country) {
-    //  parsedPhone = parsePhoneNumberFromString(formattedPhone, 'US');
-    // }
-    // debugger;
+    let formattedPhone = phone_number;
+    try {
+      const parsed = parsePhoneNumberFromString(`+${phone_number}`);
+      if (parsed) {
+        formattedPhone = `+${parsed.countryCallingCode} ${parsed.formatNational()}`;
 
-    // if (!parsedPhone || !parsedPhone.isValid()) {
-    //   toast.dismiss();
-    //   toast.error("Invalid phone number. Please check the country code and format.");
-    //   return;
-    // }
+      }
+    } catch (error) {
+      console.warn("Invalid phone number format:", error);
+    }
+
+
     try {
       if (isEditMode) {
-        await updateAdmin({ data: { username, email, phone_number, id: adminId } }).unwrap();
+        await updateAdmin({ data: { username, email, phone_number, id: adminId ,raw_phone: formattedPhone } }).unwrap();
         navigate('/admin');
       } else {
-        await addAdmin({ data: { username, email, phone_number } }).unwrap();
+        await addAdmin({ data: { username, email, phone_number , raw_phone: formattedPhone } }).unwrap();
         dispatch(dmApi.util.invalidateTags(['getAdminListAPI']));
         setAdminData({ firstName: '', lastName: '', email: '', phone_number: '' });
         navigate('/admin');

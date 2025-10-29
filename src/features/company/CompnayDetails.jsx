@@ -37,7 +37,7 @@ const CompnayDetails = () => {
     const columns = [
         { label: "Full Name", accessor: "username" },
         { label: "E-mail", accessor: "email" },
-        { label: "Phone", accessor: "phone_number" },
+        { label: "Phone", accessor: "raw_phone" },
         { label: "Last Login", accessor: "last_login" },
         {
             label: "Status",
@@ -120,7 +120,7 @@ const CompnayDetails = () => {
                 </Col>
                 <Col lg={4}>
                     <h5 className='info-label'>POC Phone</h5>
-                    <p className='info-value'> {isLoading ? "----" : formatPhoneNumber(companyDetails?.data?.contact_person_phone)}</p>
+                    <p className='info-value'> {isLoading ? "----" :(companyDetails?.data?.raw_phone)}</p>
                     <h5 className='info-label'>Last Updated</h5>
                     <p className='info-value'> {isLoading ? "----" : formatDateToMDY(companyDetails?.data?.updatedAt)}</p>
                 </Col>

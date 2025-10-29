@@ -63,7 +63,7 @@ const AdminDetails = () => {
                 </Col>
                 <Col lg={4}>
                     <h5 className='info-label'>Phone</h5>
-                    <p className='info-value'>{isLoading ? "----" : formatPhoneNumber(data?.data?.phone_number)}</p>
+                    <p className='info-value'>{isLoading ? "----" :(data?.data?.raw_phone)}</p>
                     <h5 className='info-label'>Registration Date</h5>
                     <p className='info-value'>{isLoading ? "----" : formatDateToMDY(data?.data?.createdAt)}</p>
                 </Col>

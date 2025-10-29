@@ -18,7 +18,7 @@ const Driver = () => {
     const navigate = useNavigate()
     const columns = [
         { label: "Name", accessor: "name" },
-        { label: "Phone", accessor: "phone" },
+        { label: "Phone", accessor: "raw_phone" },
         { label: "E-mail", accessor: "email" },
         {
             label: "Status",
