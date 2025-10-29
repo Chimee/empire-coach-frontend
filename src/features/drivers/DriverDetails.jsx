@@ -51,7 +51,7 @@ const DriverDetails = () => {
                 <div className='addProfile d-flex justify-content-center align-items-center '>
                     <Image src={ driverDetails?.data?.profile_picture} alt="driver image" className='object-fit-cover' width={100} height={100} />
                 </div>
-                <h2 className='mb-0'>Craig Ekstrom Bothman</h2>
+                <h2 className='mb-0'>{isLoading ? "-----" : driverDetails?.data?.name}</h2>
             </div>
             <Form.Check
                className='d-flex flex-column-reverse justify-content-start p-0 custom_switch'
@@ -73,7 +73,7 @@ const DriverDetails = () => {
                 </Col>
                 <Col lg={4}>
                     <h5 className='info-label'>Phone</h5>
-                    <p className='info-value'>{isLoading ? "-----" : driverDetails?.data?.phone}</p>
+                    <p className='info-value'>{isLoading ? "-----" : driverDetails?.data?.raw_phone}</p>
                     <h5 className='info-label'>Registration Date</h5>
                     <p className='info-value'> {isLoading ? "-----" : formatDateToMDY(driverDetails?.data?.createdAt)}</p>
                 </Col>

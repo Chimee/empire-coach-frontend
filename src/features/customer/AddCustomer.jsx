@@ -78,6 +78,17 @@ const AddCustomer = () => {
     if (!emailRegex.test(email)) return toast.error('Invalid email format.');
     if (!companyId && !isEditMode) return toast.error('Company ID not found.');
 
+
+    let formattedPhone = phone_number;
+    try {
+      const parsed = parsePhoneNumberFromString(`+${phone_number}`);
+      if (parsed) {
+        formattedPhone = `+${parsed.countryCallingCode} ${parsed.formatNational()}`;
+      }
+    } catch (error) {
+      console.warn("Invalid phone number format:", error);
+    }
+
     // const formattedPhone = phone_number.startsWith("+")
     //   ? phone_number
     //   : `+${phone_number}`;
@@ -98,11 +109,11 @@ const AddCustomer = () => {
     try {
       if (isEditMode) {
         await updateCustomer({
-          data: { username, email, phone_number, customerId },
+          data: { username, email, phone_number, customerId ,raw_phone:formattedPhone},
         }).unwrap();
       } else {
         await addCustomer({
-          data: { username, email, phone_number, companyId },
+          data: { username, email, phone_number, companyId ,raw_phone:formattedPhone },
         }).unwrap();
         setUserData({
           firstName: '',

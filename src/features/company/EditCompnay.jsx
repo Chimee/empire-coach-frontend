@@ -8,6 +8,7 @@ import PhoneInput from 'react-phone-input-2';
 import { useUpdateCompanyMutation, useGetCompanyDetailQuery } from '../../app/companyApi/companyApi';
 import { useLocation } from 'react-router';
 import toast from 'react-hot-toast';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 const EditCompany = () => {
   const breadcrumbItems = [
@@ -39,6 +40,7 @@ const EditCompany = () => {
         address: data?.data?.address || '',
         contact_person_name: data?.data?.contact_person_name || '',
         contact_person_phone: data?.data?.contact_person_phone || '',
+        raw_phone: data?.data?.raw_phone || '',
         email: data?.data?.email || '',
       });
     }
@@ -54,6 +56,7 @@ const EditCompany = () => {
     setCompanyData((prev) => ({
       ...prev,
       [name]: updatedValue,
+
     }));
   };
 
@@ -71,13 +74,28 @@ const EditCompany = () => {
     if (!address.trim()) return toast.error('Billing address is required.');
     if (!contact_person_name.trim()) return toast.error('POC name is required.');
     if (!contact_person_phone.trim()) return toast.error('POC phone is required.');
+    let formattedPhone = contact_person_phone;
+    try {
+      const parsed = parsePhoneNumberFromString(`+${contact_person_phone}`);
+      if (parsed) {
+        formattedPhone = `+${parsed.countryCallingCode} ${parsed.formatNational()}`;
+      }
+    } catch (error) {
+      console.warn('Invalid phone number format:', error);
+    }
 
     try {
       const payload = {
         companyId,
-        ...companyData,
+        company_name,
+        address,
+        contact_person_name,
+        contact_person_phone,
+        raw_phone:formattedPhone,
+        
       };
       await updateCompany({ data: payload }).unwrap();
+      toast.success('Company updated successfully!');
     } catch (err) {
       toast.error(err?.data?.message || 'Failed to update company.');
     }

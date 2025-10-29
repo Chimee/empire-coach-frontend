@@ -49,6 +49,8 @@ const AddCompany = () => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+
+
     const requiredFields = [
       { value: company_name, label: "Company Name" },
       { value: address, label: "Billing Address" },
@@ -70,24 +72,27 @@ const AddCompany = () => {
       return;
     }
 
-    // const formattedPhone = contact_person_phone.startsWith("+")
-    //   ? contact_person_phone
-    //   : `+${contact_person_phone}`;
-
-    // let parsedPhone =
-    //   parsePhoneNumberFromString(formattedPhone) 
-    //   if(!parsedPhone.country){
-    //    parsedPhone =  parsePhoneNumberFromString(formattedPhone, 'US');
-    //   }
-      
-    // if (!parsedPhone || !parsedPhone.isValid()) {
-    //   toast.dismiss();
-    //   toast.error("Invalid phone number. Please check the country code and format.");
-    //   return;
-    // }
+    let formattedPhone = contact_person_phone;
+    try {
+      const parsed = parsePhoneNumberFromString(`+${contact_person_phone}`);
+      if (parsed) {
+        formattedPhone = `+${parsed.countryCallingCode} ${parsed.formatNational()}`;
+      }
+    } catch (error) {
+      console.warn("Invalid phone number format:", error);
+    }
 
     try {
-      await addCompany({ data: companyData }).unwrap();
+      await addCompany({
+        data: {
+          company_name,
+          address,
+          contact_person_name,
+          contact_person_phone,
+          raw_phone: formattedPhone,
+          email,
+        },
+      }).unwrap();
       setCompanyData({
         company_name: "",
         address: "",

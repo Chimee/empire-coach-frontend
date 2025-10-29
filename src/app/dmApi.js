@@ -6,8 +6,7 @@ export const dmApi = createApi({
         baseUrl: '/api/v1/',
     }),
     tagTypes: ["supplier",
-        "getAdminListAPI",
-        
+        "getAdminListAPI",       
         'getDriverListAPI',
         'getDeliveryAddressesAPI',
         'getJobDetailsApi',
@@ -23,8 +22,7 @@ export const dmApi = createApi({
         "CompanyList",
         "customerData",
         "companyDetails",
-        "getCompanyCustomersListAPI"
-    
+        "getCompanyCustomersListAPI"  
     ],
     endpoints: () => ({}),
 })

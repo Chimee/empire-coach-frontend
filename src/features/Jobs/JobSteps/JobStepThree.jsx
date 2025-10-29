@@ -31,32 +31,32 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
     }));
   };
 
-  // const validatePhoneNumber = (number, label) => {
-  //   if (!number) {
-  //     toast.error(`${label} is required.`);
-  //     return false;
-  //   }
+  const handlePhoneChange = (prefix, value) => {
+    try {
 
-  //   try {
-  //     const formatted = number.startsWith("+") ? number : `+${number}`;
-  //     let parsed = parsePhoneNumberFromString(formatted);
-
-  //     if (!parsed?.country) {
-  //       parsed = parsePhoneNumberFromString(formatted, "US");
-  //     }
-
-  //     if (!parsed || !parsed.isValid()) {
-  //       toast.error(`Invalid ${label}. Please check the number and country code.`);
-  //       return false;
-  //     }
-
-  //     return true;
-  //   } catch (err) {
-  //     toast.error(`Invalid ${label} format.`);
-  //     return false;
-  //   }
-  // };
-
+      const formattedInput = value.startsWith("+") ? value : `+${value}`;
+      const parsed = parsePhoneNumberFromString(formattedInput);
+      let formattedPhone = value;
+      if (parsed && parsed.isValid()) {
+        formattedPhone = `+${parsed.countryCallingCode} ${parsed.formatNational()}`;
+      } else {
+        console.warn(`Invalid ${prefix} phone number:`, value);
+      }
+      setFormData((prev) => ({
+        ...prev,
+        [`${prefix}_POC_phone`]: value,
+        [`raw_${prefix}_POC_phone`]: formattedInput,
+      }));
+    } catch (error) {
+      console.warn(`Error parsing ${prefix} phone number:`, error);
+      const rawPhone = value.replace(/\D/g, "");
+      setFormData((prev) => ({
+        ...prev,
+        [`${prefix}_POC_phone`]: value,
+        [`raw_${prefix}_POC_phone`]: rawPhone,
+      }));
+    }
+  };
 
   const clearAddressFields = (prefix) => {
     const keys = ["business_name", "latitude", "longitude", "location"];
@@ -190,12 +190,7 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
       <PhoneInput
         country="us"
         value={formData[`${prefix}_POC_phone`] || ""}
-        onChange={(value) =>
-          setFormData((prev) => ({
-            ...prev,
-            [`${prefix}_POC_phone`]: value,
-          }))
-        }
+        onChange={(value) => handlePhoneChange(prefix, value)}
         inputClass="form-control w-100"
         containerClass="w-100 mb-3"
       />

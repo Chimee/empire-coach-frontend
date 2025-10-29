@@ -71,6 +71,7 @@ const AddDriver = () => {
   };
 
   const handleSubmit = async () => {
+    debugger;
     const { name, email, phone, note } = userData;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -78,21 +79,18 @@ const AddDriver = () => {
     if (!email.trim()) return toast.error('Email is required.');
     if (!emailRegex.test(email)) return toast.error('Invalid email format.');
     if (!phone.trim()) return toast.error('Phone number is required.');
-    // const formattedPhone = phone.startsWith("+")
-    //   ? phone
-    //   : `+${phone}`;
 
-    // let parsedPhone =
-    //   parsePhoneNumberFromString(formattedPhone)
-    // if (!parsedPhone.country) {
-    //   parsedPhone = parsePhoneNumberFromString(formattedPhone, 'US');
-    // }
+    let formattedPhone = phone;
+    try {
+      const parsed = parsePhoneNumberFromString(`+${phone}`);
+      if (parsed) {
+        formattedPhone = `+${parsed.countryCallingCode} ${parsed.formatNational()}`;
+     
+      }
+    } catch (error) {
+      console.warn("Invalid phone number format:", error);
+    }
 
-    // if (!parsedPhone || !parsedPhone.isValid()) {
-    //   toast.dismiss();
-    //   toast.error("Invalid phone number. Please check the country code and format.");
-    //   return;
-    // }
 
 
     const formData = new FormData();
@@ -100,6 +98,7 @@ const AddDriver = () => {
     formData.append('email', email);
     formData.append('phone', phone);
     formData.append('note', note);
+    formData.append('raw_phone', formattedPhone);
 
     if (profileImage) {
       formData.append('profile_picture', profileImage);

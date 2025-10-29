@@ -21,7 +21,7 @@ const Admin = () => {
 
     const columns = [
         { label: "Name", accessor: "username" },
-        { label: "Phone", accessor: "phone_number" },
+        { label: "Phone", accessor: "raw_phone" },
         { label: "E-mail", accessor: "email" },
         {
             label: "Status",
