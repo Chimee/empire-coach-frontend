@@ -63,7 +63,7 @@ const RideDeatails = () => {
                             <span className='d-block'>{jobDetails?.data?.jobData.pickup_location}</span>
                             <span className='d-block'>{formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}</span>
                             <span className='d-block'>Contact : {jobDetails?.data?.jobData.pickup_POC_name}</span>
-                            <span className='d-block'>Phone : {jobDetails?.data?.jobData.pickup_POC_phone}</span>
+                            <span className='d-block'>Phone : {jobDetails?.data?.jobData.raw_pickup_POC_phone}</span>
                             <span className='d-block'>Notes :{jobDetails?.data?.jobData.pickup_additional_note}</span>
                         </div>
                     </li>
@@ -76,7 +76,7 @@ const RideDeatails = () => {
                             {jobDetails?.data?.jobData.dropoff_date && (
                                 <span className='d-block'>{formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}</span>
                             )}
-                            <span className='d-block'>Phone :{jobDetails?.data?.jobData.dropoff_POC_phone}</span>
+                            <span className='d-block'>Phone :{jobDetails?.data?.jobData.raw_dropoff_POC_phone}</span>
                             <span className='d-block'>Notes : {jobDetails?.data?.jobData.dropoff_additional_note}</span>
                         </div>
                     </li>
@@ -89,9 +89,11 @@ const RideDeatails = () => {
                 </div>
                 <div className='d-flex gap-2 flex-column mt-3'>
                     <h2 className='mob-heading mb-0'>Service Option</h2>
-                    {jobDetails?.data?.jobData?.deliver_washed && (
-                        <p className='mob-body d-block m-0'>Deliver Wash</p>
-                    )}
+                    <ul className='p-0 job-list-bullets'>
+                        {jobDetails?.data?.jobData.deliver_washed === true && <li>Deliver washed</li>}
+                        {jobDetails?.data?.jobData.deliver_full === true && <li>Deliver full</li>}
+                        {jobDetails?.data?.jobData?.send_driver_contact_info === true && <li>Send driver contact info</li>}
+                    </ul>
                 </div>
             </div>
             {!jobDetails?.data?.jobData?.isLinkExpired && (

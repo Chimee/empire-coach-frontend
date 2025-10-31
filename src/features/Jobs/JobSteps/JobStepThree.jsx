@@ -37,7 +37,7 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
       const formattedInput = value.startsWith("+") ? value : `+${value}`;
       const parsed = parsePhoneNumberFromString(formattedInput);
       let formattedPhone = value;
-      if (parsed && parsed.isValid()) {
+      if (parsed) {
         formattedPhone = `+${parsed.countryCallingCode} ${parsed.formatNational()}`;
       } else {
         console.warn(`Invalid ${prefix} phone number:`, value);
@@ -45,7 +45,7 @@ const JobStepThree = ({ handleNext, handlePrevious, formData, setFormData }) => 
       setFormData((prev) => ({
         ...prev,
         [`${prefix}_POC_phone`]: value,
-        [`raw_${prefix}_POC_phone`]: formattedInput,
+        [`raw_${prefix}_POC_phone`]: formattedPhone,
       }));
     } catch (error) {
       console.warn(`Error parsing ${prefix} phone number:`, error);
