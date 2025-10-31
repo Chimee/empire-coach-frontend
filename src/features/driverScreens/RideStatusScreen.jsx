@@ -28,7 +28,7 @@ const RideStatusScreen = () => {
     const backendCurrentLocation = rideData?.current_latitude && rideData?.current_longitude
         ? { lat: rideData.current_latitude, lng: rideData.current_longitude }
         : null;
- 
+
 
     const pickup = jobDetails?.data?.jobData;
     const pickupCoords = pickup ? { lat: pickup.pickup_latitude, lng: pickup.pickup_longitude } : null;
@@ -66,12 +66,12 @@ const RideStatusScreen = () => {
                     toast.success(res.data.message);
                     setUpdateLocation(true);
                 } catch (error) {
-              
+
                     toast.error(error?.data?.message || "Update ride details failed");
                 }
             },
             (error) => {
-            
+
                 switch (error.code) {
                     case error.PERMISSION_DENIED:
                         toast.error("Permission denied for location access");
@@ -97,7 +97,7 @@ const RideStatusScreen = () => {
                     pickupCoords={pickupCoords}
                     dropoffCoords={dropoffCoords}
                     currentLocation={currentLocation || backendCurrentLocation || null}
-                       height="100%"
+                    height="100%"
                 />
             </div>
 
@@ -126,8 +126,15 @@ const RideStatusScreen = () => {
                                 </li>
                             </ul>
                             <ul className='pl-1 mb-0 text-black'>
-                                <li className='text-center'><strong>Apr <br /> 09/2025</strong></li>
-                                <li className='text-center'>3:30PM</li>
+                                <li className='text-center'>
+                                    <strong>
+                                        {new Date().toLocaleString('en-US', { month: 'short' })} <br />
+                                        {new Date().getDate()}/{new Date().getFullYear()}
+                                    </strong>
+                                </li>
+                                <li className='text-center'>
+                                    {new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                                </li>
                             </ul>
                         </div>
                     </div>
