@@ -14,10 +14,15 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
     latitude: null,
     longitude: null
   });
+  const [pickupDate, setPickupDate] = useState("");
+  const [pickupTime, setPickupTime] = useState("");
+  const [dropoffDate, setDropoffDate] = useState("");
+  const [dropoffTime, setDropoffTime] = useState("");
   const [resetKey, setResetKey] = useState(0);
   const [updateDeliveryAddress] = useUpdateDeliveryAddressMutation();
 
   console.log("Address Data in Edit Modal:", addressData)
+  console.log("pickupDate", pickupDate)
 
   useEffect(() => {
     if (addressData) {
@@ -27,6 +32,11 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
         latitude: type === "pickup" ? addressData.pickup_latitude : addressData.dropoff_latitude,
         longitude: type === "pickup" ? addressData.pickup_longitude : addressData.dropoff_longitude,
       });
+
+      setPickupDate(addressData.pickup_date || "");
+      setPickupTime(addressData.pickup_time || "");
+      setDropoffDate(addressData.dropoff_date || "");
+      setDropoffTime(addressData.dropoff_time || "");
     }
   }, [addressData, type, show]);
 
@@ -59,19 +69,28 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
 
     try {
       const otherType = type === "pickup" ? "dropoff" : "pickup";
+      const payload = {
+        addressId,
+        business_name: business_name || undefined,
+        address: address || undefined,
+        [`${type}_latitude`]: latitude || undefined,
+        [`${type}_longitude`]: longitude || undefined,
+        type,
+        [`${otherType}_latitude`]: null,
+        [`${otherType}_longitude`]: null,
+        jobId
+      };
+
+      if (type === "pickup") {
+        payload.pickup_date = pickupDate || undefined;
+        payload.pickup_time = pickupTime || undefined;
+      } else if (type === "dropoff") {
+        payload.dropoff_date = dropoffDate || undefined;
+        payload.dropoff_time = dropoffTime || undefined;
+      }
 
       await updateDeliveryAddress({
-        data: {
-          addressId,
-          business_name: business_name || undefined,
-          address: address || undefined,
-          [`${type}_latitude`]: latitude || undefined,
-          [`${type}_longitude`]: longitude || undefined,
-          type,
-          [`${otherType}_latitude`]: null,
-          [`${otherType}_longitude`]: null,
-          jobId
-        },
+        data: payload,
       }).unwrap();
 
       setResetKey((prev) => prev + 1);
@@ -112,6 +131,44 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
             }
           />
         </Autocomplete>
+
+        {type === "pickup" && (
+          <>
+            <label className="form-label">Pickup Date</label>
+            <input
+              type="date"
+              className="form-control mb-3"
+               value={pickupDate ? pickupDate.split("T")[0] : ""} 
+              onChange={(e) => setPickupDate(e.target.value)}
+            />
+            <label className="form-label">Pickup Time</label>
+            <input
+              type="time"
+              className="form-control mb-3"
+              value={pickupTime}
+              onChange={(e) => setPickupTime(e.target.value)}
+            />
+          </>
+        )}
+
+        {type === "dropoff" && (
+          <>
+            <label className="form-label">Dropoff Date</label>
+            <input
+              type="date"
+              className="form-control mb-3"
+              value={dropoffDate}
+              onChange={(e) => setDropoffDate(e.target.value)}
+            />
+            <label className="form-label">Dropoff Time</label>
+            <input
+              type="time"
+              className="form-control mb-3"
+              value={dropoffTime}
+              onChange={(e) => setDropoffTime(e.target.value)}
+            />
+          </>
+        )}
 
         <Button
           label="Save"

@@ -27,7 +27,7 @@ import { LoadScript } from "@react-google-maps/api";
 const AdminJobDetails = () => {
     const { id } = useParams();
     const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });
-  
+
     console.log(jobDetails);
     const { state } = useLocation();
     const [sentLink, setSentLink] = useState(false)
@@ -72,7 +72,7 @@ const AdminJobDetails = () => {
     const { data: fetchRideDetails } = useGetRideDetailsQuery({ id }, { skip: !id });
 
     const vehicle_photo = fetchRideDetails?.data?.delivery_photos
-
+    console.log(fetchRideDetails, "vehicle_photo")
     const breadcrumbItems = [
         { name: 'Jobs', path: '/admin-jobs' },
         { name: `${jobDetails?.data?.jobData?.id}` },
@@ -230,47 +230,46 @@ const AdminJobDetails = () => {
                             </Row>
                             <Row className='pt-3'>
                                 <Col lg={6}>
-                                    <h6 className='small-heading'>Pickup Details</h6>
+                                    <h6 className='small-heading d-flex gap-2'>Pickup Details  <FaPencilAlt type='button'
+                                        className="ms-2 cursor-pointer"
+                                        onClick={() => {
+                                            setSelectedAddressId(jobDetails?.data?.jobData?.id);
+                                            setSelectedAddressData({
+                                                address: jobDetails?.data?.jobData?.pickup_location,
+                                                label: jobDetails?.data?.jobData?.pickup_business_name || jobDetails?.data?.jobData?.pickup_location,
+                                                pickup_latitude: jobDetails?.data?.jobData?.pickup_latitude,
+                                                pickup_longitude: jobDetails?.data?.jobData?.pickup_longitude,
+                                                dropoff_latitude: jobDetails?.data?.jobData?.dropoff_latitude,
+                                                dropoff_longitude: jobDetails?.data?.jobData?.dropoff_longitude,
+                                                pickup_date: jobDetails?.data?.jobData?.pickup_date,
+                                                pickup_time: jobDetails?.data?.jobData?.pickup_time,
+                                                dropoff_date: jobDetails?.data?.jobData?.dropoff_date,
+                                                dropoff_time: jobDetails?.data?.jobData?.dropoff_time
+                                            });
+                                            setSelectedAddressType("pickup");
+                                            setEditAddressModal(true);
+                                        }}
+                                    /></h6>
                                     <ul className='p-0 job-list-bullets'>
                                         <li>
-                                         {jobDetails?.data?.jobData?.pickup_business_name}
+                                            {jobDetails?.data?.jobData?.pickup_business_name}
                                         </li>
                                         <li>
                                             {jobDetails?.data?.jobData?.pickup_location}
-                                            <FaPencilAlt
-                                                className="ms-2 cursor-pointer"
-                                                onClick={() => {
-                                                    setSelectedAddressId(jobDetails?.data?.jobData?.id);
-                                                    setSelectedAddressData({
-                                                        address: jobDetails?.data?.jobData?.pickup_location,
-                                                        label: jobDetails?.data?.jobData?.pickup_business_name || jobDetails?.data?.jobData?.pickup_location,
-                                                        pickup_latitude: jobDetails?.data?.jobData?.pickup_latitude,
-                                                        pickup_longitude: jobDetails?.data?.jobData?.pickup_longitude,
-                                                        dropoff_latitude: jobDetails?.data?.jobData?.dropoff_latitude,
-                                                        dropoff_longitude: jobDetails?.data?.jobData?.dropoff_longitude
-                                                    });
-                                                    setSelectedAddressType("pickup");
-                                                    setEditAddressModal(true);
-                                                }}
-                                            />
+
                                         </li>
                                         <li>
                                             {formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}
                                         </li>
                                         <li>Contact: {jobDetails?.data?.jobData?.pickup_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_pickup_POC_phone}</li>
-                                        <li>Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>
+                                        {jobDetails?.data?.jobData?.pickup_additional_note && <li>Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>}
+                                        <li>Cheking Mileage: {fetchRideDetails?.data?.ending_mileage}</li>
                                     </ul>
                                 </Col>
                                 <Col lg={6}>
-                                    <h6 className='small-heading'>Drop-off Details</h6>
-                                    <ul className='p-0 job-list-bullets'>
-                                        <li>
-                                         {jobDetails?.data?.jobData?.dropoff_business_name}
-                                        </li>
-                                        <li>
-                                            {jobDetails?.data?.jobData?.dropoff_location}
-                                            <FaPencilAlt
+                                    <h6 className='small-heading d-flex gap-2'>Drop-off Details <FaPencilAlt
+                                    type="button"
                                                 className="ms-2 cursor-pointer"
                                                 onClick={() => {
                                                     setSelectedAddressId(jobDetails?.data?.jobData?.id);
@@ -280,19 +279,31 @@ const AdminJobDetails = () => {
                                                         pickup_latitude: jobDetails?.data?.jobData?.pickup_latitude,
                                                         pickup_longitude: jobDetails?.data?.jobData?.pickup_longitude,
                                                         dropoff_latitude: jobDetails?.data?.jobData?.dropoff_latitude,
-                                                        dropoff_longitude: jobDetails?.data?.jobData?.dropoff_longitude
+                                                        dropoff_longitude: jobDetails?.data?.jobData?.dropoff_longitude,
+                                                        pickup_date: jobDetails?.data?.jobData?.pickup_date,
+                                                        pickup_time: jobDetails?.data?.jobData?.pickup_time,
+                                                        dropoff_date: jobDetails?.data?.jobData?.dropoff_date,
+                                                        dropoff_time: jobDetails?.data?.jobData?.dropoff_time
                                                     });
                                                     setSelectedAddressType("dropoff");
                                                     setEditAddressModal(true);
                                                 }}
-                                            />
+                                    /></h6>
+                                    <ul className='p-0 job-list-bullets'>
+                                        <li>
+                                            {jobDetails?.data?.jobData?.dropoff_business_name}
+                                        </li>
+                                        <li>
+                                            {jobDetails?.data?.jobData?.dropoff_location}
+                                            
                                         </li>
                                         <li>
                                             {formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}
                                         </li>
                                         <li>Contact: {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_dropoff_POC_phone}</li>
-                                        <li>Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>
+                                        {jobDetails?.data?.jobData?.dropoff_additional_note && <li>Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>}
+                                        <li>Ending Mileage: {fetchRideDetails?.data?.checkin_mileage}</li>
                                     </ul>
                                 </Col>
 
@@ -321,6 +332,7 @@ const AdminJobDetails = () => {
                                                         {locationNames[i] || "Loading..."}
                                                     </span>
                                                     <span>{formatDateToMDY(log?.createdAt)}</span>
+
                                                 </div>
                                             </li>
                                         ))}
@@ -510,7 +522,7 @@ const AdminJobDetails = () => {
                 handleClose={() => setEditAddressModal(false)}
                 addressId={selectedAddressId}
                 addressData={selectedAddressData}
-                message="you want to edit this address?"
+                message="Are you sure you want to update the pickup and drop-off information"
                 type={selectedAddressType}
                 jobId={jobData?.id} />
 
