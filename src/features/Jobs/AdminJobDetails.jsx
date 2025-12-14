@@ -24,6 +24,7 @@ import EditAddressModal from "../../components/shared/modalContent/EditAddressMo
 import { FaPencilAlt } from 'react-icons/fa';
 import { LoadScript } from "@react-google-maps/api";
 
+
 const AdminJobDetails = () => {
     const { id } = useParams();
     const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });

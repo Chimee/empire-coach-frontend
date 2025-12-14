@@ -4,6 +4,7 @@ import Button from "../buttons/button";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { useUpdateDeliveryAddressMutation } from "../../../app/customerApi/customerApi";
 import toast from "react-hot-toast";
+import {useUpdateJobDetailsMutation} from '../../../app/adminApi/adminApi';
 
 const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, message, type,jobId =null }) => {
     
@@ -38,7 +39,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
       setDropoffDate(addressData.dropoff_date || "");
       setDropoffTime(addressData.dropoff_time || "");
     }
-  }, [addressData, type, show]);
+  }, [addressData, type, show]); 
 
   const handlePlaceChanged = () => {
     if (!autocompleteRef) return;
@@ -59,9 +60,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
   };
 
   const handleSubmit = async () => {
- 
-    const { business_name, address, latitude, longitude } = selectedPlace;
-
+     const { business_name, address, latitude, longitude } = selectedPlace;
     if (!business_name && !address) {
       toast.error("Please provide at least a business name or an address.");
       return;
