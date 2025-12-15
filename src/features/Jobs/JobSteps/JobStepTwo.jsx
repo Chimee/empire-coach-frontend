@@ -60,11 +60,7 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
       toast.error("Pickup time is required");
       return false;
     }
-    // if (!formData.dropoff_date) {
-    //   toast.dismiss();
-    //   toast.error("Delivery date is required");
-    //   return false;
-    // }
+  
 
     const now = new Date();
     now.setHours(0, 0, 0, 0)
@@ -91,41 +87,13 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
           return false;
       }
     }
-
-  
-
-
-
-
   if (pickupDate.setHours(0, 0, 0, 0) < now.setHours(0, 0, 0, 0)) {
     toast.dismiss();
     toast.error("Pickup date cannot be in the past");
     return false;
   }
-
-
-
   const pickupDateOnly = new Date(formData.pickup_date);
   pickupDateOnly.setHours(0, 0, 0, 0);
-
-
-
-
-  // // Dropoff date must be after pickup date
-  // const dropoffDateOnly = new Date(formData.dropoff_date);
-  // dropoffDateOnly.setHours(0, 0, 0, 0);
-  // if (dropoffDateOnly <= pickupDateOnly) {
-  //   toast.dismiss();
-  //   toast.error("Delivery date must be after pickup date");
-  //   return false;
-  // }
-
-  // if (!formData.dropoff_time) {
-  //   toast.dismiss();
-  //   toast.error("Delivery time is required");
-  //   return false;
-  // }
-
   return true;
 }
 

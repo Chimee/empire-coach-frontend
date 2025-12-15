@@ -76,7 +76,6 @@ const AdminJobsData = ({ tabName }) => {
             accessor: "actions",
             cell: ({ row }) => {
                 const { className, title } = getClassAndTitleByStatus(row?.request_status);
-
                 return (
                     <span className={`fn-badge ${className}`}>
                         {title}
@@ -120,7 +119,6 @@ const AdminJobsData = ({ tabName }) => {
         },
     ];
     return (
-
         <Datatable
             tableData={jobsList?.data}
             columns={columns}

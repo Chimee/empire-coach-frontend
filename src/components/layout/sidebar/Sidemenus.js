@@ -6,7 +6,7 @@ const token = localStorage.getItem('authToken')
 const tokenDecode = jwtDecode(token)
 console.log(tokenDecode, "tokenDecode");
 
-export const MenuItems = tokenDecode?.role.toLowerCase() === "customer" ? [
+export const MenuItems = tokenDecode?.role?.toLowerCase() === "customer" ? [
   {
     title: "Dashboard",
     path: "/dashboard",

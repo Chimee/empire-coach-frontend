@@ -22,12 +22,10 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
   });
 
   const [reason, setReason] = useState('');
-
   const [cancelRescheduleJob, { isLoading: isCancelling }] = useCancelRescheduleJobMutation();
   const [rescheduleDate, { isLoading: isRescheduling }] = useRescheduleJobDateMutation();
 
   const today = new Date().toISOString().split('T')[0];
-
   const isFutureButtonDisabled = useMemo(() => {
     return (
       formData.pickup_date ||
@@ -118,7 +116,6 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
     }
 
     if (!validate()) return;
-
     const { pickup_date, pickup_time, dropoff_date, dropoff_time, time_relaxation } = formData
     try {
       const data = await rescheduleDate({

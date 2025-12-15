@@ -58,7 +58,7 @@ const adminApi = dmApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
             },
-             providesTags: ['getAdminListAPI']
+            providesTags: ['getAdminListAPI']
         }),
         getAdminJobDetails: build.query({
             query: ({ id }) => ({
@@ -67,7 +67,7 @@ const adminApi = dmApi.injectEndpoints({
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
-              
+
                 await handleQueryError(queryFulfilled);
             },
             providesTags: ['getAdminJobDetailsApi']
@@ -96,7 +96,7 @@ const adminApi = dmApi.injectEndpoints({
             invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
 
-      declineJobCancelReqAdmin: build.mutation({
+        declineJobCancelReqAdmin: build.mutation({
             query: ({ jobId }) => ({
                 url: `admin/decline-job-cancellation`,
                 method: "PUT",
@@ -133,11 +133,11 @@ const adminApi = dmApi.injectEndpoints({
             },
             invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
-          sendLinkAdmin: build.mutation({
-            query: ({ jobId  , driverId}) => ({
+        sendLinkAdmin: build.mutation({
+            query: ({ jobId, driverId }) => ({
                 url: `admin/send-Link`,
                 method: "POST",
-                body: {jobId,driverId},
+                body: { jobId, driverId },
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
@@ -146,13 +146,43 @@ const adminApi = dmApi.injectEndpoints({
             invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
         getRideDetails: build.query({
-            query: ({id}) => ({
+            query: ({ id }) => ({
                 url: `admin/fetch-ride-details?jobId=${id}`,
                 method: "GET",
                 headers: getAuthorizationHeader(),
             }),
             async onQueryStarted(_, { queryFulfilled }) {
                 await handleQueryError(queryFulfilled);
+            },
+            invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
+        }),
+        
+        updateJobDetails: build.mutation({
+            query: (data) => ({
+              url: `admin/update-job-details`,
+              method: "PUT",
+              body: data,
+              headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+              await handleQueryError(queryFulfilled);
+            },
+            invalidatesTags: [
+              'getAdminJobDetailsApi',
+              'getAllJobsByStatusAdminApi'
+            ],
+          }),
+        
+
+        CompleteJobByAdmin: build.mutation({
+            query: ({ jobId }) => ({
+                url: `admin/job-complete`,
+                method: "PUT",
+                body: { jobId },
+                headers: getAuthorizationHeader(),
+            }),
+            async onQueryStarted(_, { queryFulfilled }) {
+                await handleQueryErrorAndSuccess(queryFulfilled, "completed", "Job");
             },
             invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
@@ -171,4 +201,6 @@ export const {
     useDeclineJobCancelReqAdminMutation,
     useSendLinkAdminMutation,
     useGetRideDetailsQuery,
+    useUpdateJobDetailsMutation,
+    useCompleteJobByAdminMutation
 } = adminApi;
