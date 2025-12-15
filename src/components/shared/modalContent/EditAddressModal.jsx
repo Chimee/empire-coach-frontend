@@ -4,10 +4,10 @@ import Button from "../buttons/button";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { useUpdateDeliveryAddressMutation } from "../../../app/customerApi/customerApi";
 import toast from "react-hot-toast";
-import {useUpdateJobDetailsMutation} from '../../../app/adminApi/adminApi';
+import { useUpdateJobDetailsMutation } from '../../../app/adminApi/adminApi';
 
-const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, message, type,jobId =null }) => {
-    
+const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, message, type, jobId = null, userRole }) => {
+
   const [autocompleteRef, setAutocompleteRef] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState({
     business_name: "",
@@ -20,10 +20,9 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
   const [dropoffDate, setDropoffDate] = useState("");
   const [dropoffTime, setDropoffTime] = useState("");
   const [resetKey, setResetKey] = useState(0);
-  const [updateDeliveryAddress] = useUpdateDeliveryAddressMutation();
+  const [updateDeliveryAddress, { isLoading: isUpdatingAddress }] = useUpdateDeliveryAddressMutation();
+  const [updateJobDetails, { isLoading: isUpdating }] = useUpdateJobDetailsMutation();
 
-  console.log("Address Data in Edit Modal:", addressData)
-  console.log("pickupDate", pickupDate)
 
   useEffect(() => {
     if (addressData) {
@@ -39,7 +38,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
       setDropoffDate(addressData.dropoff_date || "");
       setDropoffTime(addressData.dropoff_time || "");
     }
-  }, [addressData, type, show]); 
+  }, [addressData, type, show]);
 
   const handlePlaceChanged = () => {
     if (!autocompleteRef) return;
@@ -52,7 +51,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
 
     setSelectedPlace((prev) => ({
       ...prev,
-      business_name:place.name,
+      business_name: place.name,
       address: place.formatted_address,
       latitude: place.geometry.location.lat(),
       longitude: place.geometry.location.lng(),
@@ -60,7 +59,8 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
   };
 
   const handleSubmit = async () => {
-     const { business_name, address, latitude, longitude } = selectedPlace;
+    const { business_name, address, latitude, longitude } = selectedPlace;
+
     if (!business_name && !address) {
       toast.error("Please provide at least a business name or an address.");
       return;
@@ -68,36 +68,67 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
 
     try {
       const otherType = type === "pickup" ? "dropoff" : "pickup";
-      const payload = {
-        addressId,
-        business_name: business_name || undefined,
-        address: address || undefined,
-        [`${type}_latitude`]: latitude || undefined,
-        [`${type}_longitude`]: longitude || undefined,
-        type,
-        [`${otherType}_latitude`]: null,
-        [`${otherType}_longitude`]: null,
-        jobId
-      };
+      if (userRole === "customer") {
 
-      if (type === "pickup") {
-        payload.pickup_date = pickupDate || undefined;
-        payload.pickup_time = pickupTime || undefined;
-      } else if (type === "dropoff") {
-        payload.dropoff_date = dropoffDate || undefined;
-        payload.dropoff_time = dropoffTime || undefined;
+        const payload = {
+          addressId,
+          business_name: business_name || undefined,
+          address: address || undefined,
+          [`${type}_latitude`]: latitude || undefined,
+          [`${type}_longitude`]: longitude || undefined,
+          type,
+          [`${otherType}_latitude`]: null,
+          [`${otherType}_longitude`]: null,
+          jobId
+        };
+
+        if (type === "pickup") {
+          payload.pickup_date = pickupDate || undefined;
+          payload.pickup_time = pickupTime || undefined;
+        } else {
+          payload.dropoff_date = dropoffDate || undefined;
+          payload.dropoff_time = dropoffTime || undefined;
+        }
+
+        await updateDeliveryAddress({ data: payload }).unwrap();
       }
 
-      await updateDeliveryAddress({
-        data: payload,
-      }).unwrap();
+      else if (["admin", "superadmin"].includes(userRole)) {
+        const payload = {
+          jobId,
+          type,
+          address,
+          latitude,
+          longitude,
+        };
 
+        if (type === "pickup") {
+          payload.pickup_date = pickupDate || undefined;
+          payload.pickup_time = pickupTime || undefined;
+          payload.business_name = business_name || undefined;
+          payload[`${otherType}_date`] = null;
+          payload[`${otherType}_time`] = null;
+        } else {
+          payload.dropoff_date = dropoffDate || undefined;
+          payload.dropoff_time = dropoffTime || undefined;
+          payload.business_name = business_name || undefined;
+          payload[`${otherType}_date`] = null;
+          payload[`${otherType}_time`] = null;
+        }
+
+        await updateJobDetails(payload).unwrap();
+      }
+
+      toast.success("Address updated successfully");
       setResetKey((prev) => prev + 1);
       setShow(false);
+
     } catch (err) {
-      console.log(err)
+      console.error(err);
+      toast.error("Failed to update address");
     }
   };
+
 
   return (
     <CommonModal setShow={setShow} show={show} handleClose={handleClose} className="confirmationModal sm-width">
@@ -118,7 +149,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
           }
         />
         <label className="form-label">Address</label>
-        
+
         <Autocomplete key={resetKey} onLoad={setAutocompleteRef} onPlaceChanged={handlePlaceChanged}>
           <input
             type="text"
@@ -137,7 +168,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
             <input
               type="date"
               className="form-control mb-3"
-               value={pickupDate ? pickupDate.split("T")[0] : ""} 
+              value={pickupDate ? pickupDate.split("T")[0] : ""}
               onChange={(e) => setPickupDate(e.target.value)}
             />
             <label className="form-label">Pickup Time</label>
@@ -156,7 +187,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
             <input
               type="date"
               className="form-control mb-3"
-              value={dropoffDate}
+              value={dropoffDate ? dropoffDate.split("T")[0] : ""}
               onChange={(e) => setDropoffDate(e.target.value)}
             />
             <label className="form-label">Dropoff Time</label>
@@ -173,6 +204,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
           label="Save"
           className="rounded-2 w-100"
           size="xs"
+          loading={isUpdating || isUpdatingAddress}
           onClick={handleSubmit}
         />
       </div>

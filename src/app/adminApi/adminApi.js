@@ -156,6 +156,7 @@ const adminApi = dmApi.injectEndpoints({
             },
             invalidatesTags: ['getAdminJobDetailsApi', 'getAllJobsByStatusAdminApi']
         }),
+        
         updateJobDetails: build.mutation({
             query: (data) => ({
               url: `admin/update-job-details`,
