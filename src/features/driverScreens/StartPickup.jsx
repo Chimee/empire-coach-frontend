@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './style.css';
 import { BackChevronSvg } from '../../svgFiles/BackChevronSvg';
-import { useParams,useNavigate } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import Button from '../../components/shared/buttons/button';
 import InputWithLabel from '../../components/shared/fields/InputWithLabel';
 import { CameraSvg } from '../../svgFiles/CameraSvg';
@@ -9,76 +9,86 @@ import { useUpdateRideDetailsMutation } from "../../app/driverApi/driverApi";
 import toast from "react-hot-toast";
 
 const StartPickup = () => {
-    const {id,driverId} = useParams();
+  const { id, driverId } = useParams();
+  const navigate = useNavigate();
+
   const [mileage, setMileage] = useState("");
   const [damageNotes, setDamageNotes] = useState("");
   const [photos, setPhotos] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
-  const navigate= useNavigate();
 
   const [updateRideDetails, { isLoading }] = useUpdateRideDetailsMutation();
 
+  // Handle file selection
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    setPhotos((prev) => [...prev, ...files]);
-    const urls = files.map((file) => URL.createObjectURL(file));
-    setPreviewUrls((prev) => [...prev, ...urls]);
+
+    // Optional: limit number of photos
+    if (files.length + photos.length > 5) {
+      toast.error("Maximum 5 photos allowed");
+      return;
+    }
+
+    setPhotos(prev => [...prev, ...files]);
+
+    const urls = files.map(file => URL.createObjectURL(file));
+    setPreviewUrls(prev => [...prev, ...urls]);
   };
 
+  // Remove selected photo
   const removePhoto = (index) => {
-    setPhotos((prev) => prev.filter((_, i) => i !== index));
-    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+    setPhotos(prev => prev.filter((_, i) => i !== index));
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
   };
 
+  // Handle Begin Trip click
   const handleBeginTrip = async () => {
-     if (!mileage || !damageNotes || photos.length === 0) {
-        toast.error("Please fill all the fields and upload at least one photo");
-        return;
+    if (!mileage || !damageNotes || photos.length === 0) {
+      toast.error("Please fill all fields and upload at least one photo");
+      return;
     }
 
     try {
-    const formData = new FormData();
+      const formData = new FormData();
+      formData.append("jobId", id);
+      formData.append("driverId", driverId);
+      formData.append("ride_status", "checked_in");
 
-    formData.append("jobId", id);
-    formData.append("driverId", driverId);
-    formData.append("checkin_mileage", mileage);
-    formData.append("damage_notes", damageNotes);
-    formData.append("current_latitude", null);
-    formData.append("current_longitude", null);
-    formData.append("ending_mileage", null);
-    formData.append("delivery_notes", null);
-    formData.append("ride_status", "checked_in");
-     
-    photos.forEach((file) => {
-      formData.append("vehicle_photo", file);
-    });
-     const res = await updateRideDetails(formData);
+      if (mileage) formData.append("checkin_mileage", mileage);
+      if (damageNotes) formData.append("damage_notes", damageNotes);
 
-      if(res.data){
-       toast.success(res.data?.message || " ride details have been updated ")
-       navigate(`/trip-starts/jobId/${id}/driver/${driverId}`)
-      }
+      photos.forEach(file => formData.append("vehicle_photo", file));
+
+      // Call RTK Query mutation
+      const res = await updateRideDetails(formData).unwrap();
+
+      // Success toast + mobile-safe navigation
+      toast.success(res?.message || "Ride details updated", {
+        duration: 1000,
+        onClose: () => navigate(`/trip-starts/jobId/${id}/driver/${driverId}`)
+      });
+
     } catch (error) {
-
-        toast.error(error?.data?.message || "update ride details failed")
+      console.log("Update error:", error);
+      toast.error(error?.data?.message || "Update ride details failed");
     }
   };
 
   return (
     <div className='mobile_wrapper position-relative d-flex flex-column px-3 pt-3'>
-      <BackChevronSvg onClick = {()=>navigate(`/ride-details/jobId/${id}/driver/${driverId}`)}/>
+      <BackChevronSvg onClick={() => navigate(`/ride-details/jobId/${id}/driver/${driverId}`)} />
       <h3 className='mob-heading mt-1'>Start Pickup</h3>
 
       <div className='flex-grow-1 picupForm'>
         <InputWithLabel
-          label={'Enter starting Mileage'}
-          type='number'
+          label="Enter starting Mileage"
+          type="number"
           value={mileage}
           onChange={(e) => setMileage(e.target.value)}
-          placeholder={'0'}
+          placeholder="0"
         />
 
-        <label htmlFor="VehiclePhotos" className='cmn_label form-label'>
+        <label htmlFor="VehiclePhotos" className='cmn_label form-label mt-3'>
           Photos of Vehicle
         </label>
         <div className='vehiclePhoto position-relative d-flex flex-column justify-content-center align-items-center'>
@@ -89,10 +99,9 @@ const StartPickup = () => {
             onChange={handleFileChange}
           />
           <CameraSvg />
-          <p className='mb-0'>Tap to upload photos</p>
+          <p className='mb-0'>Tap to upload photos (max 5)</p>
         </div>
 
-   
         {previewUrls.length > 0 && (
           <div className="photo-preview mt-2 d-flex flex-wrap gap-2">
             {previewUrls.map((url, idx) => (
@@ -141,12 +150,12 @@ const StartPickup = () => {
           className='form-control'
           rows={6}
           value={damageNotes}
-       onChange={(e) => setDamageNotes(e.target.value.toUpperCase())} 
-          placeholder='Enter any damage notes...'
+          onChange={(e) => setDamageNotes(e.target.value.toUpperCase())}
+          placeholder="Enter any damage notes..."
         />
       </div>
 
-      <div className='text-center px-3 pb-3'>
+      <div className='text-center px-3 pb-3 mt-3'>
         <Button
           label={isLoading ? 'Processing...' : 'Begin Trip'}
           className='rounded w-100'

@@ -78,7 +78,7 @@ const UploadDocument = () => {
                 type: file.type
             });
         } else if (typeof file === "string") {
-            const ext = file.split(".").pop().toLowerCase();
+            const ext = file.split(".").pop()?.toLowerCase();
             let type = "";
             if (ext === "pdf") type = "application/pdf";
             else if (["jpg", "jpeg", "png", "webp"].includes(ext)) type = "image";

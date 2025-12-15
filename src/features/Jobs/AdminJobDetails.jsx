@@ -24,7 +24,6 @@ import EditAddressModal from "../../components/shared/modalContent/EditAddressMo
 import { FaPencilAlt } from 'react-icons/fa';
 import { LoadScript } from "@react-google-maps/api";
 
-
 const AdminJobDetails = () => {
     const { id } = useParams();
     const { data: jobDetails } = useGetAdminJobDetailsQuery({ id }, { skip: !id });
@@ -207,7 +206,6 @@ const AdminJobDetails = () => {
                             <p className="text-muted small  mb-4">
                                 Requested by: {jobDetails?.data?.jobData?.customer_name}
                             </p>
-
                             <Row>
                                 <Col lg={6}>
                                     <h6 className='small-heading'>Vehicle Details</h6>
