@@ -68,6 +68,8 @@ const RideStatusScreen = () => {
                 } catch (error) {
 
                     toast.error(error?.data?.message || "Update ride details failed");
+
+                    
                 }
             },
             (error) => {
