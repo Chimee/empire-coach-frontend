@@ -77,7 +77,6 @@ const RideStatusScreen = () => {
             },
             (error) => {
                 let msg = "Unable to fetch location.";
-
                 if (error.code === error.PERMISSION_DENIED) {
                     msg = "Location permission denied. Please allow location access to continue the trip.";
                 } else if (error.code === error.POSITION_UNAVAILABLE) {
@@ -95,8 +94,6 @@ const RideStatusScreen = () => {
 
     return (
         <div className='mobile_wrapper position-relative d-flex flex-column'>
-
-            {/* 🔴 Location Error Banner */}
             {locationError && (
                 <div className="location-error-banner text-center p-3">
                     <strong>⚠ Location Required</strong>
