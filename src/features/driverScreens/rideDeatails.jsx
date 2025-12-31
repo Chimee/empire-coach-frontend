@@ -21,7 +21,9 @@ const RideDeatails = () => {
 
     const pickup = jobDetails?.data?.jobData;
     const pickupCoords = pickup ? { lat: pickup.pickup_latitude, lng: pickup.pickup_longitude } : null;
+
     const dropoffCoords = pickup ? { lat: pickup.dropoff_latitude, lng: pickup.dropoff_longitude } : null;
+
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
