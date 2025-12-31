@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const dmApi = createApi({
     reducerPath: "dmApi",
+    
     baseQuery: fetchBaseQuery({
         baseUrl: '/api/v1/',
     }),
