@@ -145,6 +145,7 @@ const driverApi = dmApi.injectEndpoints({
                 await handleQueryError(queryFulfilled);
             },
             providesTags: ['getJobPickupDetailsApi']
+            
         }),
     }),
 
