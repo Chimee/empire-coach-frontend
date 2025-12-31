@@ -66,15 +66,16 @@ const StartPickup = () => {
       // Success toast + mobile-safe navigation
       toast.success(res?.data?.message || "Ride details updated");
       navigate(`/trip-starts/jobId/${id}/driver/${driverId}`);
-
     } catch (error) {
       console.log("Update error:", error);
       toast.error(error?.data?.message || "Update ride details failed");
     }
   };
 
+
   return (
     <div className='mobile_wrapper position-relative d-flex flex-column px-3 pt-3'>
+      
       <BackChevronSvg onClick={() => navigate(`/ride-details/jobId/${id}/driver/${driverId}`)} />
       <h3 className='mob-heading mt-1'>Start Pickup</h3>
 
