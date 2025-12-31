@@ -65,7 +65,9 @@ const StartPickup = () => {
 
       // Success toast + mobile-safe navigation
       toast.success(res?.data?.message || "Ride details updated");
+
       navigate(`/trip-starts/jobId/${id}/driver/${driverId}`);
+      
     } catch (error) {
       console.log("Update error:", error);
       toast.error(error?.data?.message || "Update ride details failed");
