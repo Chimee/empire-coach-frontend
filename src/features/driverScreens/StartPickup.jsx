@@ -54,6 +54,7 @@ const StartPickup = () => {
       formData.append("driverId", driverId);
       formData.append("ride_status", "checked_in");
 
+      
       if (mileage) formData.append("checkin_mileage", mileage);
       if (damageNotes) formData.append("damage_notes", damageNotes);
 
