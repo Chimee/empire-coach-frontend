@@ -35,10 +35,11 @@ const RideDeatails = () => {
             );
         }
     }, []);
+
     const handleCheckout = async () => {
         try {
             const res = await starRide({ jobId: id, driverId });
-            if (res?.data) {
+            if (res) {
                 navigate(`/start-pickup/jobId/${id}/driver/${driverId}`);
             }
         } catch (error) {
