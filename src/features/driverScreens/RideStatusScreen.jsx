@@ -14,7 +14,7 @@ const RideStatusScreen = () => {
     const [show, setShow] = useState(false);
     const [updatedLocation, setUpdateLocation] = useState(false);
     const [currentLocation, setCurrentLocation] = useState(null);
-
+    const [locationMessage, setLocationMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ const RideStatusScreen = () => {
             return;
         }
 
-       
+
         const isLocalhost =
             window.location.hostname === "localhost" ||
             window.location.hostname === "127.0.0.1";
@@ -52,7 +52,7 @@ const RideStatusScreen = () => {
             toast.error("Location access requires HTTPS");
             return;
         }
-       
+
 
         navigator.geolocation.getCurrentPosition(
             async (position) => {
@@ -81,21 +81,20 @@ const RideStatusScreen = () => {
                 }
             },
             (error) => {
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        toast.error("Permission denied for location access");
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        toast.error("Location information is unavailable");
-                        break;
-                    case error.TIMEOUT:
-                        toast.error("Location request timed out");
-                        break;
-                    default:
-                        toast.error("An unknown error occurred while fetching location");
+                if (error.code === error.PERMISSION_DENIED) {
+                    setLocationMessage(
+                        "Location access is blocked.\n" +
+                        "Please open browser settings → Site settings → Allow Location,\n" +
+                        "then refresh the page."
+                    );
+                } else if (error.code === error.POSITION_UNAVAILABLE) {
+                    setLocationMessage("Location is unavailable. Please turn on GPS.");
+                } else if (error.code === error.TIMEOUT) {
+                    setLocationMessage("Location request timed out. Please try again.");
+                } else {
+                    setLocationMessage("Unable to fetch location. Please try again.");
                 }
-            },
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            }
         );
     };
 
@@ -163,6 +162,11 @@ const RideStatusScreen = () => {
                                     { state: { request_status: pickup?.request_status } }
                                 )}
                             />
+                            {!updatedLocation && (
+                                <p className="text-danger small text-center mb-1">
+                                    Please update your current location to start delivery
+                                </p>
+                            )}
                             <Button
                                 label='Start Delivery Check-Out'
                                 className='rounded w-100'
