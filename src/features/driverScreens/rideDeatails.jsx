@@ -44,13 +44,7 @@ const RideDeatails = () => {
         try {
             const res = await starRide({ jobId: id, driverId }).unwrap();
             navigate(`/start-pickup/jobId/${id}/driver/${driverId}`);
-
         } catch (error) {
-            toast.error(
-                error?.data?.loggedError ||
-                error?.data?.message ||
-                "Unable to start ride. Please contact support."
-            );
         }
     };
 
