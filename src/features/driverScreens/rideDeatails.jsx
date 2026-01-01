@@ -17,7 +17,7 @@ const RideDeatails = () => {
     const [starRide, { isLoading }] = useStartRideMutation();
     const [currentLocation, setCurrentLocation] = useState(null);
 
-    
+
 
     const pickup = jobDetails?.data?.jobData;
     const pickupCoords = pickup ? { lat: pickup.pickup_latitude, lng: pickup.pickup_longitude } : null;
@@ -42,14 +42,18 @@ const RideDeatails = () => {
 
     const handleCheckout = async () => {
         try {
-            const res = await starRide({ jobId: id, driverId });
-            if (res) {
-                navigate(`/start-pickup/jobId/${id}/driver/${driverId}`);
-            }
+            const res = await starRide({ jobId: id, driverId }).unwrap();
+            navigate(`/start-pickup/jobId/${id}/driver/${driverId}`);
+
         } catch (error) {
-            console.error("Error starting ride", error);
+            toast.error(
+                error?.data?.loggedError ||
+                error?.data?.message ||
+                "Unable to start ride. Please contact support."
+            );
         }
     };
+
     return (
         <div className='mobile_wrapper position-relative d-flex flex-column'>
             <DriverMapscreen
