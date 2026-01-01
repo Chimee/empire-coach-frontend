@@ -228,7 +228,6 @@ const UploadDocument = () => {
                 else {
                     navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)
                 }
-
             }
         } catch (error) {
             toast.error(error?.data?.message || "Update ride details failed");

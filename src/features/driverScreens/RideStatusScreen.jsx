@@ -125,7 +125,7 @@ const RideStatusScreen = () => {
             <div className='aboveMap'>
                 <div className='job_view position-relative pt-2'>
                     <div className='d-flex justify-content-center'>
-                        <span className='arrow_down' onClick={() => setShow(!show)}></span>
+                        <span className='arrow_down arrow_click_area' onClick={() => setShow(!show)}></span>
                     </div>
 
                     <div className='driverJob'>
