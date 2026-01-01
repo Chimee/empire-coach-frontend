@@ -149,11 +149,21 @@ const RideStatusScreen = () => {
 
                     {show && (
                         <div className='text-center pb-3 d-flex flex-column gap-3 mt-3'>
+                            {locationMessage && (
+                                <div
+                                    className="location-message text-danger text-center small mb-2"
+                                    style={{ whiteSpace: "pre-line" }}
+                                >
+                                    {locationMessage}
+                                </div>
+                            )}
+
                             <Button
                                 label='Update Location'
                                 className='rounded w-100 bordered'
                                 onClick={handleUpdateLocation}
                             />
+
                             <Button
                                 label='Upload Trip Documents'
                                 className='rounded w-100 bordered'
@@ -162,11 +172,13 @@ const RideStatusScreen = () => {
                                     { state: { request_status: pickup?.request_status } }
                                 )}
                             />
+
                             {!updatedLocation && (
                                 <p className="text-danger small text-center mb-1">
                                     Please update your current location to start delivery
                                 </p>
                             )}
+
                             <Button
                                 label='Start Delivery Check-Out'
                                 className='rounded w-100'
