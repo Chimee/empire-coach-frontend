@@ -12,7 +12,6 @@ const CompleteDelivery = () => {
 
     return (
         <div className='mobile_wrapper position-relative d-flex flex-column px-3 pt-3 gap-4 justify-content-center tripStarts'>
-
             <Image
                 src={tripSvgImage}
                 alt="trip-complete"
