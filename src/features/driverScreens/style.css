@@ -234,3 +234,16 @@ body,
 .info-close:hover {
   color: #333;
 }
+
+.tripStarts {
+  min-height: 100vh;
+}
+
+.trip-picture {
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+.highlight {
+  color: #198754;
+}
