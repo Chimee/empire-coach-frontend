@@ -150,13 +150,23 @@ const RideStatusScreen = () => {
                     {show && (
                         <div className='text-center pb-3 d-flex flex-column gap-3 mt-3'>
                             {locationMessage && (
-                                <div className="location-info-box">
-                                    <span className="info-icon">ℹ️</span>
-                                    <div className="info-text">
+                                <div className="location-info-card">
+                                    <div className="info-left">
+                                        <span className="info-icon">ℹ️</span>
+                                    </div>
+
+                                    <div className="info-content">
                                         {locationMessage.split("\n").map((line, i) => (
                                             <div key={i}>{line}</div>
                                         ))}
                                     </div>
+
+                                    <span
+                                        className="info-close"
+                                        onClick={() => setLocationMessage("")}
+                                    >
+                                        ×
+                                    </span>
                                 </div>
                             )}
                             <Button

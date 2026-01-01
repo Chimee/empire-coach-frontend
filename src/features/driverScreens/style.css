@@ -187,10 +187,50 @@ body,
   z-index: 2;
   gap: 4px;
 }
+
 .upload-file-small {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
   flex: 1;
+}
+
+.location-info-card {
+  background: #f4f7ff;
+  border: 1px solid #dbe3ff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  position: relative;
+  font-size: 13px;
+  color: #2b4eff;
+}
+
+.info-left {
+  margin-top: 2px;
+}
+
+.info-icon {
+  font-size: 18px;
+}
+
+.info-content {
+  line-height: 1.4;
+  flex: 1;
+}
+
+.info-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #8a8a8a;
+}
+
+.info-close:hover {
+  color: #333;
 }
