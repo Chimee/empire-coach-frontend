@@ -72,7 +72,8 @@ const AddAdmin = () => {
     if (!emailRegex.test(email)) return toast.error('Invalid email format.');
     if (!phone_number.trim()) return toast.error('Phone number is required.');
 
-    let formattedPhone = phone_number;
+    let formattedPhone  = phone_number;
+    
     try {
       const parsed = parsePhoneNumberFromString(`+${phone_number}`);
       if (parsed) {
