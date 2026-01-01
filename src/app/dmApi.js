@@ -7,6 +7,7 @@ export const dmApi = createApi({
         baseUrl: '/api/v1/',
     }),
     tagTypes: ["supplier",
+        
         "getAdminListAPI",       
         'getDriverListAPI',
         'getDeliveryAddressesAPI',
