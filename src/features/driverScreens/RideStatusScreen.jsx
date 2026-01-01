@@ -40,16 +40,27 @@ const RideStatusScreen = () => {
             return;
         }
 
-        if (window.location.protocol !== "https:" && window.location.hostname !== "localhost") {
+       
+        const isLocalhost =
+            window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1";
+
+        const isHttps = window.location.protocol === "https:";
+        const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (!isHttps && !isLocalhost && !isMobileDevice) {
             toast.error("Location access requires HTTPS");
             return;
         }
+       
 
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const { latitude, longitude } = position.coords;
+
                 const location = { lat: latitude, lng: longitude };
                 setCurrentLocation(location);
+
                 const formData = new FormData();
                 formData.append("jobId", id);
                 formData.append("driverId", driverId);
@@ -66,10 +77,7 @@ const RideStatusScreen = () => {
                     toast.success(res.data.message);
                     setUpdateLocation(true);
                 } catch (error) {
-
                     toast.error(error?.data?.message || "Update ride details failed");
-
-                    
                 }
             },
             (error) => {
