@@ -40,7 +40,6 @@ const RideStatusScreen = () => {
             return;
         }
 
-
         const isLocalhost =
             window.location.hostname === "localhost" ||
             window.location.hostname === "127.0.0.1";
@@ -60,6 +59,7 @@ const RideStatusScreen = () => {
 
                 const location = { lat: latitude, lng: longitude };
                 setCurrentLocation(location);
+                setLocationMessage("");
 
                 const formData = new FormData();
                 formData.append("jobId", id);
@@ -74,28 +74,41 @@ const RideStatusScreen = () => {
 
                 try {
                     const res = await updateLocation(formData).unwrap();
-                    toast.success(res.data.message);
+                    toast.success(res?.data?.message || "Location updated");
                     setUpdateLocation(true);
                 } catch (error) {
                     toast.error(error?.data?.message || "Update ride details failed");
                 }
             },
+
             (error) => {
+                let message = "Unable to fetch location.";
+
                 if (error.code === error.PERMISSION_DENIED) {
-                    setLocationMessage(
-                        "Location access is blocked.\n" +
-                        "Please open browser settings → Site settings → Allow Location,\n" +
-                        "then refresh the page."
-                    );
-                } else if (error.code === error.POSITION_UNAVAILABLE) {
-                    setLocationMessage("Location is unavailable. Please turn on GPS.");
-                } else if (error.code === error.TIMEOUT) {
-                    setLocationMessage("Location request timed out. Please try again.");
-                } else {
-                    setLocationMessage("Unable to fetch location. Please try again.");
+                    message =
+                        "Location access is blocked.\n\n" +
+                        "iPhone users:\n" +
+                        "Settings → Privacy & Security → Location Services → Safari Websites → Allow While Using App\n" +
+                        "Also make sure Precise Location is ON.\n\n" +
+                        "Then refresh this page.";
                 }
+                else if (error.code === error.POSITION_UNAVAILABLE) {
+                    message = "Location is unavailable. Please turn on GPS.";
+                }
+                else if (error.code === error.TIMEOUT) {
+                    message = "Location request timed out. Please move to open area and try again.";
+                }
+
+                setLocationMessage(message);
+            },
+
+            {
+                enableHighAccuracy: true,   
+                timeout: 10000,            
+                maximumAge: 0               
             }
         );
+
     };
 
     return (
