@@ -103,9 +103,9 @@ const RideStatusScreen = () => {
             },
 
             {
-                enableHighAccuracy: true,   
-                timeout: 10000,            
-                maximumAge: 0               
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
             }
         );
 
@@ -125,7 +125,14 @@ const RideStatusScreen = () => {
             <div className='aboveMap'>
                 <div className='job_view position-relative pt-2'>
                     <div className='d-flex justify-content-center'>
-                        <span className='arrow_down arrow_click_area' onClick={() => setShow(!show)}></span>
+                        <div className="d-flex justify-content-center mt-2">
+                            <button
+                                className="toggle-btn"
+                                onClick={() => setShow(!show)}
+                            >
+                                {show ? "Hide Details ▲" : "Show Details ▼"}
+                            </button>
+                        </div>
                     </div>
 
                     <div className='driverJob'>
