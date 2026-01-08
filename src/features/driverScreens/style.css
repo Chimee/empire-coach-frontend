@@ -25,7 +25,9 @@
 .loaction {
   padding: 0px 15px;
 }
-
+.location-wrapper li, .aboveMap p {
+  font-size: 12px;
+}
 .pickupLoc svg {
   z-index: 2222;
   background: #fff;

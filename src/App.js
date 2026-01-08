@@ -46,7 +46,6 @@ import Vehicle from "./features/admin/Vehicle/Vehicle";
 import AddVehicle from "./features/admin/Vehicle/AddVehicle";
 import CompletedJobs from "./features/Jobs/completedJobs";
 import { LoadScript } from "@react-google-maps/api";
-import ScrollToTop from "./components/shared/ScrollToTop";
 const libraries = ["places"];
 function App() {
     const error = useSelector((state) => state.global.error);
@@ -87,7 +86,7 @@ function App() {
                 googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
                 libraries={libraries}>
         <Router>
-            <ScrollToTop />
+
             <Toaster position="top-center" reverseOrder={false} />
             {!error &&
                 <Routes>

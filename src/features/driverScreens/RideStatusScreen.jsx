@@ -113,14 +113,14 @@ const RideStatusScreen = () => {
 
     return (
         <div className='mobile_wrapper position-relative d-flex flex-column'>
-            <div className='flex-grow-1'>
+         
                 <DriverMapscreen
                     pickupCoords={pickupCoords}
                     dropoffCoords={dropoffCoords}
                     currentLocation={currentLocation || backendCurrentLocation || null}
-                    height="100%"
+                    height="50vh"
                 />
-            </div>
+          
 
             <div className='aboveMap'>
                 <div className='job_view position-relative pt-2'>
@@ -142,25 +142,25 @@ const RideStatusScreen = () => {
                             {pickup?.vehicle_year} {pickup?.vehicle_make} {pickup?.vehicle_model} ({pickup?.fuel_type})
                         </p>
 
-                        <div className='d-flex'>
+                        <div className='d-flex location-wrapper'>
                             <ul className='p-0 m-0 flex-grow-1 border-end'>
                                 <li className='pickupLoc position-relative align-items-center pb-3 gap-2 d-flex'>
-                                    <DriverLocationSvg className="shrink-0 bg-white z-3" />
+                                    <DriverLocationSvg className="flex-shrink-0 bg-white z-3" />
                                     {pickup?.pickup_location}
                                 </li>
-                                <li className='d-flex gap-2 align-items-center'>
+                                <li className=' d-flex gap-2 align-items-center'>
                                     <DriverDropLocationSvg className="flex-shrink-0 bg-white z-3" />
                                     {pickup?.dropoff_location}
                                 </li>
                             </ul>
                             <ul className='pl-1 mb-0 text-black'>
-                                <li className='text-center'>
+                                <li className='text-center '>
                                     <strong>
                                         {new Date().toLocaleString('en-US', { month: 'short' })} <br />
                                         {new Date().getDate()}/{new Date().getFullYear()}
                                     </strong>
                                 </li>
-                                <li className='text-center'>
+                                <li className='text-center '>
                                     {new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
                                 </li>
                             </ul>
