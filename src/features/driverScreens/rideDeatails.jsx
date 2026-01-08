@@ -12,16 +12,11 @@ import DriverMapscreen from './DriverMapscreen'
 const RideDeatails = () => {
     const { id, driverId } = useParams();
     const navigate = useNavigate()
-
     const { data: jobDetails } = useGetJobPickupDetailsQuery({ id }, { skip: !id });
     const [starRide, { isLoading }] = useStartRideMutation();
     const [currentLocation, setCurrentLocation] = useState(null);
-
-
-
     const pickup = jobDetails?.data?.jobData;
     const pickupCoords = pickup ? { lat: pickup.pickup_latitude, lng: pickup.pickup_longitude } : null;
-
     const dropoffCoords = pickup ? { lat: pickup.dropoff_latitude, lng: pickup.dropoff_longitude } : null;
 
     useEffect(() => {

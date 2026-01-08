@@ -33,7 +33,9 @@ const CompleteDelivery = () => {
                     label="Submit Delivery Report"
                     className="rounded w-100 mt-3"
                     onClick={() =>
-                        navigate(`/upload-documents/jobId/${id}/driver/${driverId}`)
+                        navigate(`/upload-documents/jobId/${id}/driver/${driverId}`, {
+                            state: { request_status: 'delivered' }
+                        })
                     }
                 />
 

@@ -117,7 +117,7 @@ const UploadDocument = () => {
 
     // Render upload tile
     const renderTile = (label, file, onChange, removableBlock, onRemoveBlock, onRemoveFile) => (
-        <div className="vehiclePhoto uploadDoc position-relative d-flex flex-column justify-content-center align-items-center">
+        <div className="vehiclePhoto uploadDoc position-relative d-flex flex-column justify-content-center align-items-center h-100">
             <input
                 type="file"
                 accept="image/*,application/pdf"
@@ -239,20 +239,19 @@ const UploadDocument = () => {
             <h3 className="mob-heading mt-1 mb-3">Upload Trip Documents</h3>
             <div className="flex-grow-1 picupForm">
                 <Row className="row-gap-2 mb-2">
-                    <Col xs={6}>
+                    <Col xs={12}>
+                    <div className='gird-inputs'>
+
                         {renderTile("Fuel Receipt", files.fuel, (e) => handleFileChange(e, "fuel"), false, null, () => removeFile("fuel"))}
-                    </Col>
-                    <Col xs={6}>
+                    
+                   
                         {renderTile("Hotel Receipt", files.hotel, (e) => handleFileChange(e, "hotel"), false, null, () => removeFile("hotel"))}
-                    </Col>
-                    <Col xs={6}>
+                    
                         {renderTile("Flight Confirmation", files.flight, (e) => handleFileChange(e, "flight"), false, null, () => removeFile("flight"))}
-                    </Col>
-                    <Col xs={6}>
+                    
                         {renderTile("Daily Driver Log", files.driverLog, (e) => handleFileChange(e, "driverLog"), false, null, () => removeFile("driverLog"))}
-                    </Col>
                     {files.otherReceipts.map((file, idx) => (
-                        <Col xs={6} key={idx}>
+                        <div key={idx}>
                             {renderTile(
                                 `Other Receipt ${idx + 1}`,
                                 file,
@@ -261,8 +260,11 @@ const UploadDocument = () => {
                                 () => removeOtherReceiptBlock(idx),
                                 () => removeFile("otherReceipts", idx)
                             )}
-                        </Col>
+                        </div>
                     ))}
+                    </div>
+                    </Col>
+                    
                     <Col xs={12}>
                         <Button
                             label="+ Add Other Receipt"
@@ -283,7 +285,7 @@ const UploadDocument = () => {
                     placeholder="Enter any Additional notes..."
                 ></textarea>
             </div>
-            <div className="text-center px-3 pb-3 d-flex flex-column gap-2">
+            <div className="text-center px-0 mt-3 pb-3 d-flex flex-column gap-2">
                 <Button
                     label="Back"
                     className="rounded w-100 bordered"
