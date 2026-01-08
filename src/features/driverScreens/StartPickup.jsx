@@ -99,7 +99,7 @@ const StartPickup = () => {
             onChange={handleFileChange}
           />
           <CameraSvg />
-          <p className='mb-0'>Tap to upload photos (max 5)</p>
+          <p className='mb-0'>Tap to upload photos</p>
         </div>
 
         {previewUrls.length > 0 && (

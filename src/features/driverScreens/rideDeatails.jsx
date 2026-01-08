@@ -12,8 +12,9 @@ import DriverMapscreen from './DriverMapscreen'
 const RideDeatails = () => {
     const { id, driverId } = useParams();
     const navigate = useNavigate()
-    const { data: jobDetails } = useGetJobPickupDetailsQuery({ id }, { skip: !id });
-    const [starRide, { isLoading }] = useStartRideMutation();
+    const { data: jobDetails, isLoading } =
+        useGetJobPickupDetailsQuery({ id }, { skip: !id });
+    const [starRide] = useStartRideMutation();
     const [currentLocation, setCurrentLocation] = useState(null);
     const pickup = jobDetails?.data?.jobData;
     const pickupCoords = pickup ? { lat: pickup.pickup_latitude, lng: pickup.pickup_longitude } : null;
@@ -49,7 +50,7 @@ const RideDeatails = () => {
                 pickupCoords={pickupCoords}
                 dropoffCoords={dropoffCoords}
                 currentLocation={currentLocation}
-                height="100%"
+                height="50vh"
             />
             <div className='loaction flex-grow-1'>
                 <ul className='p-0 pt-3'>
@@ -94,21 +95,30 @@ const RideDeatails = () => {
                     </ul>
                 </div>
             </div>
-            {!jobDetails?.data?.jobData?.isLinkExpired && (
-                <div className='text-center px-3 pb-3'>
-                    {jobDetails?.data?.jobData.request_status === "delivered" ? (
-                        <Button
-                            label='Upload Trip Documents'
-                            className='rounded w-100 bordered'
-                            onClick={() => navigate(
-                                `/upload-documents/jobId/${id}/driver/${driverId}`,
-                                { state: { request_status: jobDetails?.data?.jobData?.request_status } }
-                            )}
-                        />
-                    ) : <Button label='Start Check-in' className='rounded w-100'
-                        onClick={() => handleCheckout()} />}
-                </div>
-            )}
+            {!isLoading &&
+                jobDetails?.data?.jobData &&
+                !jobDetails?.data?.jobData?.isLinkExpired && (
+                    <div className='text-center px-3 pb-3'>
+                        {jobDetails?.data?.jobData.request_status === "delivered" ? (
+                            <Button
+                                label='Upload Trip Documents'
+                                className='rounded w-100 bordered'
+                                onClick={() =>
+                                    navigate(
+                                        `/upload-documents/jobId/${id}/driver/${driverId}`,
+                                        { state: { request_status: jobDetails?.data?.jobData?.request_status } }
+                                    )
+                                }
+                            />
+                        ) : (
+                            <Button
+                                label='Start Check-in'
+                                className='rounded w-100'
+                                onClick={handleCheckout}
+                            />
+                        )}
+                    </div>
+                )}
         </div>
     )
 }

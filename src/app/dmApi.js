@@ -4,7 +4,7 @@ export const dmApi = createApi({
     reducerPath: "dmApi",
     
     baseQuery: fetchBaseQuery({
-        baseUrl: '/api/v1/',
+        baseUrl: 'http://localhost:4000/api/v1/',
     }),
     tagTypes: ["supplier", 
         "getAdminListAPI",       

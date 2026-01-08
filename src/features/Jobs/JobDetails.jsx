@@ -280,18 +280,19 @@ const JobDetails = () => {
                                 {jobDetails?.data?.jobLogs?.length > 0 ? (
                                     jobDetails.data.jobLogs.map((logs, index) => (
                                         <li key={index} className='d-flex gap-3 align-items-center'>
-                                            <span className='d-flex justify-content-center rounded-5 align-items-center shrink-0 timeline-count'>
+                                            <span className='d-flex justify-content-center rounded-5 align-items-center flex-shrink-0 timeline-count'>
                                                 {index + 1}
                                             </span>
                                             <div className='timeline_status'>
                                                 <span className='d-block text-capitalize'>
                                                     {logs?.request_status}
-                                                    {logs?.User?.username && (
+                                                    {(logs?.User?.username || logs?.Driver?.name) && (
                                                         <span className='text-muted ms-2'>
-                                                            by <strong>{logs.User.username}</strong>
+                                                            by <strong>{logs?.User?.username || logs?.Driver?.name}</strong>
                                                         </span>
                                                     )}
                                                 </span>
+
                                                 <span>{formatDateToMDY(logs?.createdAt)}</span>
                                             </div>
                                         </li>
