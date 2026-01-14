@@ -26,7 +26,6 @@ const UploadDocument = () => {
     const [notes, setNotes] = useState("");
     const navigate = useNavigate();
     const [updateTripDocuments, { isLoading: isUpdating }] = useUpdateTripDocumentsMutation();
-
     const [previewFile, setPreviewFile] = useState({ url: null, type: null });
 
     // Handle file change
@@ -223,7 +222,7 @@ const UploadDocument = () => {
             if (res.data) {
                 toast.success(res.data?.message || "Trip documents have been updated");
                 if (request_status === "delivered") {
-                    navigate(`/ride-start/jobId/${id}/driver/${driverId}`)
+                    navigate(`/delivery-completed/jobId/${id}/driver/${driverId}`)
                 }
                 else {
                     navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)
@@ -241,14 +240,9 @@ const UploadDocument = () => {
                 <Row className="row-gap-2 mb-2">
                     <Col xs={12}>
                     <div className='gird-inputs'>
-
                         {renderTile("Fuel Receipt", files.fuel, (e) => handleFileChange(e, "fuel"), false, null, () => removeFile("fuel"))}
-                    
-                   
                         {renderTile("Hotel Receipt", files.hotel, (e) => handleFileChange(e, "hotel"), false, null, () => removeFile("hotel"))}
-                    
                         {renderTile("Flight Confirmation", files.flight, (e) => handleFileChange(e, "flight"), false, null, () => removeFile("flight"))}
-                    
                         {renderTile("Daily Driver Log", files.driverLog, (e) => handleFileChange(e, "driverLog"), false, null, () => removeFile("driverLog"))}
                     {files.otherReceipts.map((file, idx) => (
                         <div key={idx}>
@@ -291,7 +285,7 @@ const UploadDocument = () => {
                     className="rounded w-100 bordered"
                     onClick={() =>
                         request_status === "delivered"
-                            ? navigate(`/ride-details/jobId/${id}/driver/${driverId}`)
+                            ? navigate(`/delivery-completed/jobId/${id}/driver/${driverId}`)
                             : navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)
                     }
                 />

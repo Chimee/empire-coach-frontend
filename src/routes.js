@@ -90,7 +90,7 @@ export const Routes = {
         path: "/ride-details/jobId/:id/driver/:driverId"
     },
     RideDeatails: {
-        path: "/ride-start/jobId/:id/driver/:driverId"
+        path: "/ride/jobId/:id/driver/:driverId"
     },
     CreatePassword: {
         path: "/set-password"
