@@ -50,8 +50,6 @@ const StartPickup = () => {
       formData.append("jobId", id);
       formData.append("driverId", driverId);
       formData.append("ride_status", "checked_in");
-
-      
       if (mileage) formData.append("checkin_mileage", mileage);
       if (damageNotes) formData.append("damage_notes", damageNotes);
 
@@ -62,7 +60,7 @@ const StartPickup = () => {
 
       // Success toast + mobile-safe navigation
       toast.success(res?.data?.message || "Ride details updated");
-      navigate(`/trip-starts/jobId/${id}/driver/${driverId}`);
+      navigate(`/ride-detail/jobId/${id}/driver/${driverId}`);
     } catch (error) {
       console.log("Update error:", error);
       toast.error(error?.data?.message || "Update ride details failed");
@@ -151,7 +149,7 @@ const StartPickup = () => {
 
       <div className='text-center px-3 pb-3 mt-3'>
         <Button
-          label={isLoading ? 'Processing...' : 'Continue Trip'}
+          label={isLoading ? 'Processing...' : 'Begin Trip'}
           className='rounded w-100'
           onClick={handleBeginTrip}
           disabled={isLoading}
