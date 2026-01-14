@@ -38,7 +38,7 @@ export const Routes = {
     Jobs: {
         path: "/jobs"
     },
-     CompletedJobs: {
+    CompletedJobs: {
         path: "/completed-jobs"
     },
     AdminJobs: {
@@ -85,10 +85,13 @@ export const Routes = {
     },
     ForgotPassword: {
         path: "/forgot-password"
-    },   
-    RideDeatails: {
+    },
+    RideEntry: {
         path: "/ride-details/jobId/:id/driver/:driverId"
-    },   
+    },
+    RideDeatails: {
+        path: "/ride-start/jobId/:id/driver/:driverId"
+    },
     CreatePassword: {
         path: "/set-password"
     },

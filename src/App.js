@@ -46,6 +46,7 @@ import Vehicle from "./features/admin/Vehicle/Vehicle";
 import AddVehicle from "./features/admin/Vehicle/AddVehicle";
 import CompletedJobs from "./features/Jobs/completedJobs";
 import { LoadScript } from "@react-google-maps/api";
+import RideEntry from "./features/driverScreens/rideEntry";
 const libraries = ["places"];
 function App() {
     const error = useSelector((state) => state.global.error);
@@ -82,64 +83,64 @@ function App() {
 
     return (
 
-            <LoadScript
-                googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
-                libraries={libraries}>
-        <Router>
+        <LoadScript
+            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
+            libraries={libraries}>
+            <Router>
+                <Toaster position="top-center" reverseOrder={false} />
+                {!error &&
+                    <Routes>
+                        {/* Public Routes without Layout */}
+                        <Route element={<PublicRoutes />}>
+                            {!(localStorage.getItem("authToken") && !isTokenExpired()) && <Route path={AppRoutes.Default.path} element={<Login />} />}
+                            <Route path={AppRoutes.Login.path} element={<Login />} />
+                            <Route path={AppRoutes.CreatePassword.path} element={<CreatePassword />} />
+                            <Route path={AppRoutes.ResetPassword.path} element={<ResetPassword />} />
+                            <Route path={AppRoutes.ForgotPassword.path} element={<ForgetPassword />} />
+                            <Route path={AppRoutes.RideDeatails.path} element={<RideDeatails />} />
+                            <Route path={AppRoutes.RideEntry.path} element={<RideEntry />} />
+                            <Route path={AppRoutes.StartPickup.path} element={<StartPickup />} />
+                            <Route path={AppRoutes.EndPickup.path} element={<EndPickup />} />
+                            <Route path={AppRoutes.TripStarted.path} element={<TripStarted />} />
+                            <Route path={AppRoutes.RideStatusScreen.path} element={<RideStatusScreen />} />
+                            <Route path={AppRoutes.UploadDocument.path} element={<UploadDocument />} />
+                            <Route path={AppRoutes.CompleteDelivery.path} element={<CompleteDelivery />} />
 
-            <Toaster position="top-center" reverseOrder={false} />
-            {!error &&
-                <Routes>
-                    {/* Public Routes without Layout */}
-                    <Route element={<PublicRoutes />}>
-                        {!(localStorage.getItem("authToken") && !isTokenExpired()) && <Route path={AppRoutes.Default.path} element={<Login />} />}
-                        <Route path={AppRoutes.Login.path} element={<Login />} />
-                        <Route path={AppRoutes.CreatePassword.path} element={<CreatePassword />} />
-                        <Route path={AppRoutes.ResetPassword.path} element={<ResetPassword />} />
-                        <Route path={AppRoutes.ForgotPassword.path} element={<ForgetPassword />} />
-                        <Route path={AppRoutes.RideDeatails.path} element={<RideDeatails />} />
-                        <Route path={AppRoutes.StartPickup.path} element={<StartPickup />} />
-                        <Route path={AppRoutes.EndPickup.path} element={<EndPickup />} />
-                        <Route path={AppRoutes.TripStarted.path} element={<TripStarted />} />
-                        <Route path={AppRoutes.RideStatusScreen.path} element={<RideStatusScreen />} />
-                        <Route path={AppRoutes.UploadDocument.path} element={<UploadDocument />} />
-                        <Route path={AppRoutes.CompleteDelivery.path} element={<CompleteDelivery />} />
+                        </Route>
+                        {/* Private Routes with Layout */}
+                        <Route element={<PrivateRoutes />}>
+                            <Route path={AppRoutes.Dashboard.path} element={<Dashboard />} />
+                            {(localStorage.getItem("authToken") && !isTokenExpired()) && <Route path={AppRoutes.Default.path} element={<Dashboard />} />}
+                            <Route path={AppRoutes.Dashboard.path} element={<Dashboard />} />
+                            <Route path={AppRoutes.Admin.path} element={<Admin />} />
+                            <Route path={AppRoutes.AddAdmin.path} element={<AddAdmin />} />
+                            <Route path={AppRoutes.AdminDetails.path} element={<AdminDetails />} />
+                            <Route path={AppRoutes.Company.path} element={<Company />} />
+                            <Route path={AppRoutes.AddCompany.path} element={<AddCompany />} />
+                            <Route path={AppRoutes.EditCompany.path} element={<EditCompany />} />
+                            <Route path={AppRoutes.CompnayDetails.path} element={<CompnayDetails />} />
+                            <Route path={AppRoutes.AddCustomer.path} element={<AddCustomer />} />
+                            <Route path={AppRoutes.CustomerDetails.path} element={<CustomerDetails />} />
+                            <Route path={AppRoutes.Jobs.path} element={<Jobs />} />
+                            <Route path={AppRoutes.AdminJobs.path} element={<AdminJobs />} />
 
-                    </Route>
-                    {/* Private Routes with Layout */}
-                    <Route element={<PrivateRoutes />}>
-                        <Route path={AppRoutes.Dashboard.path} element={<Dashboard />} />
-                        {(localStorage.getItem("authToken") && !isTokenExpired()) && <Route path={AppRoutes.Default.path} element={<Dashboard />} />}
-                        <Route path={AppRoutes.Dashboard.path} element={<Dashboard />} />
-                        <Route path={AppRoutes.Admin.path} element={<Admin />} />
-                        <Route path={AppRoutes.AddAdmin.path} element={<AddAdmin />} />
-                        <Route path={AppRoutes.AdminDetails.path} element={<AdminDetails />} />
-                        <Route path={AppRoutes.Company.path} element={<Company />} />
-                        <Route path={AppRoutes.AddCompany.path} element={<AddCompany />} />
-                        <Route path={AppRoutes.EditCompany.path} element={<EditCompany />} />
-                        <Route path={AppRoutes.CompnayDetails.path} element={<CompnayDetails />} />
-                        <Route path={AppRoutes.AddCustomer.path} element={<AddCustomer />} />
-                        <Route path={AppRoutes.CustomerDetails.path} element={<CustomerDetails />} />
-                        <Route path={AppRoutes.Jobs.path} element={<Jobs />} />
-                        <Route path={AppRoutes.AdminJobs.path} element={<AdminJobs />} />
+                            <Route path={AppRoutes.AdminJobsDetails.path} element={<AdminJobDetails />} />
 
-                        <Route path={AppRoutes.AdminJobsDetails.path} element={<AdminJobDetails />} />
-
-                        <Route path={AppRoutes.JobDetails.path} element={<JobDetails />} />
-                        <Route path={AppRoutes.Driver.path} element={<Driver />} />
-                        <Route path={AppRoutes.AddDriver.path} element={<AddDriver />} />
-                        <Route path={AppRoutes.DriverDetails.path} element={<DriverDetails />} />
-                        <Route path={AppRoutes.CreateJob.path} element={<CreateJob />} />
-                        <Route path={AppRoutes.Vehicle.path} element={<Vehicle />} />
-                        <Route path={AppRoutes.AddVehicle.path} element={<AddVehicle />} />
-                        <Route path={AppRoutes.CompletedJobs.path} element={<CompletedJobs />} />
+                            <Route path={AppRoutes.JobDetails.path} element={<JobDetails />} />
+                            <Route path={AppRoutes.Driver.path} element={<Driver />} />
+                            <Route path={AppRoutes.AddDriver.path} element={<AddDriver />} />
+                            <Route path={AppRoutes.DriverDetails.path} element={<DriverDetails />} />
+                            <Route path={AppRoutes.CreateJob.path} element={<CreateJob />} />
+                            <Route path={AppRoutes.Vehicle.path} element={<Vehicle />} />
+                            <Route path={AppRoutes.AddVehicle.path} element={<AddVehicle />} />
+                            <Route path={AppRoutes.CompletedJobs.path} element={<CompletedJobs />} />
 
 
-                    </Route>
-                </Routes>
-            }
-        </Router>
-</LoadScript>
+                        </Route>
+                    </Routes>
+                }
+            </Router>
+        </LoadScript>
 
 
     );

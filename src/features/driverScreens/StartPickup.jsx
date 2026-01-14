@@ -11,12 +11,10 @@ import toast from "react-hot-toast";
 const StartPickup = () => {
   const { id, driverId } = useParams();
   const navigate = useNavigate();
-
   const [mileage, setMileage] = useState("");
   const [damageNotes, setDamageNotes] = useState("");
   const [photos, setPhotos] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
-
   const [updateRideDetails, { isLoading }] = useUpdateRideDetailsMutation();
 
   // Handle file selection
@@ -30,7 +28,6 @@ const StartPickup = () => {
     }
 
     setPhotos(prev => [...prev, ...files]);
-
     const urls = files.map(file => URL.createObjectURL(file));
     setPreviewUrls(prev => [...prev, ...urls]);
   };
@@ -47,7 +44,7 @@ const StartPickup = () => {
       toast.error("Please fill all fields and upload at least one photo");
       return;
     }
-
+ 
     try {
       const formData = new FormData();
       formData.append("jobId", id);
@@ -72,13 +69,10 @@ const StartPickup = () => {
     }
   };
 
-
   return (
     <div className='mobile_wrapper position-relative d-flex flex-column px-3 pt-3'>
-      
       <BackChevronSvg onClick={() => navigate(`/ride-details/jobId/${id}/driver/${driverId}`)} />
       <h3 className='mob-heading mt-1'>Start Pickup</h3>
-
       <div className='flex-grow-1 picupForm'>
         <InputWithLabel
           label="Enter starting Mileage"

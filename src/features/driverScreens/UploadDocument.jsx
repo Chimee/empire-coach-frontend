@@ -223,7 +223,7 @@ const UploadDocument = () => {
             if (res.data) {
                 toast.success(res.data?.message || "Trip documents have been updated");
                 if (request_status === "delivered") {
-                    navigate(`/ride-details/jobId/${id}/driver/${driverId}`)
+                    navigate(`/ride-start/jobId/${id}/driver/${driverId}`)
                 }
                 else {
                     navigate(`/ride-detail/jobId/${id}/driver/${driverId}`)

@@ -6,7 +6,6 @@ import { useParams, useLocation, useNavigate } from 'react-router'
 import toast from "react-hot-toast";
 import { useGetJobPickupDetailsQuery, useStartRideMutation } from '../../app/driverApi/driverApi'
 import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
-
 import Button from '../../components/shared/buttons/button'
 import DriverMapscreen from './DriverMapscreen'
 const RideDeatails = () => {
@@ -39,7 +38,7 @@ const RideDeatails = () => {
     const handleCheckout = async () => {
         try {
             const res = await starRide({ jobId: id, driverId }).unwrap();
-            navigate(`/start-pickup/jobId/${id}/driver/${driverId}`);
+            navigate(`/ride-detail/jobId/${id}/driver/${driverId}`);
         } catch (error) {
         }
     };
