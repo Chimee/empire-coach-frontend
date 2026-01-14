@@ -151,7 +151,7 @@ const StartPickup = () => {
 
       <div className='text-center px-3 pb-3 mt-3'>
         <Button
-          label={isLoading ? 'Processing...' : 'Begin Trip'}
+          label={isLoading ? 'Processing...' : 'Continue Trip'}
           className='rounded w-100'
           onClick={handleBeginTrip}
           disabled={isLoading}

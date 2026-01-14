@@ -38,7 +38,7 @@ const RideDeatails = () => {
     const handleCheckout = async () => {
         try {
             const res = await starRide({ jobId: id, driverId }).unwrap();
-            navigate(`/ride-detail/jobId/${id}/driver/${driverId}`);
+            navigate(`/start-pickup/jobId/${id}/driver/${driverId}`);
         } catch (error) {
         }
     };
