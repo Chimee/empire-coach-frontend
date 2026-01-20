@@ -136,7 +136,7 @@ const RideStatusScreen = () => {
                     {/* Compact header – always visible */}
                     <div className='driverJob mb-3'>
                         <p>Job #{pickup?.id}</p>
-                        <span className='class-in-transit fn-badge mt-4 text-capitalize'>{(pickup?.request_status == 'in_transit' ? "In-Transit" : pickup?.request_status)}</span>
+                        <span className='class-in-transit fn-badge mt-4 text-capitalize'>{(pickup?.request_status == 'in_transit' ? "In-Transit" :"In-Transit")}</span>
                     </div>
 
                     {/* SHOW DETAILS - Collapsible Section */}
