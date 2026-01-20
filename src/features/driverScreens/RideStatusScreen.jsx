@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router';
 import { useGetRideDetailsQuery } from '../../app/adminApi/adminApi'
 import toast from "react-hot-toast";
 import DriverMapscreen from './DriverMapscreen';
+import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
 
 
 const RideStatusScreen = () => {
@@ -113,111 +114,154 @@ const RideStatusScreen = () => {
 
     return (
         <div className='mobile_wrapper position-relative d-flex flex-column'>
-         
-                <DriverMapscreen
-                    pickupCoords={pickupCoords}
-                    dropoffCoords={dropoffCoords}
-                    currentLocation={currentLocation || backendCurrentLocation || null}
-                    height="50vh"
-                />
-          
 
+            <DriverMapscreen
+                pickupCoords={pickupCoords}
+                dropoffCoords={dropoffCoords}
+                currentLocation={currentLocation || backendCurrentLocation || null}
+                height="50vh"
+            />
             <div className='aboveMap'>
                 <div className='job_view position-relative pt-2'>
-                    <div className='d-flex justify-content-center'>
-                        <div className="d-flex justify-content-center mt-2">
-                            <button
-                                className="toggle-btn"
-                                onClick={() => setShow(!show)}
-                            >
-                                {show ? "Hide Details ▲" : "Show Details ▼"}
-                            </button>
-                        </div>
+                    {/* Toggle Button - Always Visible */}
+                    <div className='d-flex justify-content-center mb-3'>
+                        <button
+                            className="toggle-btn"
+                            onClick={() => setShow(!show)}
+                        >
+                            {show ? "Hide Details ▲" : "Show Details ▼"}
+                        </button>
                     </div>
 
-                    <div className='driverJob'>
+                    {/* Compact header – always visible */}
+                    <div className='driverJob mb-3'>
                         <p>Job #{pickup?.id}</p>
-                        <span className='en-route'>En-Route</span>
-                        <p>
-                            {pickup?.vehicle_year} {pickup?.vehicle_make} {pickup?.vehicle_model} ({pickup?.fuel_type})
-                        </p>
-
-                        <div className='d-flex location-wrapper'>
-                            <ul className='p-0 m-0 flex-grow-1 border-end'>
-                                <li className='pickupLoc position-relative align-items-center pb-3 gap-2 d-flex'>
-                                    <DriverLocationSvg className="flex-shrink-0 bg-white z-3" />
-                                    {pickup?.pickup_location}
-                                </li>
-                                <li className=' d-flex gap-2 align-items-center'>
-                                    <DriverDropLocationSvg className="flex-shrink-0 bg-white z-3" />
-                                    {pickup?.dropoff_location}
-                                </li>
-                            </ul>
-                            <ul className='pl-1 mb-0 text-black'>
-                                <li className='text-center '>
-                                    <strong>
-                                        {new Date().toLocaleString('en-US', { month: 'short' })} <br />
-                                        {new Date().getDate()}/{new Date().getFullYear()}
-                                    </strong>
-                                </li>
-                                <li className='text-center '>
-                                    {new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
-                                </li>
-                            </ul>
-                        </div>
+                        <span className='en-route'>{(pickup?.request_status == 'in_transit' ? "In-Transit" : pickup?.request_status)}</span>
                     </div>
 
+                    {/* SHOW DETAILS - Collapsible Section */}
                     {show && (
-                        <div className='text-center pb-3 d-flex flex-column gap-3 mt-3'>
-                            {locationMessage && (
-                                <div className="location-info-card">
-                                    <div className="info-left">
-                                        <span className="info-icon">ℹ️</span>
-                                    </div>
+                        <div className='pb-3 px-2 d-flex flex-column gap-3'>
+                            {/* Pickup & Drop-off */}
+                            <div className='driverJob'>
+                                <div className='d-flex location-wrapper'>
+                                    <ul className='p-0 m-0 flex-grow-1 border-end'>
+                                        <li className='d-flex gap-2 pb-3 pickupLoc'>
+                                            <div className="">
+                                                <DriverLocationSvg className="shrink-0" />
+                                            </div>
+                                            <div className='loc-details d-flex flex-column gap-1'>
+                                                <h6>Pickup Details</h6>
+                                                <span>{pickup?.pickup_business_name}</span>
+                                                <span>{pickup?.pickup_location}</span>
+                                                <span>
+                                                    {formatDateToMDY(pickup?.pickup_date)}{" "}
+                                                    {formatTimeTo12Hour(pickup?.pickup_time)}
+                                                </span>
+                                                <span>Contact: {pickup?.pickup_POC_name}</span>
+                                                <span>Phone: {pickup?.raw_pickup_POC_phone}</span>
+                                                {pickup?.pickup_additional_note && (
+                                                    <span>Notes: {pickup?.pickup_additional_note}</span>
+                                                )}
+                                            </div>
+                                        </li>
 
-                                    <div className="info-content">
-                                        {locationMessage.split("\n").map((line, i) => (
-                                            <div key={i}>{line}</div>
-                                        ))}
-                                    </div>
-
-                                    <span
-                                        className="info-close"
-                                        onClick={() => setLocationMessage("")}
-                                    >
-                                        ×
-                                    </span>
+                                        <li className='d-flex gap-2'>
+                                            <DriverDropLocationSvg className="shrink-0" />
+                                            <div className='loc-details d-flex flex-column gap-1'>
+                                                <h6>Drop-off Details</h6>
+                                                <span>{pickup?.dropoff_business_name}</span>
+                                                <span>{pickup?.dropoff_location}</span>
+                                                {pickup?.dropoff_date && (
+                                                    <span>
+                                                        {formatDateToMDY(pickup?.dropoff_date)}{" "}
+                                                        {formatTimeTo12Hour(pickup?.dropoff_time)}
+                                                    </span>
+                                                )}
+                                                <span>Phone: {pickup?.raw_dropoff_POC_phone}</span>
+                                                {pickup?.dropoff_additional_note && (
+                                                    <span>Notes: {pickup?.dropoff_additional_note}</span>
+                                                )}
+                                            </div>
+                                        </li>
+                                    </ul>
                                 </div>
-                            )}
-                            <Button
-                                label='Update Location'
-                                className='rounded w-100 bordered'
-                                onClick={handleUpdateLocation}
-                            />
+                            </div>
 
-                            <Button
-                                label='Upload Trip Documents'
-                                className='rounded w-100 bordered'
-                                onClick={() => navigate(
-                                    `/upload-documents/jobId/${id}/driver/${driverId}`,
-                                    { state: { request_status: pickup?.request_status } }
-                                )}
-                            />
+                            {/* Vehicle + Services */}
+                            <div className='d-flex gap-2'>
+                                {/* Vehicle */}
+                                <div className='driverJob flex-grow-1'>
+                                    <h6 className='mb-2'>Vehicle</h6>
+                                    <p className='mb-1 small'>
+                                        {pickup?.vehicle_year} {pickup?.vehicle_make} {pickup?.vehicle_model}
+                                    </p>
+                                    <p className='mb-1 small'>VIN: {pickup?.vin_number}</p>
+                                    <p className='mb-0 small'>Fuel: {pickup?.fuel_type}</p>
+                                </div>
 
-                            {!updatedLocation && (
-                                <p className="text-danger small text-center mb-1">
-                                    Please update your current location to start delivery
-                                </p>
-                            )}
-
-                            <Button
-                                label='Start Delivery Check-Out'
-                                className='rounded w-100'
-                                disabled={!updatedLocation}
-                                onClick={() => navigate(`/end-pickup/jobId/${id}/driver/${driverId}`)}
-                            />
+                                {/* Services */}
+                                <div className='driverJob text-end' style={{ minWidth: '45%' }}>
+                                    <h6 className='mb-2'>Services</h6>
+                                    <ul className='mb-0 p-0 small list-unstyled text-end'>
+                                        {pickup?.deliver_washed && <li>Washed</li>}
+                                        {pickup?.deliver_full && <li>Full Tank</li>}
+                                        {pickup?.send_driver_contact_info && <li>Share Contact</li>}
+                                        {!pickup?.deliver_washed &&
+                                            !pickup?.deliver_full &&
+                                            !pickup?.send_driver_contact_info && (
+                                                <li>None</li>
+                                            )}
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     )}
+
+                    {/* Action Buttons - Always Visible at Bottom */}
+                    <div className='pb-3 px-2 d-flex flex-column gap-3 mt-3'>
+                        {/* Location Message */}
+                        {locationMessage && (
+                            <div className="location-info-card">
+                                <div className="info-content">
+                                    {locationMessage.split("\n").map((line, i) => (
+                                        <div key={i}>{line}</div>
+                                    ))}
+                                </div>
+                                <span className="info-close" onClick={() => setLocationMessage("")}>×</span>
+                            </div>
+                        )}
+
+                        <Button
+                            label='Update Location'
+                            className='rounded w-100 bordered'
+                            onClick={handleUpdateLocation}
+                        />
+
+                        <Button
+                            label='Upload Trip Documents'
+                            className='rounded w-100 bordered'
+                            onClick={() =>
+                                navigate(`/upload-documents/jobId/${id}/driver/${driverId}`, {
+                                    state: { request_status: pickup?.request_status }
+                                })
+                            }
+                        />
+
+                        {!updatedLocation && (
+                            <p className="text-danger small text-center mb-0">
+                                Please update your current location to start delivery
+                            </p>
+                        )}
+
+                        <Button
+                            label='Start Delivery Check-Out'
+                            className='rounded w-100'
+                            disabled={!updatedLocation}
+                            onClick={() => navigate(`/end-pickup/jobId/${id}/driver/${driverId}`)}
+                        />
+                    </div>
+
                 </div>
             </div>
         </div>
