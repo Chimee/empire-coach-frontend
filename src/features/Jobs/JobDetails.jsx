@@ -7,7 +7,7 @@ import './job.css'
 import Button from '../../components/shared/buttons/button'
 import { useParams, useLocation } from 'react-router'
 import { useGetJobDetailsQuery } from '../../app/customerApi/customerApi'
-import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
+import { formatDateToMDY, formatTimeTo12Hour, formatDateTimeInTimezone } from '../../helpers/Utils'
 import CancelConfirmationModal from '../../components/shared/modalContent/CancelJobModal'
 import ReScheduleDate from '../../components/shared/modalContent/ReschceduleDate'
 import { getClassAndTitleByStatus } from '../../helpers/Utils'
@@ -17,9 +17,9 @@ import { useGetUpdateLocationLogsQuery } from "../../app/globalApi"
 import TickSvg from '../../images/tickSvg.svg'
 import DriverMapscreen from '../driverScreens/DriverMapscreen'
 import { getLocationName } from '../../helpers/Utils'
+
 const JobDetails = () => {
     const { id } = useParams();
-
 
     const { data: jobDetails, isLoading } = useGetJobDetailsQuery({ id }, { skip: !id });
     const { state } = useLocation();
@@ -38,6 +38,10 @@ const JobDetails = () => {
 
     const [locationNames, setLocationNames] = useState([]);
 
+    // Get user timezone from job data
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+
     useEffect(() => {
         async function fetchLocationNames() {
             if (!getLocationUpdates?.data) return;
@@ -54,10 +58,9 @@ const JobDetails = () => {
         fetchLocationNames();
     }, [getLocationUpdates]);
 
-
     const pickupCoords = { lat: jobData?.pickup_latitude, lng: jobData?.pickup_longitude } || null;
-
     const dropoffCoords = { lat: jobData?.dropoff_latitude, lng: jobData?.dropoff_longitude } || null;
+
     const breadcrumbItems = [
         {
             name: isCompleted ? 'Completed jobs' : 'Jobs',
@@ -143,11 +146,9 @@ const JobDetails = () => {
                                             </>
                                         ) : null}
                                 </div>
-
                             </div>
                         </Col>
                     </Row>
-
                 </Col>
                 <Col lg={3}>
                     {(
@@ -208,7 +209,12 @@ const JobDetails = () => {
                                     <ul className='p-0 job-list-bullets'>
                                         <li>{jobDetails?.data?.jobData?.pickup_business_name}</li>
                                         <li>{jobDetails?.data?.jobData?.pickup_location}</li>
-                                        <li>{formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}</li>
+                                        <li>
+                                            {jobData?.pickup_datetime_utc && userTimezone ?
+                                                formatDateTimeInTimezone(jobData.pickup_datetime_utc, userTimezone) :
+                                                `${formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} ${formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}`
+                                            }
+                                        </li>
                                         <li>Contact: {jobDetails?.data?.jobData?.pickup_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_pickup_POC_phone}</li>
                                         {jobDetails?.data?.jobData?.pickup_additional_note?.trim() && (
@@ -221,7 +227,12 @@ const JobDetails = () => {
                                     <ul className='p-0 job-list-bullets'>
                                         <li>{jobDetails?.data?.jobData?.dropoff_business_name}</li>
                                         <li>{jobDetails?.data?.jobData?.dropoff_location}</li>
-                                        <li>{formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}</li>
+                                        <li>
+                                            {jobData?.dropoff_datetime_utc && userTimezone ?
+                                                formatDateTimeInTimezone(jobData.dropoff_datetime_utc, userTimezone) :
+                                                `${formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} ${formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}`
+                                            }
+                                        </li>
                                         <li>Contact: {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_dropoff_POC_phone}</li>
                                         {jobDetails?.data?.jobData?.dropoff_additional_note?.trim() && (
@@ -234,7 +245,6 @@ const JobDetails = () => {
                                 <DriverMapscreen
                                     height="247px"
                                     pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
-
                             </Col>
                             <Col lg={12} className='mt-3'>
                                 <h6 className='small-heading'>Location Tracking</h6>
@@ -263,13 +273,11 @@ const JobDetails = () => {
                             <Row>
                                 {vehicle_photo?.map((curelem, index) => {
                                     return (
-
                                         <Col lg={3} key={index}>
                                             <div className='rounded bg-body-secondary'>
                                                 <img src={curelem} alt="user" className='img-fluid' />
                                             </div>
                                         </Col>
-
                                     )
                                 })}
                             </Row>
@@ -292,15 +300,18 @@ const JobDetails = () => {
                                                         </span>
                                                     )}
                                                 </span>
-
-                                                <span>{formatDateToMDY(logs?.createdAt)}</span>
+                                                <span>
+                                                    {userTimezone ?
+                                                        formatDateTimeInTimezone(logs?.createdAt, userTimezone) :
+                                                        formatDateToMDY(logs?.createdAt)
+                                                    }
+                                                </span>
                                             </div>
                                         </li>
                                     ))
                                 ) : (
                                     <li className='text-center text-muted'>No timeline available</li>
                                 )}
-
                             </ul>
                         </Col>
                     </Row>
@@ -325,7 +336,6 @@ const JobDetails = () => {
                 />
             )}
         </>
-
     )
 }
 

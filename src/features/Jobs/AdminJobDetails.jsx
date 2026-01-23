@@ -8,7 +8,7 @@ import Button from '../../components/shared/buttons/button'
 import { PendingCarSvg } from '../../svgFiles/PendingCarSvg'
 import { useParams, useLocation } from 'react-router'
 import { useGetAdminJobDetailsQuery, useCancelJobsAdminMutation, useApproveJobsByAdminMutation, useDeclineJobCancelReqAdminMutation, useSendLinkAdminMutation, useGetRideDetailsQuery, useCompleteJobByAdminMutation } from '../../app/adminApi/adminApi'
-import { formatDateToMDY, formatTimeTo12Hour } from '../../helpers/Utils'
+import { formatDateToMDY, formatTimeTo12Hour, formatDateTimeInTimezone } from '../../helpers/Utils'
 import toast from "react-hot-toast";
 import CancelConfirmationModal from '../../components/shared/modalContent/CancelJobModal'
 import AssignDriverModal from '../../components/shared/modalContent/AssignDriverPopup'
@@ -31,7 +31,6 @@ const AdminJobDetails = () => {
     const getToken = localStorage.getItem("authToken")
     const authToken = jwtDecode(getToken)
     const userRole = authToken?.role;
-    debugger;
     const { state } = useLocation();
     const [sentLink, setSentLink] = useState(false)
     const [cancelJobAdmin, { isLoading: isCancelling }] = useCancelJobsAdminMutation();
@@ -57,6 +56,8 @@ const AdminJobDetails = () => {
     const [selectedAddressType, setSelectedAddressType] = useState('pickup');
     const [locationNames, setLocationNames] = useState([]);
 
+    // Get user timezone
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     useEffect(() => {
         async function fetchLocationNames() {
             if (!getLocationUpdates?.data) return;
@@ -74,7 +75,6 @@ const AdminJobDetails = () => {
     }, [getLocationUpdates]);
 
     const { data: fetchRideDetails } = useGetRideDetailsQuery({ id }, { skip: !id });
-
     const checking_vehicle_photo = fetchRideDetails?.data?.vehicle_photo
     const delivery_vehicle_photo = fetchRideDetails?.data?.delivery_photos
     const breadcrumbItems = [
@@ -261,7 +261,10 @@ const AdminJobDetails = () => {
                                                 pickup_date: jobDetails?.data?.jobData?.pickup_date,
                                                 pickup_time: jobDetails?.data?.jobData?.pickup_time,
                                                 dropoff_date: jobDetails?.data?.jobData?.dropoff_date,
-                                                dropoff_time: jobDetails?.data?.jobData?.dropoff_time
+                                                dropoff_time: jobDetails?.data?.jobData?.dropoff_time,
+                                                pickup_datetime_utc: jobDetails?.data?.jobData?.pickup_datetime_utc,
+                                                dropoff_datetime_utc: jobDetails?.data?.jobData?.dropoff_datetime_utc,
+                                                user_timezone: jobDetails?.data?.jobData?.user_timezone
                                             });
                                             setSelectedAddressType("pickup");
                                             setEditAddressModal(true);
@@ -276,7 +279,10 @@ const AdminJobDetails = () => {
 
                                         </li>
                                         <li>
-                                            {formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}
+                                            {jobData?.pickup_datetime_utc && userTimezone ?
+                                                formatDateTimeInTimezone(jobData.pickup_datetime_utc, userTimezone) :
+                                                `${formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} ${formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}`
+                                            }
                                         </li>
                                         <li>Contact: {jobDetails?.data?.jobData?.pickup_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_pickup_POC_phone}</li>
@@ -301,7 +307,10 @@ const AdminJobDetails = () => {
                                                 pickup_date: jobDetails?.data?.jobData?.pickup_date,
                                                 pickup_time: jobDetails?.data?.jobData?.pickup_time,
                                                 dropoff_date: jobDetails?.data?.jobData?.dropoff_date,
-                                                dropoff_time: jobDetails?.data?.jobData?.dropoff_time
+                                                dropoff_time: jobDetails?.data?.jobData?.dropoff_time,
+                                                pickup_datetime_utc: jobDetails?.data?.jobData?.pickup_datetime_utc,
+                                                dropoff_datetime_utc: jobDetails?.data?.jobData?.dropoff_datetime_utc,
+                                                user_timezone: jobDetails?.data?.jobData?.user_timezone
                                             });
                                             setSelectedAddressType("dropoff");
                                             setEditAddressModal(true);
@@ -316,7 +325,10 @@ const AdminJobDetails = () => {
 
                                         </li>
                                         <li>
-                                            {formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} {formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}
+                                            {jobData?.dropoff_datetime_utc && userTimezone ?
+                                                formatDateTimeInTimezone(jobData.dropoff_datetime_utc, userTimezone) :
+                                                `${formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} ${formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}`
+                                            }
                                         </li>
                                         <li>Contact: {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_dropoff_POC_phone}</li>
@@ -482,15 +494,18 @@ const AdminJobDetails = () => {
                                                         </span>
                                                     )}
                                                 </span>
-
-                                                <span>{formatDateToMDY(logs?.createdAt)}</span>
+                                                <span>
+                                                    {userTimezone ?
+                                                        formatDateTimeInTimezone(logs?.createdAt, userTimezone) :
+                                                        formatDateToMDY(logs?.createdAt)
+                                                    }
+                                                </span>
                                             </div>
                                         </li>
                                     ))
                                 ) : (
                                     <li className='text-center text-muted'>No timeline available</li>
                                 )}
-
                             </ul>
                         </Col>
                     </Row>
@@ -576,4 +591,4 @@ const AdminJobDetails = () => {
     )
 }
 
-export default AdminJobDetails 
+export default AdminJobDetails

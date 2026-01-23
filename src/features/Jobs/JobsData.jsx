@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Datatable from '../../components/shared/datatable/Datatable';
 import { useGetAllJobsByStatusQuery } from '../../app/customerApi/customerApi';
-import { formatDateToMDY, getClassAndTitleByStatus } from '../../helpers/Utils';
+import { formatDateToMDY, formatDateInTimezone, getClassAndTitleByStatus } from '../../helpers/Utils';
 import { useNavigate } from 'react-router';
 import Button from '../../components/shared/buttons/button';
 import VehicleDetailsModal from '../../components/shared/modalContent/FillingPoModel';
@@ -49,7 +49,7 @@ const JobsData = ({ tabName }) => {
 
         return (
           <span title={fullRoute}>
-            {truncate(pickup)} to {truncate(dropoff)}`
+            {truncate(pickup)} to {truncate(dropoff)}
           </span>
         );
       },
@@ -65,16 +65,36 @@ const JobsData = ({ tabName }) => {
     {
       label: "Pickup Date",
       accessor: "pickupDate",
-      cell: ({ row }) => <span>{formatDateToMDY(row?.pickup_date)}</span>,
+      cell: ({ row }) => {
+        // Use UTC datetime if available, otherwise fallback to old format
+        if (row?.pickup_datetime_utc && row?.user_timezone) {
+          return (
+            <span title={`Timezone: ${row.user_timezone}`}>
+              {formatDateInTimezone(row.pickup_datetime_utc, row.user_timezone)}
+            </span>
+          );
+        }
+        return <span>{formatDateToMDY(row?.pickup_date)}</span>;
+      },
     },
     {
       label: "Delivery Date",
       accessor: "deliveryDate",
-      cell: ({ row }) => (
-        <span>
-          {row?.dropoff_date ? formatDateToMDY(row.dropoff_date) : "-"}
-        </span>
-      ),
+      cell: ({ row }) => {
+        // Use UTC datetime if available, otherwise fallback to old format
+        if (row?.dropoff_datetime_utc && row?.user_timezone) {
+          return (
+            <span title={`Timezone: ${row.user_timezone}`}>
+              {formatDateInTimezone(row.dropoff_datetime_utc, row.user_timezone)}
+            </span>
+          );
+        }
+        return (
+          <span>
+            {row?.dropoff_date ? formatDateToMDY(row.dropoff_date) : "-"}
+          </span>
+        );
+      },
     },
     {
       label: "PO Number",

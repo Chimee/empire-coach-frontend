@@ -1,6 +1,7 @@
 import { toast } from 'react-hot-toast';
 import React from 'react';
 import { parsePhoneNumberFromString, getCountries, getCountryCallingCode } from "libphonenumber-js";
+
 export const isNullOrEmpty = (data) => {
   return (
     data === null ||
@@ -11,15 +12,8 @@ export const isNullOrEmpty = (data) => {
   );
 };
 
-// export const showToast = (message = '', type = 'info') => {
-//     if (isNullOrEmpty(message) || isNullOrEmpty(type) || !type) {
-//         return;
-//     }
-//
-//     toast(message, { type, toastId: message });
-// };
 export const capitalize = (str) => {
-  if (!str) return str; // Handle null or undefined strings
+  if (!str) return str;
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
@@ -32,13 +26,12 @@ export const showToast = (message = '', type = 'info', options = {}) => {
 
   toast(message, {
     type: toastType,
-    id: options.id || message, // fallback to message if no custom id
+    id: options.id || message,
     duration: options.duration || 4000,
     position: options.position || 'top-center',
-    ...options, // spread other custom react-hot-toast options
+    ...options,
   });
 };
-
 
 export function serialize(obj) {
   let str = [];
@@ -79,7 +72,6 @@ export const createOptionListForSelectTag = (data = null, label = "", value = ""
 
   return list;
 };
-
 
 export const validatePassword = (password, confirmPassword) => {
   const regexForUppercase = new RegExp("(?=.*[A-Z])");
@@ -172,7 +164,6 @@ export const getClassAndTitleByStatus = (status) => {
       className: 'class-rescheduled',
       title: 'Rescheduled',
     },
-
     in_transit: {
       className: 'class-in-transit',
       title: 'In-Transit',
@@ -185,7 +176,6 @@ export const getClassAndTitleByStatus = (status) => {
       className: 'class-awaiting-reschedule-date',
       title: 'Awaiting Reschedule Date',
     },
-
   };
 
   return (
@@ -200,7 +190,7 @@ export const formatDateToMDY = (dateString) => {
   if (!dateString) return '';
 
   const date = new Date(dateString);
-  const month = date.getUTCMonth() + 1; // months are 0-based
+  const month = date.getUTCMonth() + 1;
   const day = date.getUTCDate();
   const year = date.getUTCFullYear();
 
@@ -215,22 +205,122 @@ export const formatTimeTo12Hour = (timeString) => {
   const minute = parseInt(minuteStr, 10);
 
   const period = hour >= 12 ? 'PM' : 'AM';
-  hour = hour % 12 || 12; // convert 0 -> 12
+  hour = hour % 12 || 12;
 
   return `${hour}:${minute.toString().padStart(2, '0')} ${period}`;
 };
-
 
 export const formatDate = (dateString) => {
   if (!dateString) return '';
 
   const date = new Date(dateString);
   return date.toLocaleString('en-US', {
-    month: 'short',   // "Apr"
-    day: 'numeric',   // "30"  // AM/PM format
+    month: 'short',
+    day: 'numeric',
   });
 };
 
+// ========== TIMEZONE UTILITY FUNCTIONS ==========
+
+/**
+ * Convert UTC datetime to user's timezone and format as date + time
+ * @param {string} utcDateTime - UTC datetime string (ISO format)
+ * @param {string} timezone - IANA timezone string (e.g., 'Asia/Kolkata')
+ * @returns {string} Formatted datetime string (e.g., '01/25/2026 2:30 PM')
+ */
+export const formatDateTimeInTimezone = (utcDateTime, timezone) => {
+  if (!utcDateTime || !timezone) return '';
+
+  try {
+    const date = new Date(utcDateTime);
+
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date:', utcDateTime);
+      return '';
+    }
+
+    // Format date and time in user's timezone
+    const dateOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: timezone
+    };
+    const timeOptions = {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: timezone
+    };
+
+    const formattedDate = date.toLocaleDateString('en-US', dateOptions);
+    const formattedTime = date.toLocaleTimeString('en-US', timeOptions);
+
+    return `${formattedDate} ${formattedTime}`;
+  } catch (error) {
+    console.error('Error formatting datetime:', error);
+    return '';
+  }
+};
+
+/**
+ * Convert UTC datetime to user's timezone and format as date only
+ * @param {string} utcDateTime - UTC datetime string (ISO format)
+ * @param {string} timezone - IANA timezone string (e.g., 'Asia/Kolkata')
+ * @returns {string} Formatted date string (e.g., '01/25/2026')
+ */
+export const formatDateInTimezone = (utcDateTime, timezone) => {
+  if (!utcDateTime || !timezone) return '';
+
+  try {
+    const date = new Date(utcDateTime);
+
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date:', utcDateTime);
+      return '';
+    }
+
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: timezone
+    });
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return '';
+  }
+};
+
+/**
+ * Convert UTC datetime to user's timezone and format as time only
+ * @param {string} utcDateTime - UTC datetime string (ISO format)
+ * @param {string} timezone - IANA timezone string (e.g., 'Asia/Kolkata')
+ * @returns {string} Formatted time string (e.g., '2:30 PM')
+ */
+export const formatTimeInTimezone = (utcDateTime, timezone) => {
+  if (!utcDateTime || !timezone) return '';
+  try {
+    const date = new Date(utcDateTime);
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date:', utcDateTime);
+      return '';
+    }
+
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: timezone
+    });
+  } catch (error) {
+    console.error('Error formatting time:', error);
+    return '';
+  }
+};
+
+// ================================================
 
 export const fetchSnappedLocation = async (lat, lng) => {
   const path = `${lat},${lng}`;
@@ -246,8 +336,6 @@ export const fetchSnappedLocation = async (lat, lng) => {
   }
   return { lat, lng };
 };
-
-// utils/getLastLoginText
 
 export function getLastLoginText(lastLoginDate) {
   if (!lastLoginDate) return "Last login time not available";
@@ -281,6 +369,7 @@ export const validateRequiredFields = (fields) => {
   }
   return null;
 };
+
 export default function useClickOutside(ref, callback) {
   React.useEffect(() => {
     const handleClick = (event) => {
@@ -296,8 +385,9 @@ export default function useClickOutside(ref, callback) {
     };
   }, [ref, callback]);
 }
-   export async function getLocationName(lat, lng) {
-  const apiKey = process.env.REACT_APP_GOOGLE_MAP_API_KEY; // Keep in .env
+
+export async function getLocationName(lat, lng) {
+  const apiKey = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
   const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
 
   try {
@@ -322,10 +412,6 @@ export const appendFileOrNull = (key, value, formData) => {
   }
 };
 
-
-
-
-
 export const formatPhoneNumber = (phone) => {
   if (!phone) return "";
 
@@ -342,7 +428,6 @@ export const formatPhoneNumber = (phone) => {
       if (matchedCountry) {
         formatted = `+${onlyDigits}`;
       } else {
-       
         formatted = `+${onlyDigits}`;
       }
     }

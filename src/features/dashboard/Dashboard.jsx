@@ -5,6 +5,7 @@ import { PlusButtonSvg } from '../../svgFiles/PlusButtonSvg'
 import './dashboard.css'
 import { useNavigate } from 'react-router'
 import { jwtDecode } from '../../helpers/AccessControlUtils'
+
 // import 
 const Dashboard = () => {
   const divRef = useRef(null);
@@ -12,9 +13,9 @@ const Dashboard = () => {
   const token = localStorage.getItem('authToken')
   const tokenDecode = jwtDecode(token);
   const role = tokenDecode?.role
-  console.log(tokenDecode,"tokenDECODE")
+
   const username = tokenDecode?.username
-  console.log(username,"username-------")
+
   const [height, setHeight] = useState(0);
   useEffect(() => {
     const updateHeight = () => {

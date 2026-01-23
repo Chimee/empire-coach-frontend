@@ -23,6 +23,28 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
   const [updateDeliveryAddress, { isLoading: isUpdatingAddress }] = useUpdateDeliveryAddressMutation();
   const [updateJobDetails, { isLoading: isUpdating }] = useUpdateJobDetailsMutation();
 
+  // Get user timezone
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+
+  const convertUTCToLocal = (utcDateTime) => {
+    if (!utcDateTime) return { date: "", time: "" };
+
+    const date = new Date(utcDateTime);
+    const localDate = date.toLocaleDateString('en-CA');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const localTime = `${hours}:${minutes}`;
+
+    return { date: localDate, time: localTime };
+  };
+
+  // Convert local date/time to UTC
+  const convertToUTC = (date, time) => {
+    if (!date || !time) return null;
+    const dateTime = new Date(`${date}T${time}`);
+    return dateTime.toISOString();
+  };
 
   useEffect(() => {
     if (addressData) {
@@ -33,10 +55,24 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
         longitude: type === "pickup" ? addressData.pickup_longitude : addressData.dropoff_longitude,
       });
 
-      setPickupDate(addressData.pickup_date || "");
-      setPickupTime(addressData.pickup_time || "");
-      setDropoffDate(addressData.dropoff_date || "");
-      setDropoffTime(addressData.dropoff_time || "");
+      // Use UTC datetime if available, otherwise use old fields
+      if (addressData.pickup_datetime_utc) {
+        const { date, time } = convertUTCToLocal(addressData.pickup_datetime_utc);
+        setPickupDate(date);
+        setPickupTime(time);
+      } else {
+        setPickupDate(addressData.pickup_date?.split("T")[0] || "");
+        setPickupTime(addressData.pickup_time || "");
+      }
+
+      if (addressData.dropoff_datetime_utc) {
+        const { date, time } = convertUTCToLocal(addressData.dropoff_datetime_utc);
+        setDropoffDate(date);
+        setDropoffTime(time);
+      } else {
+        setDropoffDate(addressData.dropoff_date?.split("T")[0] || "");
+        setDropoffTime(addressData.dropoff_time || "");
+      }
     }
   }, [addressData, type, show]);
 
@@ -68,8 +104,8 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
 
     try {
       const otherType = type === "pickup" ? "dropoff" : "pickup";
-      if (userRole === "customer") {
 
+      if (userRole === "customer") {
         const payload = {
           addressId,
           business_name: business_name || undefined,
@@ -79,20 +115,22 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
           type,
           [`${otherType}_latitude`]: null,
           [`${otherType}_longitude`]: null,
-          jobId
+          jobId,
+          user_timezone: userTimezone,
         };
 
         if (type === "pickup") {
           payload.pickup_date = pickupDate || undefined;
           payload.pickup_time = pickupTime || undefined;
+          payload.pickup_datetime_utc = convertToUTC(pickupDate, pickupTime) || undefined;
         } else {
           payload.dropoff_date = dropoffDate || undefined;
           payload.dropoff_time = dropoffTime || undefined;
+          payload.dropoff_datetime_utc = convertToUTC(dropoffDate, dropoffTime) || undefined;
         }
 
         await updateDeliveryAddress({ data: payload }).unwrap();
       }
-
       else if (["admin", "superadmin"].includes(userRole)) {
         const payload = {
           jobId,
@@ -100,19 +138,24 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
           address,
           latitude,
           longitude,
+          user_timezone: userTimezone,
         };
 
         if (type === "pickup") {
           payload.pickup_date = pickupDate || undefined;
           payload.pickup_time = pickupTime || undefined;
+          payload.pickup_datetime_utc = convertToUTC(pickupDate, pickupTime) || undefined;
           payload.business_name = business_name || undefined;
           payload[`${otherType}_date`] = null;
+          payload[`${otherType}_datetime_utc`] = null;
           payload[`${otherType}_time`] = null;
         } else {
           payload.dropoff_date = dropoffDate || undefined;
           payload.dropoff_time = dropoffTime || undefined;
+          payload.dropoff_datetime_utc = convertToUTC(dropoffDate, dropoffTime) || undefined;
           payload.business_name = business_name || undefined;
           payload[`${otherType}_date`] = null;
+          payload[`${otherType}_datetime_utc`] = null;
           payload[`${otherType}_time`] = null;
         }
 
@@ -128,7 +171,6 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
       toast.error("Failed to update address");
     }
   };
-
 
   return (
     <CommonModal setShow={setShow} show={show} handleClose={handleClose} className="confirmationModal sm-width">
@@ -168,7 +210,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
             <input
               type="date"
               className="form-control mb-3"
-              value={pickupDate ? pickupDate.split("T")[0] : ""}
+              value={pickupDate}
               onChange={(e) => setPickupDate(e.target.value)}
             />
             <label className="form-label">Pickup Time</label>
@@ -187,7 +229,7 @@ const EditAddressModal = ({ show, handleClose, setShow, addressId, addressData, 
             <input
               type="date"
               className="form-control mb-3"
-              value={dropoffDate ? dropoffDate.split("T")[0] : ""}
+              value={dropoffDate}
               onChange={(e) => setDropoffDate(e.target.value)}
             />
             <label className="form-label">Dropoff Time</label>

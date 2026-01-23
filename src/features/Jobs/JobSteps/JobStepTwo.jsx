@@ -12,6 +12,9 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
   });
   const today = new Date().toISOString().split("T")[0];
 
+  // Get user's timezone
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   // Handle checkbox logic
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -38,13 +41,20 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
     }
   };
 
-  // Handle input changes
+  // Handle input changes with timezone
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+      timezone: userTimezone, // Store timezone for backend
     }));
+  };
+
+  // Convert local date/time to ISO string with timezone
+  const getUTCWithTimezone = (date, time) => {
+    const dateTime = new Date(`${date}T${time}`);
+    return dateTime.toUTCString();
   };
 
   // Validation
@@ -109,9 +119,21 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
     return true;
   };
 
-  // Next button handler
+  // Next button handler - prepare data with timezone info
   const onNext = () => {
     if (validate()) {
+      // Add ISO datetime strings and timezone before proceeding
+      const dataToSend = {
+        ...formData,
+        pickup_datetime_utc: getUTCWithTimezone(formData.pickup_date, formData.pickup_time),
+        user_timezone: userTimezone,
+      };
+
+      if (formData.dropoff_date && formData.dropoff_time) {
+        dataToSend.dropoff_datetime_utc = getUTCWithTimezone(formData.dropoff_date, formData.dropoff_time);
+      }
+
+      setFormData(dataToSend);
       handleNext();
     }
   };

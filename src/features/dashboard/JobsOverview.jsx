@@ -5,11 +5,11 @@ import { PoMissingSvg } from '../../svgFiles/PoMissingSvg'
 import { AwaitingSvg } from '../../svgFiles/AwaitingSvg'
 import { TransitSvg } from '../../svgFiles/TransitSvg'
 import { CancelledSvg } from '../../svgFiles/CancelledSvg'
-import {useGetJobOverviewQuery} from "../../app/dashBoardApi"
+import { useGetJobOverviewQuery } from "../../app/dashBoardApi"
 
 
 const JobsOverview = () => {
-  const { data, isFetching, isLoading } = useGetJobOverviewQuery();
+    const { data, isFetching, isLoading } = useGetJobOverviewQuery();
     return (
         <div className='dashboard_card'>
 
@@ -21,42 +21,42 @@ const JobsOverview = () => {
                         <h6>Total job requests</h6>
                         <h5>{data?.data.totalJobs}</h5>
                     </div>
-                    <JobRequestSvg/>
+                    <JobRequestSvg />
                 </li>
                 <li className='d-flex justify-content-between'>
                     <div>
                         <h6>Completed jobs</h6>
                         <h5>{data?.data.completedJobs}</h5>
                     </div>
-                   <CompletedJobSvg/>
+                    <CompletedJobSvg />
                 </li>
                 <li className='d-flex justify-content-between'>
                     <div>
                         <h6>PO missing</h6>
                         <h5>{data?.data.pomissingjobs}</h5>
                     </div>
-                  <PoMissingSvg/>
+                    <PoMissingSvg />
                 </li>
                 <li className='d-flex justify-content-between'>
                     <div>
                         <h6>Awaiting Reschedule date</h6>
                         <h5>{data?.data.awaiting_reschedule_Jobs}</h5>
                     </div>
-                  <AwaitingSvg/>
+                    <AwaitingSvg />
                 </li>
                 <li className='d-flex justify-content-between'>
                     <div>
                         <h6>In-transit</h6>
                         <h5>{data?.data.inTransitjobs}</h5>
                     </div>
-                  <TransitSvg/>
+                    <TransitSvg />
                 </li>
                 <li className='d-flex justify-content-between'>
                     <div>
                         <h6>Cancelled</h6>
                         <h5>{data?.data.cancelledJobs}</h5>
                     </div>
-                  <CancelledSvg/>
+                    <CancelledSvg />
                 </li>
             </ul>
 

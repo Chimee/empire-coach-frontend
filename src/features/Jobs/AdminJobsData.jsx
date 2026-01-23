@@ -1,16 +1,16 @@
-
-
 import React from 'react'
 import Datatable from '../../components/shared/datatable/Datatable';
 import { EditTableSvg } from '../../svgFiles/EditTableSvg';
 import { useGetAllJobsByStatusAdminQuery } from '../../app/adminApi/adminApi';
-import { formatDateToMDY } from '../../helpers/Utils';
+import { formatDateToMDY, formatDateInTimezone } from '../../helpers/Utils';
 import { getClassAndTitleByStatus } from '../../helpers/Utils';
 import { useNavigate } from 'react-router';
+
 const AdminJobsData = ({ tabName }) => {
     const navigate = useNavigate();
     const [page, setPage] = React.useState(1);
     const [search, setSearch] = React.useState("")
+
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
@@ -21,15 +21,12 @@ const AdminJobsData = ({ tabName }) => {
 
     const { data: jobsList, isLoading, error } = useGetAllJobsByStatusAdminQuery({ tabName: tabName, page: page, search: search });
 
-    
     const columns = [
         {
             label: "Id",
             accessor: "id",
             cell: ({ row }) => (
-                <span
-
-                >
+                <span>
                     {`${row?.id}`}
                 </span>
             ),
@@ -54,12 +51,11 @@ const AdminJobsData = ({ tabName }) => {
 
                 return (
                     <span title={fullRoute}>
-                        {truncate(pickup)} to {truncate(dropoff)}`
+                        {truncate(pickup)} to {truncate(dropoff)}
                     </span>
                 );
             },
         },
-
         {
             label: "PO Number",
             accessor: "po-number",
@@ -86,22 +82,41 @@ const AdminJobsData = ({ tabName }) => {
         {
             label: "Pickup Date",
             accessor: "pickupDate",
-            cell: ({ row }) => (
-                <span>
-                    {row?.pickup_date ? formatDateToMDY(row.pickup_date) : "-"}
-                </span>
-            ),
+            cell: ({ row }) => {
+                // Use UTC datetime if available, otherwise fallback to old format
+                if (row?.pickup_datetime_utc && row?.user_timezone) {
+                    return (
+                        <span title={`Timezone: ${row.user_timezone}`}>
+                            {formatDateInTimezone(row.pickup_datetime_utc, row.user_timezone)}
+                        </span>
+                    );
+                }
+                return (
+                    <span>
+                        {row?.pickup_date ? formatDateToMDY(row.pickup_date) : "-"}
+                    </span>
+                );
+            },
         },
         {
             label: "Delivery Date",
-            accessor: "pickupDate",
-            cell: ({ row }) => (
-                <span>
-                    {row?.dropoff_date ? formatDateToMDY(row.dropoff_date) : "-"}
-                </span>
-            ),
+            accessor: "deliveryDate",
+            cell: ({ row }) => {
+                // Use UTC datetime if available, otherwise fallback to old format
+                if (row?.dropoff_datetime_utc && row?.user_timezone) {
+                    return (
+                        <span title={`Timezone: ${row.user_timezone}`}>
+                            {formatDateInTimezone(row.dropoff_datetime_utc, row.user_timezone)}
+                        </span>
+                    );
+                }
+                return (
+                    <span>
+                        {row?.dropoff_date ? formatDateToMDY(row.dropoff_date) : "-"}
+                    </span>
+                );
+            },
         },
-
         { label: "Driver", accessor: "driver_name" },
         {
             label: "Actions",
@@ -118,6 +133,7 @@ const AdminJobsData = ({ tabName }) => {
             ),
         },
     ];
+
     return (
         <Datatable
             tableData={jobsList?.data}
@@ -125,12 +141,11 @@ const AdminJobsData = ({ tabName }) => {
             onPageChange={handlePageChange}
             page={page}
             showPegination={true}
-            isLoading={false}
+            isLoading={isLoading}
             showFilter={true}
             onFilterSearch={handleSearchJobs}
             title="Job List"
         />
-
     )
 }
 
