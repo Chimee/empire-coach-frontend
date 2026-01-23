@@ -280,7 +280,7 @@ const AdminJobDetails = () => {
                                         </li>
                                         <li>Contact: {jobDetails?.data?.jobData?.pickup_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_pickup_POC_phone}</li>
-                                        {jobDetails?.data?.jobData?.pickup_additional_note && <li>Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>}
+                                        {jobDetails?.data?.jobData?.pickup_additional_note && <li>Pickup Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>}
                                         {fetchRideDetails?.data?.checkin_mileage && <li>Starting Mileage: {fetchRideDetails?.data?.checkin_mileage}</li>}
                                         {fetchRideDetails?.data?.damage_notes && <li>Damages Notes: {fetchRideDetails?.data?.damage_notes}</li>}
                                     </ul>
@@ -320,7 +320,7 @@ const AdminJobDetails = () => {
                                         </li>
                                         <li>Contact: {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_dropoff_POC_phone}</li>
-                                        {jobDetails?.data?.jobData?.dropoff_additional_note && <li>Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>}
+                                        {jobDetails?.data?.jobData?.dropoff_additional_note && <li>Dropoff Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>}
                                         {fetchRideDetails?.data?.ending_mileage && <li>Ending Mileage: {fetchRideDetails?.data?.ending_mileage}</li>}
                                         {fetchRideDetails?.data?.delivery_notes && <li>Delivery Notes: {fetchRideDetails?.data?.delivery_notes}</li>}
                                     </ul>

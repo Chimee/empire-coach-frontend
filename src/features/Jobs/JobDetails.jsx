@@ -212,7 +212,7 @@ const JobDetails = () => {
                                         <li>Contact: {jobDetails?.data?.jobData?.pickup_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_pickup_POC_phone}</li>
                                         {jobDetails?.data?.jobData?.pickup_additional_note?.trim() && (
-                                            <li>Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>
+                                            <li>Pickup Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>
                                         )}
                                     </ul>
                                 </Col>
@@ -225,7 +225,7 @@ const JobDetails = () => {
                                         <li>Contact: {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_dropoff_POC_phone}</li>
                                         {jobDetails?.data?.jobData?.dropoff_additional_note?.trim() && (
-                                            <li>Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>
+                                            <li>Dropoff Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>
                                         )}
                                     </ul>
                                 </Col>
