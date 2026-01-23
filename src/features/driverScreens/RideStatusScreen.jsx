@@ -255,7 +255,7 @@ const RideStatusScreen = () => {
                         )}
 
                         <Button
-                            label='Start Delivery Check-Out'
+                            label='Start Delivery'
                             className='rounded w-100'
                             disabled={!updatedLocation}
                             onClick={() => navigate(`/end-pickup/jobId/${id}/driver/${driverId}`)}

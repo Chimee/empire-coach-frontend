@@ -111,7 +111,7 @@ const RideDeatails = () => {
                             />
                         ) : (
                             <Button
-                                label='Start Check-in'
+                                label='Start Pickup'
                                 className='rounded w-100'
                                 onClick={handleCheckout}
                             />
