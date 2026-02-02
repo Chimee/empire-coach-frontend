@@ -71,7 +71,6 @@ const AddDriver = () => {
   };
 
   const handleSubmit = async () => {
-    debugger;
     const { name, email, phone, note } = userData;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

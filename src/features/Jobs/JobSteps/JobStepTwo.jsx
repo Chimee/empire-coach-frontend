@@ -26,17 +26,28 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
       });
       setFormData((prev) => ({
         ...prev,
-        time_relaxation: checked,
+        pickup_time_relaxation: checked,
+        dropoff_time_relaxation: checked,
       }));
-    } else {
+    } else if (name === 'mustOccur') {
       setTimingPriority((prev) => ({
         ...prev,
-        [name]: checked,
+        mustOccur: checked,
         both: false,
       }));
       setFormData((prev) => ({
         ...prev,
-        time_relaxation: false,
+        pickup_time_relaxation: !checked,
+      }));
+    } else if (name === 'mustDelivery') {
+      setTimingPriority((prev) => ({
+        ...prev,
+        mustDelivery: checked,
+        both: false,
+      }));
+      setFormData((prev) => ({
+        ...prev,
+        dropoff_time_relaxation: !checked,
       }));
     }
   };
@@ -51,10 +62,11 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
     }));
   };
 
-  // Convert local date/time to ISO string with timezone
-  const getUTCWithTimezone = (date, time) => {
+  // Convert local date/time to UTC ISO string
+  const convertToUTC = (date, time) => {
+    if (!date || !time) return null;
     const dateTime = new Date(`${date}T${time}`);
-    return dateTime.toUTCString();
+    return dateTime.toISOString();
   };
 
   // Validation
@@ -114,6 +126,45 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
         toast.error("Delivery time is required");
         return false;
       }
+
+      // Validate delivery date/time is after pickup
+      const dropoffDate = new Date(formData.dropoff_date);
+      const dropoffTimeParts = formData.dropoff_time.split(':');
+      const dropoffDateTime = new Date(dropoffDate);
+      dropoffDateTime.setHours(parseInt(dropoffTimeParts[0], 10));
+      dropoffDateTime.setMinutes(parseInt(dropoffTimeParts[1], 10));
+      dropoffDateTime.setSeconds(0);
+      dropoffDateTime.setMilliseconds(0);
+
+      if (dropoffDateTime <= pickupDateTime) {
+        toast.dismiss();
+        toast.error("Delivery date/time must be after pickup date/time");
+        return false;
+      }
+    }
+
+    // If "both" is selected, both pickup and dropoff should be provided
+    if (timingPriority.both) {
+      if (!formData.dropoff_date || !formData.dropoff_time) {
+        toast.dismiss();
+        toast.error("Both pickup and delivery date/time are required when 'Both are important but flexible' is selected");
+        return false;
+      }
+
+      // Validate delivery date/time is after pickup
+      const dropoffDate = new Date(formData.dropoff_date);
+      const dropoffTimeParts = formData.dropoff_time.split(':');
+      const dropoffDateTime = new Date(dropoffDate);
+      dropoffDateTime.setHours(parseInt(dropoffTimeParts[0], 10));
+      dropoffDateTime.setMinutes(parseInt(dropoffTimeParts[1], 10));
+      dropoffDateTime.setSeconds(0);
+      dropoffDateTime.setMilliseconds(0);
+
+      if (dropoffDateTime <= pickupDateTime) {
+        toast.dismiss();
+        toast.error("Delivery date/time must be after pickup date/time");
+        return false;
+      }
     }
 
     return true;
@@ -122,15 +173,15 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
   // Next button handler - prepare data with timezone info
   const onNext = () => {
     if (validate()) {
-      // Add ISO datetime strings and timezone before proceeding
+      // Add UTC datetime strings and timezone before proceeding
       const dataToSend = {
         ...formData,
-        pickup_datetime_utc: getUTCWithTimezone(formData.pickup_date, formData.pickup_time),
+        pickup_datetime_utc: convertToUTC(formData.pickup_date, formData.pickup_time),
         user_timezone: userTimezone,
       };
 
       if (formData.dropoff_date && formData.dropoff_time) {
-        dataToSend.dropoff_datetime_utc = getUTCWithTimezone(formData.dropoff_date, formData.dropoff_time);
+        dataToSend.dropoff_datetime_utc = convertToUTC(formData.dropoff_date, formData.dropoff_time);
       }
 
       setFormData(dataToSend);

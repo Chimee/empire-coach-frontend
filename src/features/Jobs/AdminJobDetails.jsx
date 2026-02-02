@@ -24,6 +24,7 @@ import EditAddressModal from "../../components/shared/modalContent/EditAddressMo
 import { FaPencilAlt } from 'react-icons/fa';
 import { LoadScript } from "@react-google-maps/api";
 import { jwtDecode } from "../../helpers/AccessControlUtils"
+import CommonModal from '../../components/shared/modalLayout/CommonModal'
 
 const AdminJobDetails = () => {
     const { id } = useParams();
@@ -41,6 +42,8 @@ const AdminJobDetails = () => {
     const [approveJob, { isLoading: isApproving }] = useApproveJobsByAdminMutation();
     const [completeJob, { isLoading: isCompleting }] = useCompleteJobByAdminMutation();
     const jobData = jobDetails?.data?.jobData;
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
     const driverId = jobData?.driver_id;
     const { data: fetchTripDocuments } = useGetAllTripDocumentsQuery({ id, driverId: driverId }, { skip: !id || !driverId });
     const { data: getLocationUpdates } = useGetUpdateLocationLogsQuery(
@@ -50,7 +53,6 @@ const AdminJobDetails = () => {
 
     const [editAddressModal, setEditAddressModal] = useState(false);
     const [selectedAddressData, setSelectedAddressData] = useState(null);
-    console.log(selectedAddressData, "selectedAddressData");
 
     const [selectedAddressId, setSelectedAddressId] = useState(null);
     const [selectedAddressType, setSelectedAddressType] = useState('pickup');
@@ -219,7 +221,7 @@ const AdminJobDetails = () => {
                 <Col lg={9} className='mt-5'>
                     <h6 className='small-heading'>Job Details</h6>
                     <Row className='mt-5'>
-                        <Col lg={9}>
+                        <Col lg={12}>
                             <h6 className='small-heading'>{jobDetails?.data?.jobData?.company_name}</h6>
                             <p className="text-muted small  mb-4">
                                 Requested by: {jobDetails?.data?.jobData?.customer_name}
@@ -284,6 +286,7 @@ const AdminJobDetails = () => {
                                                 `${formatDateToMDY(jobDetails?.data?.jobData?.pickup_date)} ${formatTimeTo12Hour(jobDetails?.data?.jobData?.pickup_time)}`
                                             }
                                         </li>
+                                        <li>Time Relaxation: {jobDetails?.data?.jobData?.pickup_time_relaxation ? 'Yes' : 'No'}</li>
                                         <li>Contact: {jobDetails?.data?.jobData?.pickup_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_pickup_POC_phone}</li>
                                         {jobDetails?.data?.jobData?.pickup_additional_note && <li>Pickup Notes: {jobDetails?.data?.jobData?.pickup_additional_note}</li>}
@@ -330,6 +333,7 @@ const AdminJobDetails = () => {
                                                 `${formatDateToMDY(jobDetails?.data?.jobData?.dropoff_date)} ${formatTimeTo12Hour(jobDetails?.data?.jobData?.dropoff_time)}`
                                             }
                                         </li>
+                                        <li>Time Relaxation: {jobDetails?.data?.jobData?.dropoff_time_relaxation ? 'Yes' : 'No'}</li>
                                         <li>Contact: {jobDetails?.data?.jobData?.dropoff_POC_name}</li>
                                         <li>Phone: {jobDetails?.data?.jobData?.raw_dropoff_POC_phone}</li>
                                         {jobDetails?.data?.jobData?.dropoff_additional_note && <li>Dropoff Notes: {jobDetails?.data?.jobData?.dropoff_additional_note}</li>}
@@ -340,8 +344,6 @@ const AdminJobDetails = () => {
 
                             </Row>
                             <Col lg={12} className='mt-3'>
-                                {/* {console.log(pickupCoords,"pickupCoords")
-                               } */}
                                 <DriverMapscreen
                                     height="247px"
                                     pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
@@ -372,145 +374,74 @@ const AdminJobDetails = () => {
                                     <p className="mt-3 text-muted">No location updates available.</p>
                                 )}
                             </Col>
-                            <Row>
-                                {checking_vehicle_photo?.map((curelem, index) => {
-                                    return (
-                                        <Col lg={3} key={index}>
-                                            <div className='rounded bg-body-secondary'>
-                                                <img src={curelem} alt="picture" className='img-fluid' />
-                                            </div>
+
+                            {/* Photos Section */}
+                            <Row className='mt-4'>
+                                {checking_vehicle_photo && checking_vehicle_photo.length > 0 && (
+                                    <>
+                                        <Col lg={12}>
+                                            <h6 className='small-heading'>Check-in Photos</h6>
                                         </Col>
-
-                                    )
-                                })}
-                                {delivery_vehicle_photo?.map((curelem, index) => {
-                                    return (
-                                        <Col lg={3} key={index}>
-                                            <div className='rounded bg-body-secondary'>
-                                                <img src={curelem} alt="picture" className='img-fluid' />
-                                            </div>
-                                        </Col>
-
-                                    )
-                                })}
-                            </Row>
-                            {/* Trip Documents */}
-                            <h6 className='small-heading mt-4'>Trip Documents</h6>
-                            <Row>
-                                {fetchTripDocuments?.data?.map((doc, index) => {
-                                    let otherReceipts = [];
-                                    try {
-                                        otherReceipts = doc.other_receipts ? JSON.parse(doc.other_receipts) : [];
-                                    } catch (err) {
-                                        console.error("Error parsing other_receipts:", err);
-                                    }
-
-                                    return (
-                                        <Col lg={12} key={index} className="mb-3">
-                                            {/* Daily Driver Log */}
-                                            {doc.daily_driver_log && (
-                                                <div className="mb-2">
-                                                    <strong>Daily Driver Log:</strong><br />
-                                                    <a href={doc.daily_driver_log} target="_blank" rel="noopener noreferrer" className="text-primary">
-                                                        View Document
-                                                    </a>
-                                                </div>
-                                            )}
-
-                                            {/* Flight Confirmation */}
-                                            {doc.flight_confirmation && (
-                                                <div className="mb-2">
-                                                    <strong>Flight Confirmation:</strong><br />
-                                                    <a href={doc.flight_confirmation} target="_blank" rel="noopener noreferrer" className="text-primary">
-                                                        View Document
-                                                    </a>
-                                                </div>
-                                            )}
-
-                                            {/* Fuel Receipt */}
-                                            {doc.fuel_receipt && (
-                                                <div className="mb-2">
-                                                    <strong>Fuel Receipt:</strong><br />
-                                                    <a href={doc.fuel_receipt} target="_blank" rel="noopener noreferrer" className="text-primary">
-                                                        View Document
-                                                    </a>
-                                                </div>
-                                            )}
-
-                                            {/* Hotel Receipt */}
-                                            {doc.hotel_receipt && (
-                                                <div className="mb-2">
-                                                    <strong>Hotel Receipt:</strong><br />
-                                                    <a href={doc.hotel_receipt} target="_blank" rel="noopener noreferrer" className="text-primary">
-                                                        View Document
-                                                    </a>
-                                                </div>
-                                            )}
-
-                                            {/* Additional Notes */}
-                                            {doc.additional_notes && (
-                                                <div className="mb-2">
-                                                    <strong>Additional Notes:</strong><br />
-                                                    <span>{doc.additional_notes}</span>
-                                                </div>
-                                            )}
-
-                                            {/* Other Receipts */}
-                                            {otherReceipts.length > 0 && (
-                                                <div className="mb-2">
-                                                    <strong>Other Receipts:</strong>
-                                                    <ul className="mt-1">
-                                                        {otherReceipts.map((item, i) => (
-                                                            <li key={i}>
-                                                                <a href={item.location} target="_blank" rel="noopener noreferrer" className="text-primary">
-                                                                    View Document {i + 1}
-                                                                </a>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </Col>
-                                    );
-                                })}
-                            </Row>
-
-                        </Col>
-                        <Col lg={3}>
-                            <h6 className='timeline-title'>Timeline</h6>
-                            <ul className='p-0 timeline d-flex flex-column gap-3 mt-3'>
-                                {jobDetails?.data?.jobLogs?.length > 0 ? (
-                                    jobDetails.data.jobLogs.map((logs, index) => (
-                                        <li key={index} className='d-flex gap-3 align-items-center'>
-                                            <span className='d-flex justify-content-center rounded-5 align-items-center flex-shrink-0 timeline-count'>
-                                                {index + 1}
-                                            </span>
-                                            <div className='timeline_status'>
-                                                <span className='d-block text-capitalize'>
-                                                    {logs?.request_status}
-                                                    {(logs?.User?.username || logs?.Driver?.name) && (
-                                                        <span className='text-muted ms-2'>
-                                                            by <strong>{logs?.User?.username || logs?.Driver?.name}</strong>
-                                                        </span>
-                                                    )}
-                                                </span>
-                                                <span>
-                                                    {userTimezone ?
-                                                        formatDateTimeInTimezone(logs?.createdAt, userTimezone) :
-                                                        formatDateToMDY(logs?.createdAt)
-                                                    }
-                                                </span>
-                                            </div>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <li className='text-center text-muted'>No timeline available</li>
+                                        {checking_vehicle_photo.map((curelem, index) => {
+                                            return (
+                                                <Col lg={2} key={index} className='mb-2'>
+                                                    <div
+                                                        className='rounded bg-body-secondary'
+                                                        style={{ cursor: 'pointer' }}
+                                                        onClick={() => {
+                                                            setSelectedImage(curelem);
+                                                            setShowImageModal(true);
+                                                        }}
+                                                    >
+                                                        <img
+                                                            src={curelem}
+                                                            alt="vehicle check-in"
+                                                            className='img-fluid'
+                                                            style={{ height: '100px', objectFit: 'cover', width: '100%' }}
+                                                        />
+                                                    </div>
+                                                </Col>
+                                            )
+                                        })}
+                                    </>
                                 )}
-                            </ul>
+
+                                {delivery_vehicle_photo && delivery_vehicle_photo.length > 0 && (
+                                    <>
+                                        <Col lg={12} className='mt-2'>
+                                            <h6 className='small-heading'>Delivery Photos</h6>
+                                        </Col>
+                                        {delivery_vehicle_photo.map((curelem, index) => {
+                                            return (
+                                                <Col lg={2} key={index} className='mb-2'>
+                                                    <div
+                                                        className='rounded bg-body-secondary'
+                                                        style={{ cursor: 'pointer' }}
+                                                        onClick={() => {
+                                                            setSelectedImage(curelem);
+                                                            setShowImageModal(true);
+                                                        }}
+                                                    >
+                                                        <img
+                                                            src={curelem}
+                                                            alt="delivery"
+                                                            className='img-fluid'
+                                                            style={{ height: '100px', objectFit: 'cover', width: '100%' }}
+                                                        />
+                                                    </div>
+                                                </Col>
+                                            )
+                                        })}
+                                    </>
+                                )}
+                            </Row>
                         </Col>
                     </Row>
                 </Col>
-                <Col lg={3}>
+
+                {/* Right Sidebar - Driver, Timeline, Trip Documents */}
+                <Col lg={3} className='mt-5'>
+                    {/* Driver Section */}
                     {(jobDetails?.data?.jobData?.request_status === "approved" ||
                         jobDetails?.data?.jobData?.request_status === "in-transit" ||
                         jobDetails?.data?.jobData?.request_status === "delivered") && (
@@ -554,12 +485,120 @@ const AdminJobDetails = () => {
                             </>
                         )}
 
-                </Col>
+                    {/* Timeline Section */}
+                    <h6 className='timeline-title mt-5'>Timeline</h6>
+                    <ul className='p-0 timeline d-flex flex-column gap-3 mt-3'>
+                        {jobDetails?.data?.jobLogs?.length > 0 ? (
+                            jobDetails.data.jobLogs.map((logs, index) => (
+                                <li key={index} className='d-flex gap-3 align-items-center'>
+                                    <span className='d-flex justify-content-center rounded-5 align-items-center flex-shrink-0 timeline-count'>
+                                        {index + 1}
+                                    </span>
+                                    <div className='timeline_status'>
+                                        <span className='d-block text-capitalize'>
+                                            {logs?.request_status}
+                                            {(logs?.User?.username || logs?.Driver?.name) && (
+                                                <span className='text-muted ms-2'>
+                                                    by <strong>{logs?.User?.username || logs?.Driver?.name}</strong>
+                                                </span>
+                                            )}
+                                        </span>
+                                        <span>
+                                            {userTimezone ?
+                                                formatDateTimeInTimezone(logs?.createdAt, userTimezone) :
+                                                formatDateToMDY(logs?.createdAt)
+                                            }
+                                        </span>
+                                    </div>
+                                </li>
+                            ))
+                        ) : (
+                            <li className='text-center text-muted'>No timeline available</li>
+                        )}
+                    </ul>
 
+                    {/* Trip Documents Section */}
+                    <h6 className='small-heading mt-4'>Trip Documents</h6>
+                    {fetchTripDocuments?.data && fetchTripDocuments.data.length > 0 ? (
+                        <div className='mt-3'>
+                            {fetchTripDocuments?.data?.map((doc, index) => {
+                                let otherReceipts = [];
+                                try {
+                                    otherReceipts = doc.other_receipts ? doc.other_receipts : [];
+                                } catch (err) {
+                                    console.error("Error parsing other_receipts:", err);
+                                }
+
+                                return (
+                                    <div key={index} className="mb-3 p-3 border rounded">
+                                        {doc.daily_driver_log && (
+                                            <div className="mb-2 small">
+                                                <strong>Daily Driver Log:</strong>{' '}
+                                                <a href={doc.daily_driver_log} target="_blank" rel="noopener noreferrer" className="text-primary d-block">
+                                                    View
+                                                </a>
+                                            </div>
+                                        )}
+
+                                        {doc.flight_confirmation && (
+                                            <div className="mb-2 small">
+                                                <strong>Flight Confirmation:</strong>{' '}
+                                                <a href={doc.flight_confirmation} target="_blank" rel="noopener noreferrer" className="text-primary d-block">
+                                                    View
+                                                </a>
+                                            </div>
+                                        )}
+
+                                        {doc.fuel_receipt && (
+                                            <div className="mb-2 small">
+                                                <strong>Fuel Receipt:</strong>{' '}
+                                                <a href={doc.fuel_receipt} target="_blank" rel="noopener noreferrer" className="text-primary d-block">
+                                                    View
+                                                </a>
+                                            </div>
+                                        )}
+
+                                        {doc.hotel_receipt && (
+                                            <div className="mb-2 small">
+                                                <strong>Hotel Receipt:</strong>{' '}
+                                                <a href={doc.hotel_receipt} target="_blank" rel="noopener noreferrer" className="text-primary d-block">
+                                                    View
+                                                </a>
+                                            </div>
+                                        )}
+
+                                        {doc.additional_notes && (
+                                            <div className="mb-2 small">
+                                                <strong>Additional Notes:</strong><br />
+                                                <span className="text-muted">{doc.additional_notes}</span>
+                                            </div>
+                                        )}
+
+                                        {otherReceipts.length > 0 && (
+                                            <div className="mb-0 small">
+                                                <strong>Other Receipts:</strong>
+                                                <div className="mt-1">
+                                                    {otherReceipts.map((item, i) => (
+                                                        <div key={i}>
+                                                            <a href={item} target="_blank" rel="noopener noreferrer" className="text-primary">
+                                                                Receipt {i + 1}
+                                                            </a>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <p className="mt-3 text-muted small">No trip documents available.</p>
+                    )}
+                </Col>
             </Row>
 
-
-
+            {/* Modals */}
             <EditAddressModal
                 show={editAddressModal}
                 setShow={setEditAddressModal}
@@ -571,7 +610,6 @@ const AdminJobDetails = () => {
                 jobId={jobData?.id}
                 userRole={userRole}
             />
-
 
             <CancelConfirmationModal
                 show={cancelConfirmationPopup}
@@ -585,9 +623,23 @@ const AdminJobDetails = () => {
                 show={assignDriverPopup}
                 setShow={setAssignDriverPopup}
                 jobId={id} />
+
+            <CommonModal
+                show={showImageModal}
+                setShow={setShowImageModal}
+                title="Image Preview"
+                className="image-preview-modal"
+            >
+                <div className='text-center'>
+                    <img
+                        src={selectedImage}
+                        alt="Preview"
+                        className='img-fluid w-100'
+                        style={{ maxHeight: '70vh', objectFit: 'contain' }}
+                    />
+                </div>
+            </CommonModal>
         </>
-
-
     )
 }
 

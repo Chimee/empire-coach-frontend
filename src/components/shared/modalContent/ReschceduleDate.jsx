@@ -25,6 +25,9 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
   const [cancelRescheduleJob, { isLoading: isCancelling }] = useCancelRescheduleJobMutation();
   const [rescheduleDate, { isLoading: isRescheduling }] = useRescheduleJobDateMutation();
 
+  // Get user timezone
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   const today = new Date().toISOString().split('T')[0];
   const isFutureButtonDisabled = useMemo(() => {
     return (
@@ -34,6 +37,13 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
       formData.dropoff_time
     );
   }, [formData]);
+
+  // Convert local date/time to UTC
+  const convertToUTC = (date, time) => {
+    if (!date || !time) return null;
+    const dateTime = new Date(`${date}T${time}`);
+    return dateTime.toISOString();
+  };
 
   const resetState = () => {
     setFormData({
@@ -125,6 +135,9 @@ const ReScheduleDate = ({ show, setShow, type, reqstatus, jobId }) => {
         dropoff_date,
         time_relaxation,
         reason: reqstatus === "awaiting_reschedule_date" ? "" : reason,
+        pickup_datetime_utc: convertToUTC(pickup_date, pickup_time) || undefined,
+        dropoff_datetime_utc: convertToUTC(dropoff_date, dropoff_time) || undefined,
+        user_timezone: userTimezone,
         ...(dropoff_time ? { dropoff_time } : {}),
       }).unwrap();
       toast.success(data?.message || 'Job rescheduled successfully');
