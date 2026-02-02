@@ -613,6 +613,7 @@ const AdminJobDetails = () => {
 
             <CancelConfirmationModal
                 show={cancelConfirmationPopup}
+                
                 setShow={setCancelConfirmation}
                 jobId={id}
                 user="admin"
