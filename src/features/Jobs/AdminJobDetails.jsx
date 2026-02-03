@@ -601,6 +601,7 @@ const AdminJobDetails = () => {
             {/* Modals */}
             <EditAddressModal
                 show={editAddressModal}
+                
                 setShow={setEditAddressModal}
                 handleClose={() => setEditAddressModal(false)}
                 addressId={selectedAddressId}
