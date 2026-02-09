@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
 import Button from '../../components/shared/buttons/button';
-import { Row, Col, Modal } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { RecieptSvg } from '../../svgFiles/RecieptSvg';
 import {
     useUpdateTripDocumentsMutation,
@@ -26,7 +26,6 @@ const UploadDocument = () => {
     const [notes, setNotes] = useState("");
     const navigate = useNavigate();
     const [updateTripDocuments, { isLoading: isUpdating }] = useUpdateTripDocumentsMutation();
-    const [previewFile, setPreviewFile] = useState({ url: null, type: null });
 
     // Handle file change
     const handleFileChange = (e, type, index = null) => {
@@ -68,28 +67,107 @@ const UploadDocument = () => {
         });
     };
 
-    // Open preview for file or URL
-    const openPreview = (file) => {
-        if (!file) return;
+    // Extract clean filename from URL or File
+    const extractFileName = (file) => {
+        if (!file) return "";
+
         if (file instanceof File) {
-            setPreviewFile({
-                url: URL.createObjectURL(file),
-                type: file.type
-            });
-        } else if (typeof file === "string") {
-            const ext = file.split(".").pop()?.toLowerCase();
-            let type = "";
-            if (ext === "pdf") type = "application/pdf";
-            else if (["jpg", "jpeg", "png", "webp"].includes(ext)) type = "image";
-            setPreviewFile({
-                url: file,
-                type
-            });
+            return file.name;
         }
+
+        if (typeof file === "string") {
+            try {
+                // First, decode the URL if it's encoded
+                let decodedUrl = file;
+                try {
+                    decodedUrl = decodeURIComponent(file);
+                } catch (e) {
+                    // Keep original if decode fails
+                }
+
+                // Create URL object
+                const url = new URL(decodedUrl);
+
+                // Get the pathname (everything before ?)
+                let pathname = url.pathname;
+
+                // Split by / and get all parts
+                const parts = pathname.split('/');
+
+                // Find the actual filename (has extension, doesn't contain 'aws4' or 'amazonaws')
+                for (let i = parts.length - 1; i >= 0; i--) {
+                    const part = parts[i];
+                    // Check if this part looks like a filename (has extension and not AWS metadata)
+                    if (part.includes('.') &&
+                        !part.includes('aws4') &&
+                        !part.includes('amazonaws') &&
+                        part.trim() !== '') {
+                        return part;
+                    }
+                }
+
+                // If no valid filename found, return empty
+                return "";
+            } catch (e) {
+                // Fallback parsing
+                let urlStr = file;
+
+                // Remove query parameters first
+                urlStr = urlStr.split('?')[0];
+
+                // Try to decode
+                try {
+                    urlStr = decodeURIComponent(urlStr);
+                } catch (err) {
+                    // Keep as is
+                }
+
+                // Split by / and find the actual filename
+                const parts = urlStr.split('/');
+
+                // Look for a part that has a file extension
+                for (let i = parts.length - 1; i >= 0; i--) {
+                    const part = parts[i];
+                    if (part.includes('.') &&
+                        !part.includes('aws4') &&
+                        !part.includes('amazonaws') &&
+                        part.trim() !== '') {
+                        return part;
+                    }
+                }
+
+                return "";
+            }
+        }
+
+        return "";
     };
 
-    const closePreview = () => {
-        setPreviewFile({ url: null, type: null });
+    // Truncate filename for display
+    const truncateFileName = (fileName, maxLength = 15) => {
+        if (!fileName || fileName === "No file chosen" || fileName === "Uploaded file") {
+            return "";
+        }
+
+        if (fileName.length <= maxLength) {
+            return fileName;
+        }
+
+        const lastDotIndex = fileName.lastIndexOf('.');
+
+        if (lastDotIndex === -1) {
+            return fileName.substring(0, maxLength - 3) + '...';
+        }
+
+        const ext = fileName.substring(lastDotIndex);
+        const name = fileName.substring(0, lastDotIndex);
+        const maxNameLength = maxLength - ext.length - 3;
+
+        if (maxNameLength <= 0) {
+            return fileName.substring(0, maxLength - 3) + '...';
+        }
+
+        return name.substring(0, maxNameLength) + '...' + ext;
     };
 
     // Load existing documents
@@ -97,11 +175,25 @@ const UploadDocument = () => {
         if (fetchTripDocuments?.data?.length) {
             const doc = fetchTripDocuments.data[0];
             let otherReceiptsParsed = [];
+
             try {
-                otherReceiptsParsed = JSON.parse(doc.other_receipts || "[]").map(r => r.location);
+                if (doc.other_receipts) {
+                    if (Array.isArray(doc.other_receipts)) {
+                        // Already an array of URLs
+                        otherReceiptsParsed = doc.other_receipts;
+                    } else if (typeof doc.other_receipts === 'string') {
+                        // JSON string that needs parsing
+                        const parsed = JSON.parse(doc.other_receipts);
+                        // Handle both formats: array of strings or array of objects with location
+                        otherReceiptsParsed = parsed.map(r =>
+                            typeof r === 'string' ? r : r.location
+                        );
+                    }
+                }
             } catch (err) {
-           
+                console.error("Error parsing other receipts:", err);
             }
+
             const mappedFiles = {
                 fuel: doc.fuel_receipt || null,
                 hotel: doc.hotel_receipt || null,
@@ -115,76 +207,114 @@ const UploadDocument = () => {
     }, [fetchTripDocuments]);
 
     // Render upload tile
-    const renderTile = (label, file, onChange, removableBlock, onRemoveBlock, onRemoveFile) => (
-        <div className="vehiclePhoto uploadDoc position-relative d-flex flex-column justify-content-center align-items-center h-100">
-            <input
-                type="file"
-                accept="image/*,application/pdf"
-                onChange={onChange}
-                className='render-upload-file'
-            />
+    const renderTile = (label, file, onChange, removableBlock, onRemoveBlock, onRemoveFile) => {
+        const fullFileName = extractFileName(file);
+        const displayFileName = truncateFileName(fullFileName);
+        const shouldShowTitle = fullFileName &&
+            fullFileName !== "No file chosen" &&
+            fullFileName !== "Uploaded file" &&
+            fullFileName !== "";
 
-            <div style={{ zIndex: 2 }}>
-                <RecieptSvg />
-            </div>
+        return (
+            <div className="vehiclePhoto uploadDoc position-relative d-flex flex-column justify-content-center align-items-center h-100">
+                <input
+                    type="file"
+                    accept="image/*,application/pdf"
+                    onChange={onChange}
+                    className='render-upload-file'
+                    style={{
+                        pointerEvents: file ? 'none' : 'auto'
+                    }}
+                    title=""
+                />
 
-            <p
-                className="mb-0 text-black text-center fw-bold"
-                style={{
-                    cursor: file ? "pointer" : "default",
-                    zIndex: 2
-                }}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    if (file) openPreview(file);
-                }}
-            >
-                {label}
-            </p>
-
-            {file && (
-                <div
-                    className="d-flex align-items-center justify-content-center upload-file"
-                >
-                    <small
-                        className='upload-file-small'
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            openPreview(file);
-                        }}
-                    >
-                        {file instanceof File ? file.name : (file ? file.split("/").pop() : "")}
-                    </small>
-                    <span
-                        style={{
-                            color: "red",
-                            cursor: "pointer",
-                            fontWeight: "bold"
-                        }}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onRemoveFile();
-                        }}
-                    >
-                        ✕
-                    </span>
+                <div style={{ zIndex: 2 }}>
+                    <RecieptSvg />
                 </div>
-            )}
 
-            {removableBlock && (
-                <button
-                    type="button"
-                    className="remove-receipt-btn"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onRemoveBlock();
+                <p
+                    className="mb-0 text-black text-center fw-bold"
+                    style={{
+                        cursor: file ? "pointer" : "default",
+                        zIndex: 2
                     }}
                 >
-                    ×
-                </button>
-            )}
-        </div>
-    );
+                    {label}
+                </p>
+
+                {file && (
+                    <div
+                        className="d-flex align-items-center justify-content-center upload-file"
+                        style={{ gap: '4px', position: 'relative', zIndex: 100 }}
+                    >
+                        {typeof file === "string" ? (
+                            <a
+                                href={file}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="upload-file-small"
+                                title={shouldShowTitle ? fullFileName : ""}
+                                onClick={(e) => e.stopPropagation()}
+                                style={{
+                                    color: "#0d6efd",
+                                    textDecoration: "underline",
+                                    cursor: "pointer",
+                                    maxWidth: "150px",
+                                    overflow: "hidden",
+                                    whiteSpace: "nowrap",
+                                    textOverflow: "ellipsis",
+                                    display: "inline-block"
+                                }}
+                            >
+                                {displayFileName || fullFileName}
+                            </a>
+                        ) : (
+                            <small
+                                className="upload-file-small"
+                                title={shouldShowTitle ? fullFileName : ""}
+                                style={{
+                                    maxWidth: "150px",
+                                    overflow: "hidden",
+                                    whiteSpace: "nowrap",
+                                    textOverflow: "ellipsis",
+                                    display: "inline-block"
+                                }}
+                            >
+                                {displayFileName || fullFileName}
+                            </small>
+                        )}
+                        <span
+                            style={{
+                                color: "red",
+                                cursor: "pointer",
+                                fontWeight: "bold",
+                                flexShrink: 0
+                            }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onRemoveFile();
+                            }}
+                        >
+                            ✕
+                        </span>
+                    </div>
+                )}
+
+                {removableBlock && (
+                    <button
+                        type="button"
+                        className="remove-receipt-btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onRemoveBlock();
+                        }}
+                    >
+                        ×
+                    </button>
+                )}
+            </div>
+        );
+    };
 
     const handleDocuments = async () => {
         try {
@@ -197,7 +327,6 @@ const UploadDocument = () => {
             appendFileOrNull("flight_confirmation", files.flight, formData);
             appendFileOrNull("daily_driver_log", files.driverLog, formData);
 
-            //handle file otherreipts
             if (files.otherReceipts?.length) {
                 let hasFile = false;
                 files.otherReceipts.forEach((file) => {
@@ -217,7 +346,7 @@ const UploadDocument = () => {
                     formData.append("other_receipts", "null");
                 }
             }
-            //update trip document
+
             const res = await updateTripDocuments(formData);
             if (res.data) {
                 toast.success(res.data?.message || "Trip documents have been updated");
@@ -239,26 +368,26 @@ const UploadDocument = () => {
             <div className="flex-grow-1 picupForm">
                 <Row className="row-gap-2 mb-2">
                     <Col xs={12}>
-                    <div className='gird-inputs'>
-                        {renderTile("Fuel Receipt", files.fuel, (e) => handleFileChange(e, "fuel"), false, null, () => removeFile("fuel"))}
-                        {renderTile("Hotel Receipt", files.hotel, (e) => handleFileChange(e, "hotel"), false, null, () => removeFile("hotel"))}
-                        {renderTile("Flight Confirmation", files.flight, (e) => handleFileChange(e, "flight"), false, null, () => removeFile("flight"))}
-                        {renderTile("Daily Driver Log", files.driverLog, (e) => handleFileChange(e, "driverLog"), false, null, () => removeFile("driverLog"))}
-                    {files.otherReceipts.map((file, idx) => (
-                        <div key={idx}>
-                            {renderTile(
-                                `Other Receipt ${idx + 1}`,
-                                file,
-                                (e) => handleFileChange(e, "otherReceipts", idx),
-                                files.otherReceipts.length > 1,
-                                () => removeOtherReceiptBlock(idx),
-                                () => removeFile("otherReceipts", idx)
-                            )}
+                        <div className='gird-inputs'>
+                            {renderTile("Fuel Receipt", files.fuel, (e) => handleFileChange(e, "fuel"), false, null, () => removeFile("fuel"))}
+                            {renderTile("Hotel Receipt", files.hotel, (e) => handleFileChange(e, "hotel"), false, null, () => removeFile("hotel"))}
+                            {renderTile("Flight Confirmation", files.flight, (e) => handleFileChange(e, "flight"), false, null, () => removeFile("flight"))}
+                            {renderTile("Daily Driver Log", files.driverLog, (e) => handleFileChange(e, "driverLog"), false, null, () => removeFile("driverLog"))}
+                            {files.otherReceipts.map((file, idx) => (
+                                <div key={idx}>
+                                    {renderTile(
+                                        `Other Receipt ${idx + 1}`,
+                                        file,
+                                        (e) => handleFileChange(e, "otherReceipts", idx),
+                                        files.otherReceipts.length > 1,
+                                        () => removeOtherReceiptBlock(idx),
+                                        () => removeFile("otherReceipts", idx)
+                                    )}
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                    </div>
                     </Col>
-                    
+
                     <Col xs={12}>
                         <Button
                             label="+ Add Other Receipt"
@@ -304,27 +433,6 @@ const UploadDocument = () => {
                     onClick={handleDocuments}
                 />
             </div>
-            {/* Modal Preview */}
-            <Modal show={!!previewFile.url} onHide={closePreview} size="xl" fullscreen centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Document Preview</Modal.Title>
-                </Modal.Header>
-                <Modal.Body style={{ padding: 0 }}>
-                    {previewFile.type === "application/pdf" ? (
-                        <iframe
-                            src={previewFile.url}
-                            style={{ width: "100%", height: "100vh", border: "none" }}
-                            title="PDF Preview"
-                        />
-                    ) : (
-                        <img
-                            src={previewFile.url}
-                            alt="Preview"
-                            style={{ width: "100%", height: "auto", display: "block" }}
-                        />
-                    )}
-                </Modal.Body>
-            </Modal>
         </div>
     );
 };
