@@ -14,6 +14,7 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
 
   // Get user's timezone
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  console.log(userTimezone)
 
   // Handle checkbox logic
   const handleCheckboxChange = (e) => {
@@ -82,22 +83,19 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
       return false;
     }
 
+    // Get current time in user's local timezone
     const now = new Date();
-    const pickupDate = new Date(formData.pickup_date);
 
-    // Parse the time
-    const timeParts = formData.pickup_time.split(':');
-    const pickupDateTime = new Date(pickupDate);
-    pickupDateTime.setHours(parseInt(timeParts[0], 10));
-    pickupDateTime.setMinutes(parseInt(timeParts[1], 10));
-    pickupDateTime.setSeconds(0);
-    pickupDateTime.setMilliseconds(0);
+    // Create pickup datetime using the date and time inputs
+    // IMPORTANT: Use the date string directly to avoid timezone conversion issues
+    const [year, month, day] = formData.pickup_date.split('-').map(Number);
+    const [hours, minutes] = formData.pickup_time.split(':').map(Number);
+
+    const pickupDateTime = new Date(year, month - 1, day, hours, minutes, 0, 0);
 
     // Check if pickup date is in the past (date-only comparison)
-    const pickupDateOnly = new Date(pickupDate);
-    pickupDateOnly.setHours(0, 0, 0, 0);
-    const todayOnly = new Date(now);
-    todayOnly.setHours(0, 0, 0, 0);
+    const pickupDateOnly = new Date(year, month - 1, day, 0, 0, 0, 0);
+    const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
 
     if (pickupDateOnly < todayOnly) {
       toast.dismiss();
@@ -128,13 +126,9 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
       }
 
       // Validate delivery date/time is after pickup
-      const dropoffDate = new Date(formData.dropoff_date);
-      const dropoffTimeParts = formData.dropoff_time.split(':');
-      const dropoffDateTime = new Date(dropoffDate);
-      dropoffDateTime.setHours(parseInt(dropoffTimeParts[0], 10));
-      dropoffDateTime.setMinutes(parseInt(dropoffTimeParts[1], 10));
-      dropoffDateTime.setSeconds(0);
-      dropoffDateTime.setMilliseconds(0);
+      const [dropYear, dropMonth, dropDay] = formData.dropoff_date.split('-').map(Number);
+      const [dropHours, dropMinutes] = formData.dropoff_time.split(':').map(Number);
+      const dropoffDateTime = new Date(dropYear, dropMonth - 1, dropDay, dropHours, dropMinutes, 0, 0);
 
       if (dropoffDateTime <= pickupDateTime) {
         toast.dismiss();
@@ -152,13 +146,9 @@ const JobStepTwo = ({ handleNext, handlePrevious, formData, setFormData }) => {
       }
 
       // Validate delivery date/time is after pickup
-      const dropoffDate = new Date(formData.dropoff_date);
-      const dropoffTimeParts = formData.dropoff_time.split(':');
-      const dropoffDateTime = new Date(dropoffDate);
-      dropoffDateTime.setHours(parseInt(dropoffTimeParts[0], 10));
-      dropoffDateTime.setMinutes(parseInt(dropoffTimeParts[1], 10));
-      dropoffDateTime.setSeconds(0);
-      dropoffDateTime.setMilliseconds(0);
+      const [dropYear, dropMonth, dropDay] = formData.dropoff_date.split('-').map(Number);
+      const [dropHours, dropMinutes] = formData.dropoff_time.split(':').map(Number);
+      const dropoffDateTime = new Date(dropYear, dropMonth - 1, dropDay, dropHours, dropMinutes, 0, 0);
 
       if (dropoffDateTime <= pickupDateTime) {
         toast.dismiss();
