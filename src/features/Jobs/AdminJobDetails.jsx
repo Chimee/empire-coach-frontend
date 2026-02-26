@@ -463,25 +463,30 @@ const AdminJobDetails = () => {
                                     </div>
                                 }
 
-                                {(
-                                    jobDetails?.data?.jobData?.request_status === "approved"
-                                ) && (
-                                        !jobDetails?.data?.jobData?.driver_name ||
-                                            jobDetails?.data?.jobData?.driver_name === "Driver not assigned" ? (
-                                            <Button
-                                                label="Assign Driver"
-                                                className="rounded w-75 m-auto"
-                                                onClick={() => setAssignDriverPopup(true)}
-                                            />
-                                        ) : (
+                                {jobDetails?.data?.jobData?.request_status === "approved" && (
+                                    !jobDetails?.data?.jobData?.driver_name ||
+                                        jobDetails?.data?.jobData?.driver_name === "Driver not assigned" ? (
+                                        <Button
+                                            label="Assign Driver"
+                                            className="rounded w-75 m-auto"
+                                            onClick={() => setAssignDriverPopup(true)}
+                                        />
+                                    ) : (
+                                        <div className="d-flex flex-column gap-2 align-items-center">
                                             <Button
                                                 loading={isSending}
                                                 label="Send Link"
                                                 className="rounded w-75 m-auto"
                                                 onClick={() => handleSendLink()}
                                             />
-                                        )
-                                    )}
+                                            <Button
+                                                label="Assign Driver Again"
+                                                className="rounded w-75 m-auto bordered"
+                                                onClick={() => setAssignDriverPopup(true)}
+                                            />
+                                        </div>
+                                    )
+                                )}
                             </>
                         )}
 
