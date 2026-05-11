@@ -47,6 +47,10 @@ import AddVehicle from "./features/admin/Vehicle/AddVehicle";
 import CompletedJobs from "./features/Jobs/completedJobs";
 import { LoadScript } from "@react-google-maps/api";
 import RideEntry from "./features/driverScreens/rideEntry";
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+
 const libraries = ["places"];
 function App() {
     const error = useSelector((state) => state.global.error);
@@ -147,3 +151,4 @@ function App() {
 }
 
 export default App;
+
