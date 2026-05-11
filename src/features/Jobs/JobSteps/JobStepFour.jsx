@@ -37,10 +37,14 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
     })) || [];
 
   const currentYear = new Date().getFullYear();
-  const YearOptions = Array.from({ length: 10 }, (_, i) => {
-    const year = currentYear + 1 - i;
-    return { label: String(year), value: String(year) };
-  });
+  const startYear = 2000;
+  const YearOptions = Array.from(
+    { length: currentYear - startYear + 2 },
+    (_, i) => {
+      const year = currentYear + 1 - i;
+      return { label: String(year), value: String(year) };
+    }
+  );
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCurrentVehicle((prev) => ({
@@ -57,7 +61,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
   };
 
   const saveVehicleDetails = () => {
-  
+
     if (
       !currentVehicle.year ||
       !currentVehicle.make ||
@@ -84,7 +88,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
   };
 
   const handleNextStep = () => {
-   
+
     const isCurrentVehicleEmpty = Object.keys(currentVehicle).every(
       (key) => !currentVehicle[key]
     );
@@ -167,7 +171,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
         <Row>
           <Col lg={4}>
             <VehicleDroppDown
-            label="Year"
+              label="Year"
               currentVehicle={currentVehicle}
               setCurrentVehicle={setCurrentVehicle}
               selectType="Year"
@@ -178,7 +182,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
           </Col>
           <Col lg={4}>
             <VehicleDroppDown
-            label="Make"
+              label="Make"
               currentVehicle={currentVehicle}
               setCurrentVehicle={setCurrentVehicle}
               selectType="Make"
@@ -189,7 +193,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
           </Col>
           <Col lg={4}>
             <VehicleDroppDown
-            label="Model"
+              label="Model"
               currentVehicle={currentVehicle}
               setCurrentVehicle={setCurrentVehicle}
               selectType="Model"
@@ -209,7 +213,7 @@ const JobStepFour = ({ handleNext, handlePrevious, formData, setFormData }) => {
           </Col>
           <Col lg={12}>
             <VehicleDroppDown
-            label="Fuel Type"
+              label="Fuel Type"
               selectType="FuelType"
               currentVehicle={currentVehicle}
               setCurrentVehicle={setCurrentVehicle}

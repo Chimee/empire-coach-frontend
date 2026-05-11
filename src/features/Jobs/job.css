@@ -267,6 +267,8 @@ h5.step_heading {
   width: 100%;
   border: 1px solid #e1e3e6;
   padding: 0;
+  max-height: 250px;
+  overflow: auto;
 }
 .vehicle_dropdown .dropdown-menu a {
   font-size: 13px;
